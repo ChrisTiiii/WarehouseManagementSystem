@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sp_sp"
+        android:icon="@drawable/sp"
+        android:title="审批" />
+    <item
+        android:id="@+id/sp_send"
+        android:icon="@drawable/send"
+        android:title="申请" />
+    <item
+        android:id="@+id/sp_statement"
+        android:icon="@drawable/statement"
+        android:title="报表" />
+
+    <item
+        android:id="@+id/person"
+        android:icon="@drawable/unperson"
+        android:title="个人" />
+</menu>

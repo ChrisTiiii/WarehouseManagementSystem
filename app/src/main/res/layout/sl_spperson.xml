@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_20"
+        android:alpha="0.5"
+        android:background="#cdcdcd" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_10">
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="@dimen/dp_15"
+            android:layout_height="@dimen/dp_15"
+            android:layout_gravity="center"
+            android:src="@drawable/start" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv"
+            android:paddingLeft="5dp"
+            android:text="审批人"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_20" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:paddingRight="5dp"
+            android:src="@drawable/remove" />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_20">
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0000"
+            android:text="+ 选择审批人"
+            android:textColor="@color/steelblue" />
+
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_leader"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/tv"-->
+        <!--android:layout_weight="2"-->
+        <!--android:background="@null"-->
+        <!--android:gravity="center|bottom"-->
+        <!--android:hint="请选择审批人"-->
+        <!--android:inputType="textMultiLine"-->
+        <!--android:paddingTop="@dimen/dp_10"-->
+        <!--android:paddingRight="@dimen/dp_10"-->
+        <!--android:textSize="@dimen/sp_14"-->
+        <!--android:visibility="gone" />-->
+
+        <com.githang.stepview.StepView
+            android:id="@+id/step_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_70"
+            android:layout_below="@+id/btn_add"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

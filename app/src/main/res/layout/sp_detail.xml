@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/layoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/agree"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/dodgerblue"
+                android:text="同意"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
+
+            <View
+                android:layout_width="@dimen/dp_5"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
+
+            <Button
+                android:id="@+id/disagree"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/dodgerblue"
+                android:text="拒绝"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
+
+            <!--<View-->
+                <!--android:layout_width="@dimen/dp_5"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/white" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/deliver"-->
+                <!--android:layout_width="@dimen/dp_0"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@color/dodgerblue"-->
+                <!--android:text="转交"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="@dimen/sp_16" />-->
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_remove"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/revocation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/dodgerblue"
+                android:text="撤销"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
