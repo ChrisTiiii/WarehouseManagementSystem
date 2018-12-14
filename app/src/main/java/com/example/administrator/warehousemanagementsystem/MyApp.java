@@ -11,9 +11,6 @@ import com.example.administrator.warehousemanagementsystem.bean.UserBean;
  * * root 1为仓库管理员 2为站长 3为主任 处长
  **/
 public class MyApp extends Application {
-    public static final int SL_DETAIL = 0x123;//申领detail
-    public static final int SL_USE = 0x222;//申领物品用途
-    public static final int SL_EXPLAIN = 0x212;//领用详情
     public static final int SL_CHOOSE_PRODUCT = 0x239; //选择商品
     public static final int SL_SPPERSON = 0x483;//选择审批人
     public static final int REPORT_BT = 0x882;//选择物品后 报告数据

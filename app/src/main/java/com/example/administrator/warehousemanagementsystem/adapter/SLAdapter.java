@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
+import com.example.administrator.warehousemanagementsystem.bean.MyLeader;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.githang.stepview.StepView;
@@ -37,11 +38,8 @@ import butterknife.ButterKnife;
  * Description:申领物资适配器
  **/
 public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-
     private Context context;
     public List<ViewType> uiList;//界面布局list
-
     private OnAddClickListener onAddClickListener;
     private OnItemClickListener onItemClickListener;
     private OnAddLeaderListener onAddLeaderListener;
@@ -53,15 +51,15 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int LEADER_VIEW = 4;//审批人
 
     List<MyGoods> goodsList;
+    List<MyLeader> leaderList;
     private String use = "";
     private String explain = "";
-    public List<String> leaderList;
 
     public SLAdapter(Context context, List<ViewType> list) {
         this.context = context;
         this.uiList = list;
         goodsList = new ArrayList<>();
-//        goodsList.add(new MyGoods("", "", ""));
+        leaderList = new ArrayList<>();
     }
 
     @Override
@@ -82,7 +80,6 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             uiList.add(uiPosition, new ViewType(DETAIL_VIEW));
         }
         notifyDataSetChanged();
-        System.out.println("init list size" + getGoodsList().size());
     }
 
     //删除物品信息
@@ -93,31 +90,12 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             uiList.remove(1);
         }
-//        if (goodsList.size() == 0)
-//            goodsList.add(new MyGoods("", "", ""));
         notifyDataSetChanged();
         notifyItemRemoved(position);
     }
 
-//    //删除物品信息
-//    public void deleteData(int position) {
-//        nameList.remove(position);
-//        numList.remove(position);
-//        if (position != 0) {
-//            uiList.remove(position);
-//        } else {
-//            uiList.remove(1);
-//        }
-//        if (nameList.size() == 0) {
-//            nameList.add("");
-//            numList.add("");
-//        }
-//        notifyDataSetChanged();
-//        notifyItemRemoved(position);
-//    }
-
     //更新leader
-    public void achieveLeader(String leader) {
+    public void achieveLeader(MyLeader leader) {
         if (leaderList == null) {
             leaderList = new ArrayList<>();
             leaderList.add(leader);
@@ -189,10 +167,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void afterTextChanged(Editable s) {
                     use = "";
                     use += s.toString();
-                    System.out.println("before title:" + use);
                     use.replaceAll(use, s.toString());
-                    System.out.println("title after:" + use);
-                    EventBus.getDefault().post(new MessageEvent(MyApp.SL_USE, use));
                 }
             };
             headViewHolder.etUse.addTextChangedListener(headWatcher);
@@ -219,7 +194,6 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     explain = "";
                     explain += s.toString();
                     explain.replaceAll(explain, s.toString());
-                    EventBus.getDefault().post(new MessageEvent(MyApp.SL_EXPLAIN, explain));
                 }
             };
             explainViewHolder.etExplain.addTextChangedListener(explainWatcher);
@@ -238,35 +212,8 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (position - 1 >= 0) {
                 detailViewHolder.etName.setText(goodsList.get(position - 1).getName());
                 detailViewHolder.etNum.setText(goodsList.get(position - 1).getNum());
-//                detailViewHolder.etName.setText(nameList.get(position - 1));
-//                detailViewHolder.etNum.setText(numList.get(position - 1));
             }
 
-//            TextWatcher nameWatcher = new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    if (goodsList.get(position - 1).getName() != null) {
-//                        goodsList.remove(position - 1);
-//                    }
-//                    goodsList.add(position - 1, new MyGoods(goodsList.get(position - 1).getCode(), s.toString(), goodsList.get(position - 1).getNum()));
-////                    if (nameList.get(position - 1) != null) {
-////                        nameList.remove(position - 1);
-////                    }
-////                    nameList.add(position - 1, s.toString());
-//                }
-//            };
-//            detailViewHolder.etName.addTextChangedListener(nameWatcher);
-//            detailViewHolder.etName.setTag(nameWatcher);
             TextWatcher numWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -283,8 +230,6 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (goodsList.get(position - 1).getNum() != null) {
                         goodsList.remove(position - 1);
                     }
-                    System.out.println("GoodsList size:" + getGoodsList().size());
-                    //goodsList.set(position - 1, goodsList.get(position - 1)).setNum(s.toString());
                     goodsList.add(position - 1, new MyGoods(goodsList.get(position - 1).getCode(), goodsList.get(position - 1).getName(), s.toString()));
                 }
             };
@@ -297,7 +242,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             LeaderViewHolder leaderViewHolder = (LeaderViewHolder) viewHolder;
             if (leaderList != null) {
                 leaderViewHolder.ivDelete.setVisibility(View.VISIBLE);
-                leaderViewHolder.stepView.setSteps(leaderList);
+                leaderViewHolder.stepView.setSteps(stepLeader());
                 leaderViewHolder.stepView.selectedStep(leaderList.size());
             } else {
                 leaderViewHolder.ivDelete.setVisibility(View.GONE);
@@ -306,8 +251,24 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
+    public List<String> stepLeader() {
+        List<String> list = new ArrayList<>();
+        for (MyLeader leader : leaderList) {
+            list.add(leader.getName());
+        }
+        return list;
+    }
+
+    public String getNote() {
+        return use + explain;
+    }
+
     public List<MyGoods> getGoodsList() {
-        return goodsList;
+        return goodsList.size() != 0 ? goodsList : null;
+    }
+
+    public List<MyLeader> getLeaderList() {
+        return leaderList.size() != 0 ? leaderList : null;
     }
 
     @Override

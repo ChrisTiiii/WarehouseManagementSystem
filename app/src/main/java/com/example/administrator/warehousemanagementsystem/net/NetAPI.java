@@ -1,11 +1,16 @@
 package com.example.administrator.warehousemanagementsystem.net;
 
+import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -30,7 +35,9 @@ public interface NetAPI {
     @GET("getUserListBy.do")
     Observable<SPPersonBean> getSPPerson(@Query("userRoleNo") int userRoleNo);//获取审批人
 
-
+    @Headers({"Content-Type: application/json", "Accept: application/json"})//需要添加头
+    @POST("addApply.do")
+    Observable<AddApplyBean> postApply(@Body RequestBody route);//提交订单
 
 
 }

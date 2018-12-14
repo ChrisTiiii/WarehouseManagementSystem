@@ -235,8 +235,6 @@ public class MenuActivity extends AppCompatActivity {
                     Toast.makeText(MenuActivity.this, "最多只能选择一个", Toast.LENGTH_SHORT).show();
                     return;
                 }
-//                allList.get(perPosition).getMap().get("name") + " " +
-//                checkList.add(String.valueOf(detailList.get(position).getMap().get("name")));
                 Map<String, Object> map = new HashMap<>();
                 map.put("name", detailList.get(position).getMap().get("name"));
                 map.put("code", detailList.get(position).getMap().get("code"));

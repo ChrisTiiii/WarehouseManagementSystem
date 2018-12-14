@@ -1,5 +1,6 @@
 package com.example.administrator.warehousemanagementsystem.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,16 +19,23 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
 import com.example.administrator.warehousemanagementsystem.adapter.SLAdapter;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
+import com.example.administrator.warehousemanagementsystem.bean.MyLeader;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
+import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,8 +47,8 @@ import butterknife.Unbinder;
  * DATE: 2018/11/21 0021
  * Description: 申领物品
  **/
+@SuppressLint("ValidFragment")
 public class SLFragment extends Fragment {
-
 
     private View rootView;
 
@@ -52,16 +60,20 @@ public class SLFragment extends Fragment {
     private SLAdapter spAdapter;
     private List<ViewType> uiList;
     private List<MyGoods> goodsList;
-    //    private List<String> nameList;//物品名称
-//    private List<String> numList;//物品数量
-    private String use;//物品用途
-    private String explain;//物品详情
-    private int product_code = 0x123;
 
+    private int product_code = 0x123;
+    private MyApp myApp;
+    private NetServerImp netServerImp;
+
+    @SuppressLint("ValidFragment")
+    public SLFragment(MyApp myApp) {
+        this.myApp = myApp;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        netServerImp = new NetServerImp(myApp);
         if (null != rootView) {
             ViewGroup parent = (ViewGroup) rootView.getParent();
             if (!EventBus.getDefault().isRegistered(this))
@@ -75,7 +87,6 @@ public class SLFragment extends Fragment {
             if (!EventBus.getDefault().isRegistered(this))
                 EventBus.getDefault().register(this);
             unbinder = ButterKnife.bind(this, rootView);
-
             initData();
             initView();
         }
@@ -124,7 +135,6 @@ public class SLFragment extends Fragment {
                         startActivityForResult(intent, product_code);
                         break;
                 }
-
             }
         });
 
@@ -136,78 +146,86 @@ public class SLFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateData(MessageEvent messageEvent) {
         switch (messageEvent.getTag()) {
             case MyApp.SL_CHOOSE_PRODUCT:
                 if (messageEvent.getMapList() != null) {
-                    MyGoods myGoods = new MyGoods((String) messageEvent.getMapList().get(0).get("code"), (String) messageEvent.getMapList().get(0).get("name"), null);
-//                    spAdapter.addData(uiList.size() - 2, (String) messageEvent.getMapList().get(0).get("name"));
+                    String code = String.valueOf(messageEvent.getMapList().get(0).get("code"));
+                    String name = String.valueOf(messageEvent.getMapList().get(0).get("name"));
+                    MyGoods myGoods = new MyGoods(code, name, null);
                     spAdapter.addData(uiList.size() - 2, myGoods);
 
                 }
                 break;
-//            case MyApp.SL_SPPERSON:
-//                if (messageEvent.getMapList() != null) {
-//                    for (String name : messageEvent.getNameList()) {
-//                        spAdapter.achieveLeader(name);
-//                    }
-//                }
-//                break;
+            case MyApp.SL_SPPERSON:
+                if (messageEvent.getMapList() != null) {
+                    for (Map<String, Object> map : messageEvent.getMapList()) {
+                        String code = String.valueOf(map.get("code"));
+                        String name = String.valueOf(map.get("name"));
+                        MyLeader leader = new MyLeader(code, name);
+                        spAdapter.achieveLeader(leader);
+                    }
+                }
+                break;
         }
     }
 
 
     @OnClick(R.id.btn_submit)
     public void onViewClicked() {
-        goodsList = spAdapter.getGoodsList();
-        Gson gson = new Gson();
-        List<MyGoods> list = new ArrayList<>();
-        for (MyGoods temp : goodsList) {
-            list.add(new MyGoods(temp.getCode(), temp.getNum()));
+        if (achieve() != null) {
+            netServerImp.postApply(achieve());
         }
-        System.out.println(gson.toJson(list));
-//        achiveData();
     }
 
-
-//    //提交审批
-//    void achiveData() {
-//        String temp = "";
-//        String leaders = "";
-//        if (nameList != null && numList != null && spAdapter.leaderList != null) {
-//            for (int i = 0; i < spAdapter.leaderList.size(); i++) {
-//                leaders += "步骤" + i + ":" + spAdapter.leaderList.get(i);
-//            }
-//            for (int i = 0; i < nameList.size(); i++) {
-//                temp += "position:" + i + "\t name：" + nameList.get(i) + " \tnum：" + numList.get(i) + "\n";
-//            }
-//            Toast.makeText(getContext(), "title: " + use + "\n" + temp + "\n" + explain + "\n" + leaders, Toast.LENGTH_SHORT).show();
-//        } else Toast.makeText(getContext(), "提交内容不能为空", Toast.LENGTH_SHORT).show();
-//    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void acceptEditList(MessageEvent messageEvent) {
-        switch (messageEvent.getTag()) {
-            case MyApp.SL_DETAIL:
-//                goodsList = messageEvent.getGoodsList();
-//                nameList = messageEvent.getNameList();
-//                numList = messageEvent.getNumlist();
-                break;
-            case MyApp.SL_USE:
-                use = messageEvent.getMessage();
-                System.out.println(messageEvent.getMessage());
-                break;
-            case MyApp.SL_EXPLAIN:
-                explain = messageEvent.getMessage();
-                break;
+    //提交审批
+    public String achieve() {
+        if (!spAdapter.getNote().equals("") && getGoodsList() != null && getLeader() != null) {
+            //获取userNo
+            Map<String, Object> map = new HashMap<>();
+            map.put("userNo", myApp.getUser().getId());
+            map.put("note", spAdapter.getNote());
+            map.put("goodsMap", getGoodsList());
+            map.put("userNoList", getLeader());
+            Gson gson = new Gson();
+            Toast.makeText(myApp, gson.toJson(map), Toast.LENGTH_SHORT).show();
+            return gson.toJson(map);
+        } else {
+            Toast.makeText(myApp, "您有未填写项", Toast.LENGTH_SHORT).show();
+            return null;
         }
+    }
 
+    public String getGoodsList() {
+        //获得goodsList:物品编号+数量
+        goodsList = spAdapter.getGoodsList();
+        JSONObject jsonObject = new JSONObject();
+        for (MyGoods temp : goodsList) {
+            if (temp.getNum() != null) {
+                try {
+                    jsonObject.put(temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return jsonObject.toString().equals("") ? null : jsonObject.toString();
+    }
+
+    public String getLeader() {
+        if (spAdapter.getLeaderList() != null) {
+            JSONArray jsonArray = new JSONArray();
+            for (MyLeader temp : spAdapter.getLeaderList()) {
+                if (temp.getCode() != null) {
+                    jsonArray.put(Integer.parseInt(temp.getCode()));
+                }
+            }
+            return jsonArray.toString();
+        }
+        return null;
     }
 
     @Override

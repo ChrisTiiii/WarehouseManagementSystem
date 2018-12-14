@@ -3,6 +3,7 @@ package com.example.administrator.warehousemanagementsystem.net;
 import android.widget.Toast;
 
 import com.example.administrator.warehousemanagementsystem.MyApp;
+import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -104,7 +106,8 @@ public class NetServerImp {
                         for (GoodsDetailBean.DataBean dataBean : goodsDetailBean.getData()) {
                             Map<String, Object> map = new HashMap<>();
                             map.put("name", dataBean.getGoodsName());
-                            map.put("code",dataBean.getGoodsId());
+                            map.put("code", dataBean.getId());
+//                            map.put("code", dataBean.getGoodsId());
                             map.put("count", goodsDetailBean.getCount());
                             tempList.add(map);
                         }
@@ -234,6 +237,7 @@ public class NetServerImp {
                                 for (SPPersonBean.DataBean spp : spPersonBean.getData()) {
                                     Map<String, Object> map = new HashMap<>();
                                     map.put("type", spp.getUserRoleNo());
+                                    map.put("code", spp.getId());
                                     map.put("name", spp.getUserName());
                                     map.put("count", spPersonBean.getCount());
                                     tempList.add(map);
@@ -245,6 +249,37 @@ public class NetServerImp {
                     }
                 });
 
+    }
+
+    /**
+     * 提交数据订单
+     */
+    public void postApply(String json) {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
+                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
+                .build();
+        NetAPI netAPI = retrofit.create(NetAPI.class);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json);
+        netAPI.postApply(body).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<AddApplyBean>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("postApply success");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(AddApplyBean addApplyBean) {
+                        System.out.println(addApplyBean.getResult());
+                    }
+                });
     }
 
 }
