@@ -1,6 +1,8 @@
 package com.example.administrator.warehousemanagementsystem.util;
 
+import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
+import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 
 import java.util.List;
 import java.util.Map;
@@ -15,28 +17,22 @@ public class MessageEvent {
     private String message;
     private List<Map<String, Object>> mapList;
     private List<MyGoods> goodsList;
-
-    public MessageEvent(int tag, List<MyGoods> goodsList) {
-        this.tag = tag;
-        this.goodsList = goodsList;
-    }
-
-    public List<MyGoods> getGoodsList() {
-        return goodsList;
-    }
-
-    public void setGoodsList(List<MyGoods> goodsList) {
-        this.goodsList = goodsList;
-    }
-    //    private List<String> nameList;
-//    private List<String> numlist;
-
-//    public MessageEvent(int tag, List<String> nameList, List<String> numlist) {
+    private List<ReviewList.DataBean> reviewLists;
+    private ApplyBean.DataBean applyList;
+//    public MessageEvent(int tag, List<MyGoods> goodsList) {
 //        this.tag = tag;
-//        this.nameList = nameList;
-//        this.numlist = numlist;
+//        this.goodsList = goodsList;
 //    }
 
+
+    public MessageEvent(int tag) {
+        this.tag = tag;
+    }
+
+    public MessageEvent(int tag, List<ReviewList.DataBean> reviewLists) {
+        this.tag = tag;
+        this.reviewLists = reviewLists;
+    }
 
     public MessageEvent(int tag, String message) {
         this.tag = tag;
@@ -72,21 +68,27 @@ public class MessageEvent {
         this.message = message;
     }
 
-//    public List<String> getNameList() {
-//        return nameList;
-//    }
-//
-//    public void setNameList(List<String> nameList) {
-//        this.nameList = nameList;
-//    }
-//
-//    public List<String> getNumlist() {
-//        return numlist;
-//    }
-//
-//    public void setNumlist(List<String> numlist) {
-//        this.numlist = numlist;
-//    }
+    public List<MyGoods> getGoodsList() {
+        return goodsList;
+    }
 
+    public void setGoodsList(List<MyGoods> goodsList) {
+        this.goodsList = goodsList;
+    }
 
+    public List<ReviewList.DataBean> getReviewLists() {
+        return reviewLists;
+    }
+
+    public void setReviewLists(List<ReviewList.DataBean> reviewLists) {
+        this.reviewLists = reviewLists;
+    }
+
+    public ApplyBean.DataBean getApplyList() {
+        return applyList;
+    }
+
+    public void setApplyList(ApplyBean.DataBean applyList) {
+        this.applyList = applyList;
+    }
 }

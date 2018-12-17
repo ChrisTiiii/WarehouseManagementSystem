@@ -1,5 +1,6 @@
 package com.example.administrator.warehousemanagementsystem.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.adapter.other.ViewPagerAdapter;
 import com.example.administrator.warehousemanagementsystem.fragment.mysp.SPFragment;
@@ -28,6 +30,7 @@ import butterknife.Unbinder;
  **/
 
 
+@SuppressLint("ValidFragment")
 public class MySPFragment extends Fragment {
     private View rootView;
     @BindView(R.id.main_tab)
@@ -38,10 +41,16 @@ public class MySPFragment extends Fragment {
     private List<String> titleList;//标题
     private List<Fragment> uiList;
     private ViewPagerAdapter viewPagerAdapter;
+    private MyApp myApp;
 
-    public static MySPFragment newInstance() {
+    @SuppressLint("ValidFragment")
+    public MySPFragment(MyApp myApp) {
+        this.myApp = myApp;
+    }
+
+    public static MySPFragment newInstance(MyApp myApp) {
         Bundle args = new Bundle();
-        MySPFragment fragment = new MySPFragment();
+        MySPFragment fragment = new MySPFragment(myApp);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,8 +80,8 @@ public class MySPFragment extends Fragment {
         titleList.add("已审批");
         viewPagerAdapter = new ViewPagerAdapter(getFragmentManager(), titleList);
         uiList = new ArrayList<>();
-        uiList.add(SPFragment.newInstance(0));
-        uiList.add(SPFragment.newInstance(1));
+        uiList.add(SPFragment.newInstance(0,myApp ));
+        uiList.add(SPFragment.newInstance(1,myApp));
         viewPagerAdapter.setList(uiList);
         spViewpager.setAdapter(viewPagerAdapter);
         spTab.setupWithViewPager(spViewpager);

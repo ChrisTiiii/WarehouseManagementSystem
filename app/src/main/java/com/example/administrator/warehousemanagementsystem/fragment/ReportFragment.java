@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -94,25 +95,26 @@ public class ReportFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateData(MessageEvent messageEvent) {
-//        if (messageEvent.getTag() == MyApp.REPORT_BT) {
-//            if (messageEvent.getMapList() != null) {
-//                Description description = new Description();
-//                description.setText("宁通仓库管理上月支出");
-//                picChart.setDescription(description);
-//                for (String name : messageEvent.getNameList()) {
-//                    things.add(new PieEntry(randomNum(), name));
-//                }
-//                PieDataSet dataSet = new PieDataSet(things, "Label");
-//                initColor();
-//                dataSet.setColors(colors);
-//                PieData pieData = new PieData(dataSet);
-//                pieData.setDrawValues(true);
-//                picChart.setData(pieData);
-//                picChart.invalidate();
-//            }
-//
-//
-//        }
+        if (messageEvent.getTag() == MyApp.REPORT_BT) {
+            if (messageEvent.getMapList() != null) {
+                Description description = new Description();
+                description.setText("宁通仓库管理上月支出");
+                picChart.setDescription(description);
+                for (Map<String, Object> map : messageEvent.getMapList()) {
+                    String name = (String) map.get("name");
+                    things.add(new PieEntry(randomNum(), name));
+                }
+                PieDataSet dataSet = new PieDataSet(things, "Label");
+                initColor();
+                dataSet.setColors(colors);
+                PieData pieData = new PieData(dataSet);
+                pieData.setDrawValues(true);
+                picChart.setData(pieData);
+                picChart.invalidate();
+            }
+
+
+        }
     }
 
 

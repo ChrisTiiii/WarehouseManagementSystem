@@ -93,8 +93,7 @@
                     android:id="@+id/sp_bh"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="20183728372832837" />
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -114,8 +113,7 @@
                     android:id="@+id/tv_sp_bm"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1号仓库" />
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -135,8 +133,7 @@
                     android:id="@+id/tv_sp_usefor"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="学习" />
+                    android:layout_weight="1" />
 
             </LinearLayout>
 

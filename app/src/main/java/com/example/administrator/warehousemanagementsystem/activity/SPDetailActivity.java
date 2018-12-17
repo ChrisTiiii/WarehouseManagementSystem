@@ -20,8 +20,16 @@ import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.other.Code;
 import com.example.administrator.warehousemanagementsystem.adapter.SPDetailAdapter;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
+import com.example.administrator.warehousemanagementsystem.net.NetAPI;
+import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
+import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +60,12 @@ public class SPDetailActivity extends AppCompatActivity {
     LinearLayout llBottom;
 
     private List<ViewType> uiList;
-    private SPDetailBean detailList;
+    private ApplyBean.DataBean applyBean;
     private SPDetailAdapter spDetailAdapter;
     private int type;
-    private SPDetailBean spDetailBean;
     private AlertDialog.Builder builder;
+    private Integer bh;//根据订单编号查询详情
+    private NetServerImp netServerImp;
     MyApp myApp;
     Intent intent;
 
@@ -65,52 +74,79 @@ public class SPDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sp_detail);
         ButterKnife.bind(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+        initView();
+        witchRoot();//根据权限显示不同界面
+        netServerImp.getApply(String.valueOf(bh));
+        if (spDetailAdapter != null)
+            clickCode();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void loadApply(MessageEvent messageEvent) {
+        switch (messageEvent.getTag()) {
+            case MyApp.APPLY_DETAIL:
+                initData(messageEvent.getApplyList());
+                break;
+            case MyApp.COMMIT_APPLY:
+                finish();
+                break;
+        }
+    }
+
+    void initView() {
         myApp = (MyApp) getApplication();
-        if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 110 || myApp.getRoot() == 130) {
-                layoutButton.setVisibility(View.GONE);
-                layoutRemove.setVisibility(View.VISIBLE);
-            } else {
-                layoutButton.setVisibility(View.VISIBLE);
-                layoutRemove.setVisibility(View.GONE);
-            }
+        netServerImp = new NetServerImp(myApp);
+        uiList = new ArrayList<>();
+        applyBean = new ApplyBean.DataBean();
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, uiList, applyBean, type);
+        recycler.setAdapter(spDetailAdapter);
+    }
+
+    //根据权限显示不同界面
+    public void witchRoot() {
         intent = getIntent();
         type = intent.getExtras().getInt("type");
         if (type == 1) {
             llBottom.setVisibility(View.GONE);
         }
-        initView();
+        bh = intent.getExtras().getInt("bh");
+        if (myApp.getRoot() != -1)
+            if (myApp.getRoot() == 110) {
+                layoutButton.setVisibility(View.GONE);
+                layoutRemove.setVisibility(View.GONE);
+//                layoutRemove.setVisibility(View.VISIBLE);
+            } else {
+                layoutButton.setVisibility(View.VISIBLE);
+                layoutRemove.setVisibility(View.GONE);
+            }
     }
 
-    //初始化item界面
-    private void initView() {
-        initData();
-        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, uiList, detailList, type);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        recycler.setAdapter(spDetailAdapter);
+    //点击code放大
+    private void clickCode() {
         spDetailAdapter.setOnCodeClickListener(new SPDetailAdapter.OnCodeClickListener() {
             @Override
             public void onCodeClick(View view, int position) {
                 Intent intent = new Intent(SPDetailActivity.this, Code.class);
-                intent.putExtra("bh", detailList.getSpBH());
+                intent.putExtra("bh", applyBean.getApplyId());
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SPDetailActivity.this, view.findViewById(R.id.iv_code), "sharedView").toBundle());
             }
         });
     }
 
-    private void initData() {
-        uiList = new ArrayList<>();
-        detailList = new SPDetailBean();
-        spDetailBean = new SPDetailBean();
-        detailList = (SPDetailBean) getIntent().getSerializableExtra("list");
 
-//        detailList.add(spDetailBean.initData());
+    //获取网络数据并进行初始化
+    private void initData(ApplyBean.DataBean applyBean) {
         uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
-        for (int i = 0; i < spDetailBean.initData().getSpmx().size(); i++) {
-            uiList.add(new ViewType(ViewType.SL_TYPE_DETAIL));
-        }
         uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
         uiList.add(new ViewType(ViewType.SL_TYPE_EXPLAIN));
+        for (int i = 0; i < applyBean.getApplyContentList().size(); i++)
+            uiList.add(1, new ViewType(ViewType.SL_TYPE_DETAIL));
+        spDetailAdapter.updateList(applyBean);
+
     }
 
 
@@ -140,7 +176,8 @@ public class SPDetailActivity extends AppCompatActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        netServerImp.agreeReview(applyBean.getId());
+//                          finish();
                     }
                 });
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -158,7 +195,7 @@ public class SPDetailActivity extends AppCompatActivity {
                         .input("拒绝理由", null, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
-                                finish();
+                                netServerImp.refuseReview(applyBean.getId());
                             }
                         })
                         .negativeText("取消")
@@ -166,5 +203,12 @@ public class SPDetailActivity extends AppCompatActivity {
                         .show();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 }

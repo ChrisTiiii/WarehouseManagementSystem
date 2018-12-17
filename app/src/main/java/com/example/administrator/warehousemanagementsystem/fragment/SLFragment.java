@@ -49,9 +49,7 @@ import butterknife.Unbinder;
  **/
 @SuppressLint("ValidFragment")
 public class SLFragment extends Fragment {
-
     private View rootView;
-
     @BindView(R.id.shenpi)
     RecyclerView recyclerView;
     Unbinder unbinder;
@@ -170,6 +168,9 @@ public class SLFragment extends Fragment {
                     }
                 }
                 break;
+            case MyApp.POST_SUCCESS:
+                spAdapter.initView();
+                break;
         }
     }
 
@@ -177,7 +178,9 @@ public class SLFragment extends Fragment {
     @OnClick(R.id.btn_submit)
     public void onViewClicked() {
         if (achieve() != null) {
-            netServerImp.postApply(achieve());
+//            netServerImp.postApply(achieve());
+            netServerImp.postApply(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(), getLeader());
+
         }
     }
 
@@ -202,17 +205,21 @@ public class SLFragment extends Fragment {
     public String getGoodsList() {
         //获得goodsList:物品编号+数量
         goodsList = spAdapter.getGoodsList();
-        JSONObject jsonObject = new JSONObject();
-        for (MyGoods temp : goodsList) {
-            if (temp.getNum() != null) {
-                try {
-                    jsonObject.put(temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (goodsList != null) {
+            JSONObject jsonObject = new JSONObject();
+            for (MyGoods temp : goodsList) {
+                if (temp.getNum() != null) {
+                    try {
+                        jsonObject.put(temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            return jsonObject.toString().equals("") ? null : jsonObject.toString();
+
         }
-        return jsonObject.toString().equals("") ? null : jsonObject.toString();
+        return null;
     }
 
     public String getLeader() {
@@ -240,6 +247,4 @@ public class SLFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
-
-
 }

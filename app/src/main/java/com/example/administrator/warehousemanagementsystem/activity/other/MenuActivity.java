@@ -155,7 +155,6 @@ public class MenuActivity extends AppCompatActivity {
                 detailList.addAll(preDetailList);
                 if (messageEvent.getMapList().get(0).get("count") != null) {
                     pageCount = (int) messageEvent.getMapList().get(0).get("count");
-                    System.out.println("pageCount:" + pageCount);
                 }
                 adapterDetail.notifyDataSetChanged();
                 refreshLayout.finishRefresh();
@@ -209,7 +208,7 @@ public class MenuActivity extends AppCompatActivity {
     void rightData(int menuTypeNo) {
         detailList.clear();
         if (menu_type != 0)
-            netServerImp.getGoodsDetail(menuTypeNo, pageNo++, 20);
+            netServerImp.getGoodsDetail(menuTypeNo);
         else netServerImp.getSPPerson(menuTypeNo);
     }
 

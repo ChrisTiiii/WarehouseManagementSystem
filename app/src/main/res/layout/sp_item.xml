@@ -35,7 +35,7 @@
 
                     <TextView
                         android:id="@+id/sl_slperson"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="XXX的申請"
@@ -43,11 +43,20 @@
                         android:textSize="@dimen/sp_16" />
 
                     <TextView
+                        android:id="@+id/state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:paddingTop="@dimen/dp_5"
+                        android:text="test"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
                         android:id="@+id/now_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="2018-11-11 12:13"
                         android:textSize="@dimen/sp_12" />
 
 
@@ -68,13 +77,12 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="申请物品：" />
+                            android:text="物品种类：" />
 
                         <TextView
                             android:id="@+id/sl_product"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="申請物品：紅筆"
                             android:textSize="@dimen/sp_13" />
                     </LinearLayout>
 
@@ -93,19 +101,10 @@
                             android:id="@+id/sl_time"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="時間：2018年11月23日14:38:15"
                             android:textSize="@dimen/sp_13" />
                     </LinearLayout>
 
 
-                    <TextView
-                        android:id="@+id/state"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/dp_5"
-                        android:text="test"
-                        android:textColor="@color/orange"
-                        android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
             </LinearLayout>

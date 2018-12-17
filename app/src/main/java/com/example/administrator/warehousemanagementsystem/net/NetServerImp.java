@@ -1,11 +1,16 @@
 package com.example.administrator.warehousemanagementsystem.net;
 
+import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
+import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
+import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
+import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
@@ -33,21 +38,32 @@ import rx.schedulers.Schedulers;
  **/
 public class NetServerImp {
     private Retrofit retrofit;
-    private static final String BASE_URL = "http://10.101.208.119:8080/";
+    private NetAPI netAPI;
+    private static final String BASE_URL = "http://10.101.80.119:8080/";  //10.101.80.119  10.101.208.119
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
 
+    /**
+     * 初始化retrofit netApi
+     *
+     * @param myApp
+     */
     public NetServerImp(MyApp myApp) {
         this.myApp = myApp;
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
+                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
+                .build();
+        netAPI = retrofit.create(NetAPI.class);
+
     }
 
     /**
      * 获取物品类型
      */
     public void getGoodsType() {
-        retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
-        NetAPI netAPI = retrofit.create(NetAPI.class);
         netAPI.getGoodsType().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<GoodsType>() {
             @Override
             public void onCompleted() {
@@ -70,7 +86,6 @@ public class NetServerImp {
                             map.put("name", goodType.getCodeDetail());
                             tempList.add(map);
                         }
-                        System.out.println("goodsType size:" + goodsType.getData().size());
                         EventBus.getDefault().post(new MessageEvent(myApp.MENU_TYPE, tempList, 1));
                     }
             }
@@ -80,14 +95,11 @@ public class NetServerImp {
     /**
      * 获取数据详情列表
      *
-     * @param goodsTypeNo
-     * @param page
-     * @param size
+     * @param menuType
      */
-    public void getGoodsDetail(int goodsTypeNo, int page, int size) {
-        retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
-        NetAPI netAPI = retrofit.create(NetAPI.class);
-        netAPI.getGoodsDetail(goodsTypeNo, page, size).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GoodsDetailBean>() {
+    public void getGoodsDetail(int menuType) {
+        System.out.println(menuType);
+        netAPI.getGoodsDetail(menuType).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GoodsDetailBean>() {
             @Override
             public void onCompleted() {
                 System.out.println("getGoodsDetail加载完成");
@@ -125,12 +137,6 @@ public class NetServerImp {
      *               获取用户信息 登录使用 并设置全局变量
      */
     public void getUser(final String userid, String pass) {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
-                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
-                .build();
-        NetAPI netAPI = retrofit.create(NetAPI.class);
         netAPI.getUser(userid, pass, APP).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<UserBean>() {
@@ -166,12 +172,6 @@ public class NetServerImp {
      * 获取审批人分类
      */
     public void getSPPersonType() {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
-                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
-                .build();
-        NetAPI netAPI = retrofit.create(NetAPI.class);
         netAPI.getSPPersonType().subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<SPPersonBean>() {
@@ -192,6 +192,7 @@ public class NetServerImp {
                                 List<Map<String, Object>> tempList = new ArrayList<>();
                                 for (SPPersonBean.DataBean spp : spPersonBean.getData()) {
                                     Map<String, Object> map = new HashMap<>();
+//                                    map.put("type", spp.getId());
                                     map.put("type", spp.getUserRoleNo());
                                     map.put("name", spp.getUserRole());
                                     tempList.add(map);
@@ -210,12 +211,6 @@ public class NetServerImp {
      * @param userRoleNo 当前menuType
      */
     public void getSPPerson(int userRoleNo) {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
-                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
-                .build();
-        NetAPI netAPI = retrofit.create(NetAPI.class);
         netAPI.getSPPerson(userRoleNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<SPPersonBean>() {
@@ -254,32 +249,173 @@ public class NetServerImp {
     /**
      * 提交数据订单
      */
-    public void postApply(String json) {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
-                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
-                .build();
-        NetAPI netAPI = retrofit.create(NetAPI.class);
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json);
-        netAPI.postApply(body).subscribeOn(Schedulers.io())//IO线程加载数据
+    public void postApply(Integer userNo, String note, String goodsMap, String userNoList) {
+        netAPI.postApply(userNo, note, goodsMap, userNoList).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<AddApplyBean>() {
                     @Override
                     public void onCompleted() {
+                        EventBus.getDefault().post(new MessageEvent(myApp.POST_SUCCESS, ""));
+                        Toast.makeText(myApp, "提交成功", Toast.LENGTH_SHORT).show();
                         System.out.println("postApply success");
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                         System.out.println(e.getMessage());
                     }
 
                     @Override
                     public void onNext(AddApplyBean addApplyBean) {
-                        System.out.println(addApplyBean.getResult());
+                        System.out.println("result:" + addApplyBean.getResult());
+                        if (addApplyBean.getResult().equals("ok"))
+                            System.out.println("data:" + addApplyBean.getData().toString());
                     }
                 });
     }
 
+
+    /**
+     * 获取待审批订单List
+     *
+     * @param page
+     * @param size
+     */
+    public void getReviewList(int page, int size) {
+        netAPI.getReviewList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<ReviewList>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("getReviewList已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ReviewList reviewList) {
+                        if (reviewList.getResult().equals("ok")) {
+                            EventBus.getDefault().post(new MessageEvent(myApp.SP_LIST, reviewList.getData()));
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 获取申请单详情
+     */
+    public void getApply(String applyNo) {
+        netAPI.getApply(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<ApplyBean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ApplyBean applyBean) {
+                        if (applyBean.getResult().equals("ok")) {
+                            if (applyBean.getData() != null) {
+                                MessageEvent messageEvent = new MessageEvent(myApp.APPLY_DETAIL);
+                                messageEvent.setApplyList(applyBean.getData());
+                                EventBus.getDefault().post(messageEvent);
+                            }
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 同意审批
+     */
+    public void agreeReview(Integer reviewNo) {
+        netAPI.agreeReview(myApp.user.getId(), reviewNo).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BackData>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("agreeReview成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println(e.getMessage());
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(BackData s) {
+                        if (s.getResult().equals("ok")) {
+                            EventBus.getDefault().post(new MessageEvent(myApp.COMMIT_APPLY, "success"));
+                        }
+                    }
+                });
+
+    }
+
+
+    /**
+     * 拒绝请求
+     */
+    public void refuseReview(Integer reviewNo) {
+        netAPI.refuseReview(myApp.user.getId(), reviewNo).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BackData>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("refuseReview成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println(e.getMessage());
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(BackData s) {
+                        if (s.getResult().equals("ok"))
+                            EventBus.getDefault().post(new MessageEvent(myApp.COMMIT_APPLY, "fail"));
+                    }
+                });
+
+    }
+
+    /**
+     * 获取已完成订单
+     */
+    public void getReviewListHaveDoneByMe(int page, int size) {
+        netAPI.getReviewListHaveDoneByMe(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<ReviewListHaveDone>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("getReviewList已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ReviewListHaveDone reviewListHaveDone) {
+                        if (reviewListHaveDone.getResult().equals("ok")) {
+//                            EventBus.getDefault().post(new MessageEvent(myApp.HAVE_DONE, reviewListHaveDone.getData()));
+                        }
+                    }
+                });
+
+    }
 }

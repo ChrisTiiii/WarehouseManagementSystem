@@ -50,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("root:" + myApp.getRoot());
         if (myApp.getRoot() != -1)
             if (myApp.getRoot() == 110 || myApp.getRoot() == 130) {
-                listFragment.add(MySPFragment.newInstance());
+                listFragment.add(MySPFragment.newInstance(myApp));
                 listFragment.add(new SLFragment(myApp));
                 listFragment.add(new PersonFragment(myApp));
             } else {
-                listFragment.add(MySPFragment.newInstance());
+                listFragment.add(MySPFragment.newInstance(myApp));
                 listFragment.add(new SLFragment(myApp));
                 listFragment.add(ReportFragment.newInstance());
                 listFragment.add(new PersonFragment(myApp));

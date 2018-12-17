@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.R;
+import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
+import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 
 import java.util.List;
 
@@ -26,17 +28,18 @@ import butterknife.ButterKnife;
 public class SPAdapter extends RecyclerView.Adapter<SPAdapter.SPViewHolder> {
 
     private Context context;
-    private List<SPDetailBean> waitList;
+    private List<ReviewList.DataBean> waitList;
     private List<SPDetailBean> doneList;
     private OnItemClickListener onItemClickListener;
     private int type;//0 为未审批 1 为已审批  2为已撤销
 
-    public SPAdapter(Context context, List<SPDetailBean> waitList, List<SPDetailBean> doneList, int type) {
+    public SPAdapter(Context context, List<ReviewList.DataBean> waitList, List<SPDetailBean> doneList, int type) {
         this.context = context;
         this.waitList = waitList;
         this.doneList = doneList;
         this.type = type;
     }
+
 
     @NonNull
     @Override
@@ -49,17 +52,17 @@ public class SPAdapter extends RecyclerView.Adapter<SPAdapter.SPViewHolder> {
     public void onBindViewHolder(@NonNull SPViewHolder spViewHolder, final int i) {
         if (type == 0) {
             Glide.with(context).load(R.drawable.wait).into(spViewHolder.ivHead);
-            spViewHolder.nowTime.setText(waitList.get(i).getNowTime());
-            spViewHolder.slProduct.setText(waitList.get(i).getSpmx().get(0).getName() + "等");
-            spViewHolder.slTime.setText(waitList.get(i).getSlTime());
-            spViewHolder.slperson.setText("来自" + waitList.get(i).getSpName() + "的申请");
+//            spViewHolder.nowTime.setText((Integer) waitList.get(i).getReviewDate());
+            spViewHolder.slProduct.setText(waitList.get(i).getGoodsCount() + "个物资种类数");
+            spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(waitList.get(i).getStartDate()))));
+            spViewHolder.slperson.setText("来自" + waitList.get(i).getFromUserName() + "的申请");
             spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onItemClickListener.onItemClick(v, i);
                 }
             });
-            spViewHolder.state.setText("未审批");
+            spViewHolder.state.setText(waitList.get(i).getReviewState());
         } else {
             if (doneList.get(i).getState().equals(1))
                 Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);

@@ -60,6 +60,23 @@ public class AddApplyBean {
         private List<ApplyContentListBean> applyContentList;
         private List<ReviewListBean> reviewList;
 
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "applyFinishdate=" + applyFinishdate +
+                    ", applyId='" + applyId + '\'' +
+                    ", applyStartdate=" + applyStartdate +
+                    ", applyState='" + applyState + '\'' +
+                    ", applyUsage='" + applyUsage + '\'' +
+                    ", applyWarning='" + applyWarning + '\'' +
+                    ", deptNo=" + deptNo +
+                    ", id=" + id +
+                    ", userNo=" + userNo +
+                    ", applyContentList=" + applyContentList +
+                    ", reviewList=" + reviewList +
+                    '}';
+        }
+
         public Object getApplyFinishdate() {
             return applyFinishdate;
         }

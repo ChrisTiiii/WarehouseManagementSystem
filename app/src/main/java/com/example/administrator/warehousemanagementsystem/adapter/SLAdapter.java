@@ -119,6 +119,20 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
+    //提交成功后初始化适配器,避免数据重复
+    public void initView() {
+        goodsList.clear();
+        leaderList.clear();
+        uiList.clear();
+        use = "";
+        explain = "";
+        uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
+        uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
+        uiList.add(new ViewType(ViewType.SL_TYPE_EXPLAIN));
+        uiList.add(new ViewType(ViewType.SL_TYPE_LEADER));
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -209,11 +223,10 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 detailViewHolder.etName.removeTextChangedListener((TextWatcher) detailViewHolder.etName.getTag());
             if (detailViewHolder.etNum.getTag() instanceof TextWatcher)
                 detailViewHolder.etNum.removeTextChangedListener((TextWatcher) detailViewHolder.etNum.getTag());
-            if (position - 1 >= 0) {
+            if (position - 1 >= 0 && goodsList.size() > 0) {
                 detailViewHolder.etName.setText(goodsList.get(position - 1).getName());
                 detailViewHolder.etNum.setText(goodsList.get(position - 1).getNum());
             }
-
             TextWatcher numWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

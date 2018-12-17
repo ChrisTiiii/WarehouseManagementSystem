@@ -13,11 +13,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.QRCodeUtil;
 import com.githang.stepview.StepView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,13 +37,14 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final int SP_DETAIL = 1;//物品明细
     private final int SP_EXPLAIN = 2;//领用详情
     private final int SP_PROGRESS = 3;//进度
+    private static int nowPoint = 0;
 
     private int viewType;
     public List<ViewType> uiList;//界面布局list
-    public SPDetailBean details;//具体数据list
+    public ApplyBean.DataBean details;//具体数据list
     public OnCodeClickListener onCodeClickListener;
 
-    public SPDetailAdapter(Context context, List<ViewType> uiList, SPDetailBean details, int viewType) {
+    public SPDetailAdapter(Context context, List<ViewType> uiList, ApplyBean.DataBean details, int viewType) {
         this.context = context;
         this.uiList = uiList;
         this.details = details;
@@ -54,22 +57,27 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
+    public void updateList(ApplyBean.DataBean applyBean) {
+        this.details = applyBean;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view;
         switch (viewType) {
             case SP_HEAD:
-                view = LayoutInflater.from(context).inflate(R.layout.sp_item_head, null);
+                view = LayoutInflater.from(context).inflate(R.layout.sp_item_head, null, false);
                 return new HeadViewHolder(view);
             case SP_DETAIL:
-                view = LayoutInflater.from(context).inflate(R.layout.sp_item_detail, null);
+                view = LayoutInflater.from(context).inflate(R.layout.sp_item_detail, null, false);
                 return new DetailViewHolder(view);
             case SP_EXPLAIN:
-                view = LayoutInflater.from(context).inflate(R.layout.sp_item_explain, null);
+                view = LayoutInflater.from(context).inflate(R.layout.sp_item_explain, null, false);
                 return new ExplainViewHolder(view);
             case SP_PROGRESS:
-                view = LayoutInflater.from(context).inflate(R.layout.sp_item_progress, null);
+                view = LayoutInflater.from(context).inflate(R.layout.sp_item_progress, null, false);
                 return new ProgressViewHolder(view);
             default:
                 return null;
@@ -83,46 +91,54 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (viewType == 0) {
                 headViewHolder.ivCode.setVisibility(View.GONE);
                 Glide.with(context).load(R.drawable.spwait).into(headViewHolder.ivHead);
-                headViewHolder.state.setText("待审批");
+                headViewHolder.state.setText(details.getApplyState());
             }
             if (viewType == 1) {
-                if (details.getState() == 1) {
+                if (details.getReviewList().get(0).getReviewState() == "1") {
                     headViewHolder.ivCode.setVisibility(View.VISIBLE);
                     Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
                     headViewHolder.state.setText("审批完成");
                     //添加二维码
-                    Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(details.getSpBH(), 480, 480);
+                    Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(details.getApplyId(), 480, 480);
                     headViewHolder.ivCode.setImageBitmap(mBitmap);
-                } else if (details.getState() == 2) {
+                } else if (details.getReviewList().get(0).getReviewState() == "2") {
                     headViewHolder.ivCode.setVisibility(View.GONE);
                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                     headViewHolder.state.setText("审批未通过");
                 }
                 headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
             }
-            headViewHolder.spPerson.setText(details.getSpName());
-            headViewHolder.spBh.setText(details.getSpBH());
-            headViewHolder.tvSpBm.setText(details.getSpBM());
-            headViewHolder.tvSpUsefor.setText(details.getSpUse());
+            headViewHolder.spPerson.setText(String.valueOf(details.getUserNo()));
+            headViewHolder.spBh.setText(details.getApplyId());
+            headViewHolder.tvSpBm.setText(String.valueOf(details.getDeptNo()));
+            headViewHolder.tvSpUsefor.setText(details.getApplyUsage());
         }
-
         if (viewHolder instanceof DetailViewHolder) {
             DetailViewHolder detailViewHolder = (DetailViewHolder) viewHolder;
-            detailViewHolder.tvDetailId.setText(i + "");
-            for (int j = 0; j < details.getSpmx().size(); j++) {
-                detailViewHolder.tvDetailName.setText(details.getSpmx().get(j).getName());
-                detailViewHolder.tvNum.setText(details.getSpmx().get(j).getNum());
+            //通过当前位置计算出list列表当前项
+            if (details.getApplyContentList() != null && (i - 1) >= 0) {
+                detailViewHolder.tvDetailId.setText(i + "");
+                detailViewHolder.tvDetailName.setText(details.getApplyContentList().get(i - 1).getGoodsName());
+                detailViewHolder.tvNum.setText(String.valueOf(details.getApplyContentList().get(i - 1).getGoodsNum()));
             }
+
         }
         if (viewHolder instanceof ExplainViewHolder) {
             ExplainViewHolder explainViewHolder = (ExplainViewHolder) viewHolder;
-            explainViewHolder.tvExplain.setText(details.getExplain());
+            explainViewHolder.tvExplain.setText(details.getApplyUsage());
         }
 
         if (viewHolder instanceof ProgressViewHolder) {
             ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
-            progressViewHolder.stepView.setSteps(details.getProgressList());
-            progressViewHolder.stepView.selectedStep(details.getNowPoint());
+            List<String> temp = new ArrayList<>();
+            if (details.getReviewList() != null)
+                for (int j = 0; j < details.getReviewList().size(); j++) {
+                    temp.add(String.valueOf(details.getReviewList().get(j).getUserNo()));
+                    if (!details.getReviewList().get(j).getReviewState().equals("等待审批"))
+                        nowPoint = j;
+                }
+            progressViewHolder.stepView.setSteps(temp);
+            progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
         }
 
     }
