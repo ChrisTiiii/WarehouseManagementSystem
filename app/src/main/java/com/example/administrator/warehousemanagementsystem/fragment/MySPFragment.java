@@ -76,17 +76,18 @@ public class MySPFragment extends Fragment {
     //初始化我的审批界面
     private void initView() {
         titleList = new ArrayList<>();
+        uiList = new ArrayList<>();
+        titleList.add("我的申请");
         titleList.add("待审批");
         titleList.add("已审批");
+        uiList.add(SPFragment.newInstance(2, myApp));
+        uiList.add(SPFragment.newInstance(0, myApp));
+        uiList.add(SPFragment.newInstance(1, myApp));
         viewPagerAdapter = new ViewPagerAdapter(getFragmentManager(), titleList);
-        uiList = new ArrayList<>();
-        uiList.add(SPFragment.newInstance(0,myApp ));
-        uiList.add(SPFragment.newInstance(1,myApp));
         viewPagerAdapter.setList(uiList);
         spViewpager.setAdapter(viewPagerAdapter);
         spTab.setupWithViewPager(spViewpager);
         spTab.setTabMode(TabLayout.MODE_FIXED);
-
     }
 
     @Override

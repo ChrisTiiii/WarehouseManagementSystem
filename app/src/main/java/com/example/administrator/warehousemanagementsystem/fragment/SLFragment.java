@@ -1,11 +1,13 @@
 package com.example.administrator.warehousemanagementsystem.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,10 +60,10 @@ public class SLFragment extends Fragment {
     private SLAdapter spAdapter;
     private List<ViewType> uiList;
     private List<MyGoods> goodsList;
-
     private int product_code = 0x123;
     private MyApp myApp;
     private NetServerImp netServerImp;
+    private AlertDialog.Builder builder;
 
     @SuppressLint("ValidFragment")
     public SLFragment(MyApp myApp) {
@@ -178,23 +180,39 @@ public class SLFragment extends Fragment {
     @OnClick(R.id.btn_submit)
     public void onViewClicked() {
         if (achieve() != null) {
-//            netServerImp.postApply(achieve());
-            netServerImp.postApply(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(), getLeader());
+            builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("确认提交吗?");
+            builder.setMessage(dialogString());
+            if (!dialogString().equals("权限不够"))
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (spAdapter.getType().equals("申领单"))
+                            netServerImp.postApply(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0));
+                        else if (spAdapter.getType().equals("采购单"))
+                            netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0), "11");
+
+                    }
+                });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            }).show();
 
         }
     }
 
     //提交审批
     public String achieve() {
-        if (!spAdapter.getNote().equals("") && getGoodsList() != null && getLeader() != null) {
+        if (!spAdapter.getNote().equals("") && getGoodsList(0) != null && getLeader(0) != null) {
             //获取userNo
             Map<String, Object> map = new HashMap<>();
             map.put("userNo", myApp.getUser().getId());
             map.put("note", spAdapter.getNote());
-            map.put("goodsMap", getGoodsList());
-            map.put("userNoList", getLeader());
+            map.put("goodsMap", getGoodsList(0));
+            map.put("userNoList", getLeader(0));
             Gson gson = new Gson();
-            Toast.makeText(myApp, gson.toJson(map), Toast.LENGTH_SHORT).show();
             return gson.toJson(map);
         } else {
             Toast.makeText(myApp, "您有未填写项", Toast.LENGTH_SHORT).show();
@@ -202,7 +220,24 @@ public class SLFragment extends Fragment {
         }
     }
 
-    public String getGoodsList() {
+    //给用户提供提示
+    public String dialogString() {
+        if (spAdapter.getType().equals("采购单"))
+            if (myApp.getRoot() != 100 && myApp.getRoot() != 110 & myApp.getRoot() != 120)
+                return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getNote();
+            else return "权限不够";
+        else
+            return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getNote();
+
+    }
+
+    /**
+     * 获取物品List
+     *
+     * @param type 判断是显示name 还是 id
+     * @return
+     */
+    public String getGoodsList(int type) {
         //获得goodsList:物品编号+数量
         goodsList = spAdapter.getGoodsList();
         if (goodsList != null) {
@@ -210,7 +245,10 @@ public class SLFragment extends Fragment {
             for (MyGoods temp : goodsList) {
                 if (temp.getNum() != null) {
                     try {
-                        jsonObject.put(temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
+                        if (type != 0)
+                            jsonObject.put(temp.getName(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
+                        else
+                            jsonObject.put(temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -222,12 +260,15 @@ public class SLFragment extends Fragment {
         return null;
     }
 
-    public String getLeader() {
+    public String getLeader(int type) {
         if (spAdapter.getLeaderList() != null) {
             JSONArray jsonArray = new JSONArray();
             for (MyLeader temp : spAdapter.getLeaderList()) {
                 if (temp.getCode() != null) {
-                    jsonArray.put(Integer.parseInt(temp.getCode()));
+                    if (type != 0)
+                        jsonArray.put(temp.getName());
+                    else
+                        jsonArray.put(Integer.parseInt(temp.getCode()));
                 }
             }
             return jsonArray.toString();

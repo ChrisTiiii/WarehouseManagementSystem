@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.WelcomeActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
         <activity android:name=".activity.SPDetailActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".activity.other.Code" />
-
+        <activity android:name=".activity.LoginActivity" />
     </application>
 
 </manifest>

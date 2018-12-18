@@ -60,4 +60,6 @@ dependencies {
     //弹框
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
+    //引导加载
+    implementation 'me.wangyuwei:ParticleView:1.0.4'
 }

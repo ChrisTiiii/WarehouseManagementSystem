@@ -3,6 +3,7 @@ package com.example.administrator.warehousemanagementsystem.util;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
+import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 
 import java.util.List;
 import java.util.Map;
@@ -19,27 +20,24 @@ public class MessageEvent {
     private List<MyGoods> goodsList;
     private List<ReviewList.DataBean> reviewLists;
     private ApplyBean.DataBean applyList;
-//    public MessageEvent(int tag, List<MyGoods> goodsList) {
-//        this.tag = tag;
-//        this.goodsList = goodsList;
-//    }
+    private List<ReviewListHaveDone.DataBean> haveDoneList;
 
 
     public MessageEvent(int tag) {
         this.tag = tag;
     }
 
-    public MessageEvent(int tag, List<ReviewList.DataBean> reviewLists) {
-        this.tag = tag;
-        this.reviewLists = reviewLists;
-    }
+//    public MessageEvent(int tag, List<ReviewList.DataBean> reviewLists) {
+//        this.tag = tag;
+//        this.reviewLists = reviewLists;
+//    }
 
     public MessageEvent(int tag, String message) {
         this.tag = tag;
         this.message = message;
     }
 
-    public MessageEvent(int tag, List<Map<String, Object>> mapList, int t) {
+    public MessageEvent(int tag, List<Map<String, Object>> mapList) {
         this.tag = tag;
         this.mapList = mapList;
     }
@@ -90,5 +88,13 @@ public class MessageEvent {
 
     public void setApplyList(ApplyBean.DataBean applyList) {
         this.applyList = applyList;
+    }
+
+    public List<ReviewListHaveDone.DataBean> getHaveDoneList() {
+        return haveDoneList;
+    }
+
+    public void setHaveDoneList(List<ReviewListHaveDone.DataBean> haveDoneList) {
+        this.haveDoneList = haveDoneList;
     }
 }

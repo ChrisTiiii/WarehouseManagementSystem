@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.content)
     FrameLayout content;
     List<Fragment> listFragment;
-
     private int lastfragment;//用于记录上个选择的Fragmenet
     MyApp myApp;
 
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         listFragment = new ArrayList<>();
         System.out.println("root:" + myApp.getRoot());
         if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 110 || myApp.getRoot() == 130) {
+            if (myApp.getRoot() == 100 || myApp.getRoot() == 120) {
                 listFragment.add(MySPFragment.newInstance(myApp));
                 listFragment.add(new SLFragment(myApp));
                 listFragment.add(new PersonFragment(myApp));
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
                 listFragment.add(new PersonFragment(myApp));
             }
 
-
     }
 
     //初始化底部导航栏
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         lastfragment = 0;
         switchFragment(lastfragment, 0);
         if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 110 || myApp.getRoot() == 130) {
+            if (myApp.getRoot() == 100 || myApp.getRoot() == 120) {
                 bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

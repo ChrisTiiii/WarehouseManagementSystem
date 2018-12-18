@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MyApp;
@@ -41,7 +42,7 @@ import butterknife.OnClick;
 /**
  * author: ZhongMing
  * DATE: 2018/11/26 0026
- * Description:该页面为待审批的详情页面
+ * Description:该页面为审批的详情页面
  **/
 public class SPDetailActivity extends AppCompatActivity {
     @BindView(R.id.recycler)
@@ -62,7 +63,7 @@ public class SPDetailActivity extends AppCompatActivity {
     private List<ViewType> uiList;
     private ApplyBean.DataBean applyBean;
     private SPDetailAdapter spDetailAdapter;
-    private int type;
+    private int type;//type==0待审批 type==1 已审批
     private AlertDialog.Builder builder;
     private Integer bh;//根据订单编号查询详情
     private NetServerImp netServerImp;
@@ -88,7 +89,8 @@ public class SPDetailActivity extends AppCompatActivity {
     public void loadApply(MessageEvent messageEvent) {
         switch (messageEvent.getTag()) {
             case MyApp.APPLY_DETAIL:
-                initData(messageEvent.getApplyList());
+                applyBean = messageEvent.getApplyList();
+                initList(applyBean);
                 break;
             case MyApp.COMMIT_APPLY:
                 finish();
@@ -101,9 +103,7 @@ public class SPDetailActivity extends AppCompatActivity {
         netServerImp = new NetServerImp(myApp);
         uiList = new ArrayList<>();
         applyBean = new ApplyBean.DataBean();
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, uiList, applyBean, type);
-        recycler.setAdapter(spDetailAdapter);
+
     }
 
     //根据权限显示不同界面
@@ -115,14 +115,16 @@ public class SPDetailActivity extends AppCompatActivity {
         }
         bh = intent.getExtras().getInt("bh");
         if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 110) {
+            if (myApp.getRoot() == 100 || myApp.getRoot() == 120) {
                 layoutButton.setVisibility(View.GONE);
-                layoutRemove.setVisibility(View.GONE);
-//                layoutRemove.setVisibility(View.VISIBLE);
+                layoutRemove.setVisibility(View.VISIBLE);
             } else {
                 layoutButton.setVisibility(View.VISIBLE);
                 layoutRemove.setVisibility(View.GONE);
             }
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, uiList, applyBean, type);
+        recycler.setAdapter(spDetailAdapter);
     }
 
     //点击code放大
@@ -139,7 +141,7 @@ public class SPDetailActivity extends AppCompatActivity {
 
 
     //获取网络数据并进行初始化
-    private void initData(ApplyBean.DataBean applyBean) {
+    private void initList(ApplyBean.DataBean applyBean) {
         uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
         uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
         uiList.add(new ViewType(ViewType.SL_TYPE_EXPLAIN));
@@ -154,30 +156,39 @@ public class SPDetailActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.revocation:
-                builder = new AlertDialog.Builder(SPDetailActivity.this);
-                builder.setTitle("确定要撤销吗？");
-                builder.setMessage("同意撤销本次申请请按确认键");
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                }).show();
+                Toast.makeText(myApp, "您当前无法撤销", Toast.LENGTH_SHORT).show();
+//                builder = new AlertDialog.Builder(SPDetailActivity.this);
+//                builder.setTitle("确定要撤销吗？");
+//                builder.setMessage("同意撤销本次申请请按确认键");
+//                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        finish();
+//                    }
+//                });
+//                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                }).show();
                 break;
             case R.id.agree:
                 builder = new AlertDialog.Builder(SPDetailActivity.this);
-                builder.setTitle("确认提交吗？");
+                builder.setTitle("确认提交吗?");
                 builder.setMessage("同意此次申请请按确定键");
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        netServerImp.agreeReview(applyBean.getId());
-//                          finish();
+                        if (applyBean.getReviewList() != null) {
+                            int temp = -1;
+                            for (int i = 0; i < applyBean.getReviewList().size(); i++) {
+                                if (myApp.getUser().getId() == applyBean.getReviewList().get(i).getUserNo())
+                                    temp = i;
+                            }
+                            System.out.println("review:" + temp);
+                            if (temp != -1)
+                                netServerImp.agreeReview(applyBean.getReviewList().get(temp).getReviewIndex());
+                        }
                     }
                 });
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -195,7 +206,13 @@ public class SPDetailActivity extends AppCompatActivity {
                         .input("拒绝理由", null, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
-                                netServerImp.refuseReview(applyBean.getId());
+                                int temp = -1;
+                                for (int i = 0; i < applyBean.getReviewList().size(); i++) {
+                                    if (myApp.getUser().getId() == applyBean.getReviewList().get(i).getUserNo())
+                                        temp = i;
+                                }
+                                if (temp != -1)
+                                    netServerImp.refuseReview(applyBean.getReviewList().get(temp).getReviewIndex());
                             }
                         })
                         .negativeText("取消")

@@ -75,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         }
         //判断是否登录过
         if (autoLogin()) {
+//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//            finish();//关闭页面
             login();//去登录就可以
         }
     }

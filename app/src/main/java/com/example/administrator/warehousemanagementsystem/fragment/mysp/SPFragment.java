@@ -17,6 +17,7 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.SPDetailActivity;
 import com.example.administrator.warehousemanagementsystem.adapter.mysp.SPAdapter;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
+import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
@@ -53,12 +54,15 @@ public class SPFragment extends Fragment {
     SmartRefreshLayout refreshLayout;
     private List<ReviewList.DataBean> preWaitList;
     private List<ReviewList.DataBean> waitList;
-    private List<SPDetailBean> doneList;
+    private List<ReviewListHaveDone.DataBean> doneList;
+    private List<ReviewListHaveDone.DataBean> preDoneList;
     private SPAdapter spAdapter;
-    private int type;//type==0待审批 type==1 已审批
+    private int type;//type==0待审批 type==1 已审批 2为我的申请
     private NetServerImp netServerImp;
     private MyApp myApp;
-    private int page = 1;
+    private int page_wait = 1;//待审批请求页
+    private int page_done = 1;//已完成请求页
+    private int page_me = 1;//我的申请
 
     @SuppressLint("ValidFragment")
     public SPFragment(int type, MyApp myApp) {
@@ -95,23 +99,35 @@ public class SPFragment extends Fragment {
         return view;
     }
 
+
     private void loadData() {
         //刷新
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                page = 1;
-                waitList.clear();
-                doneList.clear();
-                netServerImp.getReviewList(1, 5);
+                if (type == 0) {
+                    page_wait = 1;
+                    waitList.clear();
+                    netServerImp.getReviewList(1, 5);
+                } else if (type == 1) {
+                    page_done = 1;
+                    doneList.clear();
+                    netServerImp.getReviewListHaveDoneByMe(1, 5);
+                } else if (type == 2) {
+
+                }
+
             }
         });
         //加载更多
         refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
-                netServerImp.getReviewList(page++, 5);
-                doneList.add(SPDetailBean.doneSp());
+                if (type == 0)
+                    netServerImp.getReviewList(++page_wait, 5);
+                else if (type == 1)
+                    netServerImp.getReviewListHaveDoneByMe(++page_done, 5);
+                else if (type == 2) ;
             }
         });
 
@@ -124,7 +140,18 @@ public class SPFragment extends Fragment {
                 preWaitList.clear();
                 for (ReviewList.DataBean dataBean : messageEvent.getReviewLists())
                     preWaitList.add(dataBean);
+                Collections.reverse(preWaitList); //倒叙
                 waitList.addAll(0, preWaitList);
+                spAdapter.notifyDataSetChanged();
+                refreshLayout.finishRefresh();
+                refreshLayout.finishLoadmore();
+                break;
+            case MyApp.HAVE_DONE:
+                preDoneList.clear();
+                for (ReviewListHaveDone.DataBean dataBean : messageEvent.getHaveDoneList())
+                    preDoneList.add(dataBean);
+                Collections.reverse(preDoneList); //倒叙
+                doneList.addAll(0, preDoneList);
                 spAdapter.notifyDataSetChanged();
                 refreshLayout.finishRefresh();
                 refreshLayout.finishLoadmore();
@@ -136,8 +163,12 @@ public class SPFragment extends Fragment {
         preWaitList = new ArrayList<>();
         waitList = new ArrayList<>();
         doneList = new ArrayList<>();
-        doneList.add(SPDetailBean.doneSp());
-        netServerImp.getReviewList(1, 5);
+        preDoneList = new ArrayList<>();
+        if (type == 0)
+            netServerImp.getReviewList(1, 5);
+        else if (type == 1)
+            netServerImp.getReviewListHaveDoneByMe(1, 5);
+        else if (type == 2) ;
     }
 
 
@@ -158,7 +189,9 @@ public class SPFragment extends Fragment {
                 if (type == 0)
                     intent.putExtra("bh", waitList.get(position).getObjNo());
                 else if (type == 1)
-                    intent.putExtra("bh", doneList.get(position));
+                    intent.putExtra("bh", doneList.get(position).getObjNo());
+                else if (type == 2)
+                    ;
                 startActivity(intent);
             }
         });

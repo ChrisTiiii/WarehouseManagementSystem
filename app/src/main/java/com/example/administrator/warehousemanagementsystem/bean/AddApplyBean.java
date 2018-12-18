@@ -184,6 +184,19 @@ public class AddApplyBean {
             private int goodsNum;
             private int id;
 
+            @Override
+            public String toString() {
+                return "ApplyContentListBean{" +
+                        "annotation='" + annotation + '\'' +
+                        ", applyNo=" + applyNo +
+                        ", goodsIdNo='" + goodsIdNo + '\'' +
+                        ", goodsName='" + goodsName + '\'' +
+                        ", goodsNo=" + goodsNo +
+                        ", goodsNum=" + goodsNum +
+                        ", id=" + id +
+                        '}';
+            }
+
             public String getAnnotation() {
                 return annotation;
             }

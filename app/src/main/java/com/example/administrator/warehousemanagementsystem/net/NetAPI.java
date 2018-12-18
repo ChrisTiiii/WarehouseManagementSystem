@@ -5,6 +5,7 @@ import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
+import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
@@ -47,19 +48,27 @@ public interface NetAPI {
 
     @FormUrlEncoded
     @POST("addApply.do")
-    Observable<AddApplyBean> postApply(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList);//提交订单
+    Observable<AddApplyBean> postApply(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList);//提交申领订单
+
+    @FormUrlEncoded
+    @POST("addPurchase.do")
+    Observable<Purchase> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier);//提交申领订单
+
 
     @GET("getReviewListBy.do")
     Observable<ReviewList> getReviewList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取待审批订单
 
     @GET("getApplyById.do")
-    Observable<ApplyBean> getApply(@Query("id") String id);//待审批订单详情
+    Observable<ApplyBean> getApply(@Query("id") String id);//待审批申领单详情
+
+    @GET("getPurchaseById.do")
+    Observable<ApplyBean> getCGApply(@Query("id") String id);//待审批采购单详情
 
     @GET("agreeReview.do")
-    Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);
+    Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交同意审批
 
     @GET("refuseReview.do")
-    Observable<BackData> refuseReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);
+    Observable<BackData> refuseReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交拒绝审批
 
     @GET("getReviewListHaveDoneByMe.do")
     Observable<ReviewListHaveDone> getReviewListHaveDoneByMe(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取已完成订单

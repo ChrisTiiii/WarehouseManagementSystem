@@ -9,6 +9,7 @@ import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
+import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
@@ -86,7 +87,7 @@ public class NetServerImp {
                             map.put("name", goodType.getCodeDetail());
                             tempList.add(map);
                         }
-                        EventBus.getDefault().post(new MessageEvent(myApp.MENU_TYPE, tempList, 1));
+                        EventBus.getDefault().post(new MessageEvent(myApp.MENU_TYPE, tempList));
                     }
             }
         });
@@ -123,7 +124,7 @@ public class NetServerImp {
                             map.put("count", goodsDetailBean.getCount());
                             tempList.add(map);
                         }
-                        EventBus.getDefault().post(new MessageEvent(myApp.MENU_DETAIL, tempList, 1));
+                        EventBus.getDefault().post(new MessageEvent(myApp.MENU_DETAIL, tempList));
                     }
             }
         });
@@ -197,7 +198,7 @@ public class NetServerImp {
                                     map.put("name", spp.getUserRole());
                                     tempList.add(map);
                                 }
-                                EventBus.getDefault().post(new MessageEvent(myApp.MENU_TYPE, tempList, 1));
+                                EventBus.getDefault().post(new MessageEvent(myApp.MENU_TYPE, tempList));
                             }
                         }
                     }
@@ -238,7 +239,7 @@ public class NetServerImp {
                                     tempList.add(map);
                                     System.out.println(spp.toString());
                                 }
-                                EventBus.getDefault().post(new MessageEvent(myApp.MENU_DETAIL, tempList, 1));
+                                EventBus.getDefault().post(new MessageEvent(myApp.MENU_DETAIL, tempList));
                             }
                         }
                     }
@@ -246,8 +247,34 @@ public class NetServerImp {
 
     }
 
+    public void postPurchase(Integer userNo, String note, String goodsMap, String userNoList, String supplier) {
+        netAPI.postPurchase(userNo, note, goodsMap, userNoList, supplier).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<Purchase>() {
+                    @Override
+                    public void onCompleted() {
+                        EventBus.getDefault().post(new MessageEvent(myApp.POST_SUCCESS, ""));
+                        Toast.makeText(myApp, "提交成功", Toast.LENGTH_SHORT).show();
+                        System.out.println("postApply success");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                        System.out.println(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Purchase purchase) {
+                        System.out.println("result:" + purchase.getResult());
+                        if (purchase.getResult().equals("ok")) ;
+                    }
+                });
+    }
+
+
     /**
-     * 提交数据订单
+     * 提交申领数据订单
      */
     public void postApply(Integer userNo, String note, String goodsMap, String userNoList) {
         netAPI.postApply(userNo, note, goodsMap, userNoList).subscribeOn(Schedulers.io())//IO线程加载数据
@@ -270,7 +297,7 @@ public class NetServerImp {
                     public void onNext(AddApplyBean addApplyBean) {
                         System.out.println("result:" + addApplyBean.getResult());
                         if (addApplyBean.getResult().equals("ok"))
-                            System.out.println("data:" + addApplyBean.getData().toString());
+                            System.out.println("data:" + addApplyBean.getData().getApplyContentList().toString());
                     }
                 });
     }
@@ -299,7 +326,10 @@ public class NetServerImp {
                     @Override
                     public void onNext(ReviewList reviewList) {
                         if (reviewList.getResult().equals("ok")) {
-                            EventBus.getDefault().post(new MessageEvent(myApp.SP_LIST, reviewList.getData()));
+                            MessageEvent messageEvent = new MessageEvent(myApp.SP_LIST);
+                            messageEvent.setReviewLists(reviewList.getData());
+                            EventBus.getDefault().post(messageEvent);
+//                            EventBus.getDefault().post(new MessageEvent(myApp.SP_LIST, reviewList.getData()));
                         }
                     }
                 });
@@ -314,7 +344,6 @@ public class NetServerImp {
                 .subscribe(new Subscriber<ApplyBean>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -333,7 +362,6 @@ public class NetServerImp {
                         }
                     }
                 });
-
     }
 
     /**
@@ -345,7 +373,7 @@ public class NetServerImp {
                 .subscribe(new Subscriber<BackData>() {
                     @Override
                     public void onCompleted() {
-                        System.out.println("agreeReview成功");
+                        System.out.println("agreeReview完成");
                     }
 
                     @Override
@@ -356,6 +384,7 @@ public class NetServerImp {
 
                     @Override
                     public void onNext(BackData s) {
+                        System.out.println(s.getResult());
                         if (s.getResult().equals("ok")) {
                             EventBus.getDefault().post(new MessageEvent(myApp.COMMIT_APPLY, "success"));
                         }
@@ -374,12 +403,12 @@ public class NetServerImp {
                 .subscribe(new Subscriber<BackData>() {
                     @Override
                     public void onCompleted() {
-                        System.out.println("refuseReview成功");
+                        System.out.println("refuseReview完成");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.println(e.getMessage());
+                        System.out.println("refuseReview" + e.getMessage());
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
@@ -412,10 +441,11 @@ public class NetServerImp {
                     @Override
                     public void onNext(ReviewListHaveDone reviewListHaveDone) {
                         if (reviewListHaveDone.getResult().equals("ok")) {
-//                            EventBus.getDefault().post(new MessageEvent(myApp.HAVE_DONE, reviewListHaveDone.getData()));
+                            MessageEvent messageEvent = new MessageEvent(myApp.HAVE_DONE);
+                            messageEvent.setHaveDoneList(reviewListHaveDone.getData());
+                            EventBus.getDefault().post(messageEvent);
                         }
                     }
                 });
-
     }
 }

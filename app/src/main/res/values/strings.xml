@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">宁通仓库管理</string>
+    <string-array name="spingarr">
+        <item>申领单</item>
+        <item>采购单</item>
+    </string-array>
+
 </resources>

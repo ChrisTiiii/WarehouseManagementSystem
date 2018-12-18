@@ -8,26 +8,22 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.MyLeader;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
-import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.githang.stepview.StepView;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +34,7 @@ import butterknife.ButterKnife;
  * Description:申领物资适配器
  **/
 public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private Context context;
     public List<ViewType> uiList;//界面布局list
     private OnAddClickListener onAddClickListener;
@@ -54,6 +51,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<MyLeader> leaderList;
     private String use = "";
     private String explain = "";
+    private String type = "";
 
     public SLAdapter(Context context, List<ViewType> list) {
         this.context = context;
@@ -133,6 +131,11 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
+
+    public String getType() {
+        return type;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -186,6 +189,17 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             };
             headViewHolder.etUse.addTextChangedListener(headWatcher);
             headViewHolder.etUse.setTag(headWatcher);
+            headViewHolder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    type = parent.getItemAtPosition(position).toString();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
         }
 
         //领用详情
@@ -297,6 +311,8 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     static class HeadViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.et_use)
         EditText etUse;
+        @BindView(R.id.spinner2)
+        Spinner spinner;
 
         HeadViewHolder(View view) {
             super(view);

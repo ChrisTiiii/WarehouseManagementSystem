@@ -254,11 +254,11 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (checkList.size() > 0)
                     if (menu_type == 1)
-                        EventBus.getDefault().post(new MessageEvent(MyApp.SL_CHOOSE_PRODUCT, checkList, 1));
+                        EventBus.getDefault().post(new MessageEvent(MyApp.SL_CHOOSE_PRODUCT, checkList));
                     else if (menu_type == 0)
-                        EventBus.getDefault().post(new MessageEvent(MyApp.SL_SPPERSON, checkList, 1));
+                        EventBus.getDefault().post(new MessageEvent(MyApp.SL_SPPERSON, checkList));
                     else if (menu_type == 3) {
-                        EventBus.getDefault().post(new MessageEvent(MyApp.REPORT_BT, checkList, 1));
+                        EventBus.getDefault().post(new MessageEvent(MyApp.REPORT_BT, checkList));
                     }
                 finish();
             }
