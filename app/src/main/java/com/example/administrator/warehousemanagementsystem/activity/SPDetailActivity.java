@@ -63,7 +63,7 @@ public class SPDetailActivity extends AppCompatActivity {
     private List<ViewType> uiList;
     private ApplyBean.DataBean applyBean;
     private SPDetailAdapter spDetailAdapter;
-    private int type;//type==0待审批 type==1 已审批
+    private int type;//type==0待审批 type==1 已审批 //自己
     private AlertDialog.Builder builder;
     private Integer bh;//根据订单编号查询详情
     private NetServerImp netServerImp;
@@ -110,6 +110,7 @@ public class SPDetailActivity extends AppCompatActivity {
     public void witchRoot() {
         intent = getIntent();
         type = intent.getExtras().getInt("type");
+        System.out.println("type:" + type);
         if (type == 1) {
             llBottom.setVisibility(View.GONE);
         }
@@ -123,7 +124,7 @@ public class SPDetailActivity extends AppCompatActivity {
                 layoutRemove.setVisibility(View.GONE);
             }
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, uiList, applyBean, type);
+        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type);
         recycler.setAdapter(spDetailAdapter);
     }
 
@@ -148,7 +149,6 @@ public class SPDetailActivity extends AppCompatActivity {
         for (int i = 0; i < applyBean.getApplyContentList().size(); i++)
             uiList.add(1, new ViewType(ViewType.SL_TYPE_DETAIL));
         spDetailAdapter.updateList(applyBean);
-
     }
 
 
@@ -181,13 +181,13 @@ public class SPDetailActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (applyBean.getReviewList() != null) {
                             int temp = -1;
-                            for (int i = 0; i < applyBean.getReviewList().size(); i++) {
-                                if (myApp.getUser().getId() == applyBean.getReviewList().get(i).getUserNo())
-                                    temp = i;
+                            for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
+                                if (myApp.getUser().getId() == dataBean.getUserNo())
+                                    temp = dataBean.getId();
                             }
                             System.out.println("review:" + temp);
                             if (temp != -1)
-                                netServerImp.agreeReview(applyBean.getReviewList().get(temp).getReviewIndex());
+                                netServerImp.agreeReview(temp);
                         }
                     }
                 });
@@ -207,12 +207,13 @@ public class SPDetailActivity extends AppCompatActivity {
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 int temp = -1;
-                                for (int i = 0; i < applyBean.getReviewList().size(); i++) {
-                                    if (myApp.getUser().getId() == applyBean.getReviewList().get(i).getUserNo())
-                                        temp = i;
+                                for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
+                                    if (myApp.getUser().getId() == dataBean.getUserNo())
+                                        temp = dataBean.getId();
                                 }
+                                System.out.println("review:" + temp);
                                 if (temp != -1)
-                                    netServerImp.refuseReview(applyBean.getReviewList().get(temp).getReviewIndex());
+                                    netServerImp.refuseReview(temp);
                             }
                         })
                         .negativeText("取消")

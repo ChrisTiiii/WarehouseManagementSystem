@@ -16,6 +16,7 @@ import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.SPDetailActivity;
 import com.example.administrator.warehousemanagementsystem.adapter.mysp.SPAdapter;
+import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
@@ -56,6 +57,9 @@ public class SPFragment extends Fragment {
     private List<ReviewList.DataBean> waitList;
     private List<ReviewListHaveDone.DataBean> doneList;
     private List<ReviewListHaveDone.DataBean> preDoneList;
+    private List<MyApplyList.DataBean> myApplyList;
+    private List<MyApplyList.DataBean> preMyApplyList;
+
     private SPAdapter spAdapter;
     private int type;//type==0待审批 type==1 已审批 2为我的申请
     private NetServerImp netServerImp;
@@ -93,12 +97,30 @@ public class SPFragment extends Fragment {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         netServerImp = new NetServerImp(myApp);
-        initData();
+        initList();
         initView();
         loadData();//刷新和加载
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        waitList.clear();
+        doneList.clear();
+        myApplyList.clear();
+        switch (type) {
+            case 0:
+                netServerImp.getReviewList(1, 5, refreshLayout);
+                break;
+            case 1:
+                netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout);
+                break;
+            case 2:
+                netServerImp.getApplyList(1, 5, refreshLayout);
+                break;
+        }
+    }
 
     private void loadData() {
         //刷新
@@ -108,13 +130,15 @@ public class SPFragment extends Fragment {
                 if (type == 0) {
                     page_wait = 1;
                     waitList.clear();
-                    netServerImp.getReviewList(1, 5);
+                    netServerImp.getReviewList(1, 5, refreshLayout);
                 } else if (type == 1) {
                     page_done = 1;
                     doneList.clear();
-                    netServerImp.getReviewListHaveDoneByMe(1, 5);
+                    netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout);
                 } else if (type == 2) {
-
+                    page_me = 1;
+                    myApplyList.clear();
+                    netServerImp.getApplyList(1, 5, refreshLayout);
                 }
 
             }
@@ -124,10 +148,11 @@ public class SPFragment extends Fragment {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
                 if (type == 0)
-                    netServerImp.getReviewList(++page_wait, 5);
+                    netServerImp.getReviewList(++page_wait, 5, refreshLayout);
                 else if (type == 1)
-                    netServerImp.getReviewListHaveDoneByMe(++page_done, 5);
-                else if (type == 2) ;
+                    netServerImp.getReviewListHaveDoneByMe(++page_done, 5, refreshLayout);
+                else if (type == 2)
+                    netServerImp.getApplyList(++page_me, 5, refreshLayout);
             }
         });
 
@@ -140,35 +165,32 @@ public class SPFragment extends Fragment {
                 preWaitList.clear();
                 for (ReviewList.DataBean dataBean : messageEvent.getReviewLists())
                     preWaitList.add(dataBean);
-                Collections.reverse(preWaitList); //倒叙
                 waitList.addAll(0, preWaitList);
                 spAdapter.notifyDataSetChanged();
-                refreshLayout.finishRefresh();
-                refreshLayout.finishLoadmore();
                 break;
             case MyApp.HAVE_DONE:
                 preDoneList.clear();
                 for (ReviewListHaveDone.DataBean dataBean : messageEvent.getHaveDoneList())
                     preDoneList.add(dataBean);
-                Collections.reverse(preDoneList); //倒叙
                 doneList.addAll(0, preDoneList);
                 spAdapter.notifyDataSetChanged();
-                refreshLayout.finishRefresh();
-                refreshLayout.finishLoadmore();
                 break;
+            case MyApp.MY_APPLY_LIST:
+                preMyApplyList.clear();
+                for (MyApplyList.DataBean dataBean : messageEvent.getMyApplyList())
+                    preMyApplyList.add(dataBean);
+                myApplyList.addAll(0, preMyApplyList);
+                spAdapter.notifyDataSetChanged();
         }
     }
 
-    private void initData() {
+    private void initList() {
         preWaitList = new ArrayList<>();
         waitList = new ArrayList<>();
         doneList = new ArrayList<>();
         preDoneList = new ArrayList<>();
-        if (type == 0)
-            netServerImp.getReviewList(1, 5);
-        else if (type == 1)
-            netServerImp.getReviewListHaveDoneByMe(1, 5);
-        else if (type == 2) ;
+        myApplyList = new ArrayList<>();
+        preMyApplyList = new ArrayList<>();
     }
 
 
@@ -179,8 +201,9 @@ public class SPFragment extends Fragment {
 
     //初始化适配器
     void whichAdapter() {
-        spAdapter = new SPAdapter(getContext(), waitList, doneList, type);
+        spAdapter = new SPAdapter(getContext(), myApp, myApplyList, waitList, doneList, type);
         recycler.setAdapter(spAdapter);
+        System.out.println("type:" + type);
         spAdapter.setOnItemClickListener(new SPAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -191,7 +214,7 @@ public class SPFragment extends Fragment {
                 else if (type == 1)
                     intent.putExtra("bh", doneList.get(position).getObjNo());
                 else if (type == 2)
-                    ;
+                    intent.putExtra("bh", myApplyList.get(position).getId());
                 startActivity(intent);
             }
         });

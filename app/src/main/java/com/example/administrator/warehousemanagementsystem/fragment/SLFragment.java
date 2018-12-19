@@ -157,7 +157,6 @@ public class SLFragment extends Fragment {
                     String name = String.valueOf(messageEvent.getMapList().get(0).get("name"));
                     MyGoods myGoods = new MyGoods(code, name, null);
                     spAdapter.addData(uiList.size() - 2, myGoods);
-
                 }
                 break;
             case MyApp.SL_SPPERSON:
@@ -181,17 +180,30 @@ public class SLFragment extends Fragment {
     public void onViewClicked() {
         if (achieve() != null) {
             builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("确认提交吗?");
-            builder.setMessage(dialogString());
+            builder.setTitle("用户须知");
+            builder.setMessage("若您有重复申领物品则按照最新物品明细进行提交申领\n");
             if (!dialogString().equals("权限不够"))
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (spAdapter.getType().equals("申领单"))
-                            netServerImp.postApply(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0));
-                        else if (spAdapter.getType().equals("采购单"))
-                            netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0), "11");
+                        builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("确认提交吗?");
+                        builder.setMessage(dialogString());
+                        builder.setPositiveButton("确定提交", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (spAdapter.getType().equals("申领单"))
+                                    netServerImp.postApply(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0));
+                                else if (spAdapter.getType().equals("采购单"))
+                                    netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0), "11");
+                            }
+                        });
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
+                            }
+                        }).show();
                     }
                 });
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -228,7 +240,6 @@ public class SLFragment extends Fragment {
             else return "权限不够";
         else
             return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getNote();
-
     }
 
     /**
@@ -238,7 +249,7 @@ public class SLFragment extends Fragment {
      * @return
      */
     public String getGoodsList(int type) {
-        //获得goodsList:物品编号+数量
+        //获得goodsList:物品编号/名称+数量
         goodsList = spAdapter.getGoodsList();
         if (goodsList != null) {
             JSONObject jsonObject = new JSONObject();
@@ -255,7 +266,6 @@ public class SLFragment extends Fragment {
                 }
             }
             return jsonObject.toString().equals("") ? null : jsonObject.toString();
-
         }
         return null;
     }

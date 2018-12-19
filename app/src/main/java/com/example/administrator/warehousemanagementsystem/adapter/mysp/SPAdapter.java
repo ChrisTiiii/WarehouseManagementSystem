@@ -10,13 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
+import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
-import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 
-import java.sql.Time;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,67 +27,135 @@ import butterknife.ButterKnife;
  * DATE: 2018/11/23 0023
  * Description: 审批 item 列表
  **/
-public class SPAdapter extends RecyclerView.Adapter<SPAdapter.SPViewHolder> {
+public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
+    private MyApp myApp;
     private List<ReviewList.DataBean> waitList;
     private List<ReviewListHaveDone.DataBean> doneList;
+    private List<MyApplyList.DataBean> myApplyList;
     private OnItemClickListener onItemClickListener;
-    private int type;//0 为未审批 1 为已审批  2为已撤销
+    private int type;//0 为未审批 1 为已审批  2为我的申请
+//    private static final int VIEW_TYPE = -1;
 
-    public SPAdapter(Context context, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, int type) {
+
+    public SPAdapter(Context context, MyApp myApp, List<MyApplyList.DataBean> myApplyList, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, int type) {
         this.context = context;
+        this.myApp = myApp;
+        this.myApplyList = myApplyList;
         this.waitList = waitList;
         this.doneList = doneList;
         this.type = type;
     }
 
-
     @NonNull
     @Override
-    public SPViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.sp_item, null);
+
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view;
+//        if (VIEW_TYPE == viewType) {
+//            view = LayoutInflater.from(context).inflate(R.layout.sp_item_nodata, viewGroup, false);
+//            return new NoDataViewHolder(view);
+//        }
+        view = LayoutInflater.from(context).inflate(R.layout.sp_item, viewGroup, false);
         return new SPViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SPViewHolder spViewHolder, final int i) {
-        if (type == 0) {
-            Glide.with(context).load(R.drawable.wait).into(spViewHolder.ivHead);
-            spViewHolder.slProduct.setText(waitList.get(i).getGoodsCount() + "个物资种类数");
-            spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(waitList.get(i).getStartDate()))));
-            spViewHolder.slperson.setText("来自" + waitList.get(i).getFromUserName() + "的申请");
-            spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(v, i);
-                }
-            });
-            spViewHolder.state.setText(waitList.get(i).getReviewState());
-        } else {
-            if (doneList.get(i).getReviewState().equals("通过"))
-                Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
-            else if (doneList.get(i).getReviewState().equals("未通过"))
-                Glide.with(context).load(R.drawable.disagree).into(spViewHolder.ivHead);
-            spViewHolder.slProduct.setText(doneList.get(i).getGoodsCount() + "个物资种类数");
-            spViewHolder.slTime.setText(TimeUtil.stampToDate(String.valueOf(doneList.get(i).getReviewDate())));
-            spViewHolder.slperson.setText("来自" + doneList.get(i).getFromUserName() + "的申请");
-            spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(v, i);
-                }
-            });
-            spViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
-            spViewHolder.state.setText(doneList.get(i).getReviewState());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        if (viewHolder instanceof NoDataViewHolder) {
+            NoDataViewHolder noDataViewHolder = (NoDataViewHolder) viewHolder;
+        }
+        if (viewHolder instanceof SPViewHolder) {
+            SPViewHolder spViewHolder = (SPViewHolder) viewHolder;
+            if (type == 0) {
+                Glide.with(context).load(R.drawable.wait).into(spViewHolder.ivHead);
+                spViewHolder.slProduct.setText("物品种类：" + waitList.get(i).getGoodsCount() + "个物资种类");
+                spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(waitList.get(i).getStartDate()))));
+                spViewHolder.slperson.setText("来自" + waitList.get(i).getFromUserName() + "的申请");
+                spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListener.onItemClick(v, i);
+                    }
+                });
+                spViewHolder.state.setText(waitList.get(i).getReviewState());
+            } else if (type == 1) {
+                if (doneList.get(i).getReviewState().equals("通过"))
+                    Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
+                else if (doneList.get(i).getReviewState().equals("未通过"))
+                    Glide.with(context).load(R.drawable.disagree).into(spViewHolder.ivHead);
+                spViewHolder.slProduct.setText("物品种类：" + doneList.get(i).getGoodsCount() + "个物资种类数");
+                spViewHolder.slTime.setText(TimeUtil.stampToDate(String.valueOf(doneList.get(i).getReviewDate())));
+                spViewHolder.slperson.setText("来自" + doneList.get(i).getFromUserName() + "的申请");
+                spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListener.onItemClick(v, i);
+                    }
+                });
+                spViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
+                spViewHolder.state.setText(doneList.get(i).getReviewState());
+            } else if (type == 2) {
+                System.out.println(myApplyList.get(i).toString());
+                Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
+                spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
+                spViewHolder.slProduct.setText("物品用途：" + myApplyList.get(i).getApplyUsage());
+                spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(myApplyList.get(i).getApplyStartdate()))));
+                spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListener.onItemClick(v, i);
+                    }
+                });
+                spViewHolder.state.setText(myApplyList.get(i).getApplyState());
+            }
+
         }
 
     }
 
 
+//    public int getItemViewType(int position) {
+//        switch (type) {
+//            case 0:
+//                if (waitList.size() <= 0)
+//                    return VIEW_TYPE;
+//            case 1:
+//                if (doneList.size() <= 0)
+//                    return VIEW_TYPE;
+//            case 2:
+//                if (myApplyList.size() <= 0)
+//                    return VIEW_TYPE;
+//            default:
+//                return super.getItemViewType(position);
+//        }
+//    }
+
+
     @Override
     public int getItemCount() {
-        return type == 0 ? waitList.size() : doneList.size();
+        switch (type) {
+            case 0:
+                return waitList.size();
+            case 1:
+                return doneList.size();
+            case 2:
+                return myApplyList.size();
+            default:
+                return 0;
+        }
+    }
+
+
+    public class NoDataViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.ivGif)
+        ImageView ivGif;
+
+        public NoDataViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
     }
 
     static class SPViewHolder extends RecyclerView.ViewHolder {
@@ -117,4 +185,6 @@ public class SPAdapter extends RecyclerView.Adapter<SPAdapter.SPViewHolder> {
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
+
 }

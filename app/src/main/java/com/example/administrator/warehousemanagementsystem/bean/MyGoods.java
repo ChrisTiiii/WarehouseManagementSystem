@@ -21,6 +21,7 @@ public class MyGoods implements Serializable {
                 '}';
     }
 
+    public MyGoods(){}
     public MyGoods(String code, String num) {
         this.code = code;
         this.num = num;

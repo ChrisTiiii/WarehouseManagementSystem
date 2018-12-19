@@ -241,6 +241,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 detailViewHolder.etName.setText(goodsList.get(position - 1).getName());
                 detailViewHolder.etNum.setText(goodsList.get(position - 1).getNum());
             }
+
             TextWatcher numWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

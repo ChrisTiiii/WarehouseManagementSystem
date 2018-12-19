@@ -5,6 +5,7 @@ import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
+import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
@@ -72,5 +73,9 @@ public interface NetAPI {
 
     @GET("getReviewListHaveDoneByMe.do")
     Observable<ReviewListHaveDone> getReviewListHaveDoneByMe(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取已完成订单
+
+
+    @GET("getApplyListBy.do")
+    Observable<MyApplyList> getApplyList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的申请
 
 }

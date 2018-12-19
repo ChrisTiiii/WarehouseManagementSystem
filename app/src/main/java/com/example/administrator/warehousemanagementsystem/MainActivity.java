@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
         myApp = (MyApp) getApplication();
+        System.out.println("用户id:" + myApp.getUser().getId());
         initView();
         initNavigation();
     }

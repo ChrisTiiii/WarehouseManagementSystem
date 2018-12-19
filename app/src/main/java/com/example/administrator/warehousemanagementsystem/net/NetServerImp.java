@@ -9,12 +9,14 @@ import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
+import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -309,13 +311,15 @@ public class NetServerImp {
      * @param page
      * @param size
      */
-    public void getReviewList(int page, int size) {
+    public void getReviewList(int page, int size, SmartRefreshLayout refreshLayout) {
         netAPI.getReviewList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ReviewList>() {
                     @Override
                     public void onCompleted() {
                         System.out.println("getReviewList已完成");
+                        refreshLayout.finishRefresh();
+                        refreshLayout.finishLoadmore();
                     }
 
                     @Override
@@ -329,7 +333,6 @@ public class NetServerImp {
                             MessageEvent messageEvent = new MessageEvent(myApp.SP_LIST);
                             messageEvent.setReviewLists(reviewList.getData());
                             EventBus.getDefault().post(messageEvent);
-//                            EventBus.getDefault().post(new MessageEvent(myApp.SP_LIST, reviewList.getData()));
                         }
                     }
                 });
@@ -378,13 +381,13 @@ public class NetServerImp {
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.println(e.getMessage());
+                        System.out.println("error:" + e.getMessage());
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onNext(BackData s) {
-                        System.out.println(s.getResult());
+                        System.out.println("agree:" + s.getResult());
                         if (s.getResult().equals("ok")) {
                             EventBus.getDefault().post(new MessageEvent(myApp.COMMIT_APPLY, "success"));
                         }
@@ -424,13 +427,15 @@ public class NetServerImp {
     /**
      * 获取已完成订单
      */
-    public void getReviewListHaveDoneByMe(int page, int size) {
+    public void getReviewListHaveDoneByMe(int page, int size, SmartRefreshLayout refreshLayout) {
         netAPI.getReviewListHaveDoneByMe(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ReviewListHaveDone>() {
                     @Override
                     public void onCompleted() {
                         System.out.println("getReviewList已完成");
+                        refreshLayout.finishRefresh();
+                        refreshLayout.finishLoadmore();
                     }
 
                     @Override
@@ -447,5 +452,40 @@ public class NetServerImp {
                         }
                     }
                 });
+    }
+
+    /**
+     * 获取我提交的申请
+     */
+
+
+    public void getApplyList(int page, int size, SmartRefreshLayout refreshLayout) {
+        System.out.println("用户id:" + myApp.getUser().getId());
+        netAPI.getApplyList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<MyApplyList>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("getApplyList已完成");
+                        refreshLayout.finishRefresh();
+                        refreshLayout.finishLoadmore();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(MyApplyList myApplyList) {
+                        if (myApplyList.getResult().equals("ok")) {
+                            MessageEvent messageEvent = new MessageEvent(myApp.MY_APPLY_LIST);
+                            messageEvent.setMyApplyList(myApplyList.getData());
+                            EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+
+
     }
 }
