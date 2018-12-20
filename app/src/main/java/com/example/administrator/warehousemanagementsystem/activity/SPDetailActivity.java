@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -22,11 +21,10 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.other.Code;
 import com.example.administrator.warehousemanagementsystem.adapter.SPDetailAdapter;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
-import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
-import com.example.administrator.warehousemanagementsystem.net.NetAPI;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,6 +67,7 @@ public class SPDetailActivity extends AppCompatActivity {
     private NetServerImp netServerImp;
     MyApp myApp;
     Intent intent;
+    MyDialog myDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,7 +78,8 @@ public class SPDetailActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         initView();
         witchRoot();//根据权限显示不同界面
-        netServerImp.getApply(String.valueOf(bh));
+
+        netServerImp.getApply(String.valueOf(bh), myDialog);
         if (spDetailAdapter != null)
             clickCode();
     }
@@ -103,7 +103,8 @@ public class SPDetailActivity extends AppCompatActivity {
         netServerImp = new NetServerImp(myApp);
         uiList = new ArrayList<>();
         applyBean = new ApplyBean.DataBean();
-
+        myDialog = new MyDialog(SPDetailActivity.this, 1);
+        myDialog.showDialog();
     }
 
     //根据权限显示不同界面

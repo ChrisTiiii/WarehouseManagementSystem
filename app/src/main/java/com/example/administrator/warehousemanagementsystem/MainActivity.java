@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -45,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
         initNavigation();
     }
 
+
     private void initView() {
         listFragment = new ArrayList<>();
-        System.out.println("root:" + myApp.getRoot());
         if (myApp.getRoot() != -1)
             if (myApp.getRoot() == 100 || myApp.getRoot() == 120) {
                 listFragment.add(MySPFragment.newInstance(myApp));
@@ -136,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
         if (listFragment.get(index).isAdded() == false)
             transaction.add(R.id.content, listFragment.get(index));
         transaction.show(listFragment.get(index)).commitAllowingStateLoss();
-
     }
-
 
 }

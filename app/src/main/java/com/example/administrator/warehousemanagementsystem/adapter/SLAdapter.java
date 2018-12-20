@@ -288,7 +288,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public String getNote() {
-        return use + explain;
+        return !use.equals("") && explain.equals("'") ? use + "," + explain : "暂无备注";
     }
 
     public List<MyGoods> getGoodsList() {

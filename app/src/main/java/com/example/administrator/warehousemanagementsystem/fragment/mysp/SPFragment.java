@@ -19,9 +19,10 @@ import com.example.administrator.warehousemanagementsystem.adapter.mysp.SPAdapte
 import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
-import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
+import com.example.administrator.warehousemanagementsystem.util.RecyclerViewForEmpty;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -31,9 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,7 +48,7 @@ import butterknife.Unbinder;
 public class SPFragment extends Fragment {
 
     @BindView(R.id.recycler)
-    RecyclerView recycler;
+    RecyclerViewForEmpty recycler;
     Unbinder unbinder;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
@@ -67,6 +66,9 @@ public class SPFragment extends Fragment {
     private int page_wait = 1;//待审批请求页
     private int page_done = 1;//已完成请求页
     private int page_me = 1;//我的申请
+
+    private MyDialog myDialog;
+
 
     @SuppressLint("ValidFragment")
     public SPFragment(int type, MyApp myApp) {
@@ -97,6 +99,7 @@ public class SPFragment extends Fragment {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         netServerImp = new NetServerImp(myApp);
+        myDialog = new MyDialog(getContext(), 1);
         initList();
         initView();
         loadData();//刷新和加载
@@ -111,13 +114,16 @@ public class SPFragment extends Fragment {
         myApplyList.clear();
         switch (type) {
             case 0:
-                netServerImp.getReviewList(1, 5, refreshLayout);
+                myDialog.showDialog();
+                netServerImp.getReviewList(1, 5, refreshLayout, myDialog);
                 break;
             case 1:
-                netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout);
+                myDialog.showDialog();
+                netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout, myDialog);
                 break;
             case 2:
-                netServerImp.getApplyList(1, 5, refreshLayout);
+                myDialog.showDialog();
+                netServerImp.getApplyList(1, 5, refreshLayout, myDialog);
                 break;
         }
     }
@@ -127,37 +133,46 @@ public class SPFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                if (type == 0) {
-                    page_wait = 1;
-                    waitList.clear();
-                    netServerImp.getReviewList(1, 5, refreshLayout);
-                } else if (type == 1) {
-                    page_done = 1;
-                    doneList.clear();
-                    netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout);
-                } else if (type == 2) {
-                    page_me = 1;
-                    myApplyList.clear();
-                    netServerImp.getApplyList(1, 5, refreshLayout);
+                switch (type) {
+                    case 0:
+                        page_wait = 1;
+                        waitList.clear();
+                        netServerImp.getReviewList(1, 5, refreshLayout, myDialog);
+                        break;
+                    case 1:
+                        page_done = 1;
+                        doneList.clear();
+                        netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout, myDialog);
+                        break;
+                    case 2:
+                        page_me = 1;
+                        myApplyList.clear();
+                        netServerImp.getApplyList(1, 5, refreshLayout, myDialog);
+                        break;
                 }
-
             }
         });
         //加载更多
         refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
-                if (type == 0)
-                    netServerImp.getReviewList(++page_wait, 5, refreshLayout);
-                else if (type == 1)
-                    netServerImp.getReviewListHaveDoneByMe(++page_done, 5, refreshLayout);
-                else if (type == 2)
-                    netServerImp.getApplyList(++page_me, 5, refreshLayout);
+                switch (type) {
+                    case 0:
+                        netServerImp.getReviewList(++page_wait, 5, refreshLayout, myDialog);
+                        break;
+                    case 1:
+                        netServerImp.getReviewListHaveDoneByMe(++page_done, 5, refreshLayout, myDialog);
+                        break;
+                    case 2:
+                        netServerImp.getApplyList(++page_me, 5, refreshLayout, myDialog);
+                        break;
+                }
             }
         });
 
     }
 
+    //回调更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getReviewList(MessageEvent messageEvent) {
         switch (messageEvent.getTag()) {
@@ -165,21 +180,21 @@ public class SPFragment extends Fragment {
                 preWaitList.clear();
                 for (ReviewList.DataBean dataBean : messageEvent.getReviewLists())
                     preWaitList.add(dataBean);
-                waitList.addAll(0, preWaitList);
+                waitList.addAll(preWaitList);
                 spAdapter.notifyDataSetChanged();
                 break;
             case MyApp.HAVE_DONE:
                 preDoneList.clear();
                 for (ReviewListHaveDone.DataBean dataBean : messageEvent.getHaveDoneList())
                     preDoneList.add(dataBean);
-                doneList.addAll(0, preDoneList);
+                doneList.addAll(preDoneList);
                 spAdapter.notifyDataSetChanged();
                 break;
             case MyApp.MY_APPLY_LIST:
                 preMyApplyList.clear();
                 for (MyApplyList.DataBean dataBean : messageEvent.getMyApplyList())
                     preMyApplyList.add(dataBean);
-                myApplyList.addAll(0, preMyApplyList);
+                myApplyList.addAll(preMyApplyList);
                 spAdapter.notifyDataSetChanged();
         }
     }
@@ -196,6 +211,8 @@ public class SPFragment extends Fragment {
 
     private void initView() {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.no_data, null);
+        recycler.setEmptyView(view);
         whichAdapter();
     }
 
@@ -204,6 +221,7 @@ public class SPFragment extends Fragment {
         spAdapter = new SPAdapter(getContext(), myApp, myApplyList, waitList, doneList, type);
         recycler.setAdapter(spAdapter);
         System.out.println("type:" + type);
+        //跳转详情订单
         spAdapter.setOnItemClickListener(new SPAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

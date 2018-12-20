@@ -36,7 +36,7 @@ public interface NetAPI {
     Observable<UserBean> getUser(@Query("userid") String userid, @Query("pass") String pass, @Query("from") String app);//用户登录，获取用户角色
 
     @GET("getGoodsListBy.do")
-    Observable<GoodsDetailBean> getGoodsDetail(@Query("goodsTypeNo") int goodsTypeNo);//获得物品详情 , @Query("page") int page, @Query("size") int size
+    Observable<GoodsDetailBean> getGoodsDetail(@Query("goodsTypeNo") int goodsTypeNo);//获得物品详情
 
     @GET("getAllGoodsType.do")
     Observable<GoodsType> getGoodsType();//获得商品分类
@@ -53,7 +53,7 @@ public interface NetAPI {
 
     @FormUrlEncoded
     @POST("addPurchase.do")
-    Observable<Purchase> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier);//提交申领订单
+    Observable<Purchase> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier);//提交采购单
 
 
     @GET("getReviewListBy.do")

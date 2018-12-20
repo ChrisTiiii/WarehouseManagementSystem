@@ -10,11 +10,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MainActivity;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 import com.example.administrator.warehousemanagementsystem.util.SharedPreferencesUtils;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
@@ -42,8 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     @BindView(R.id.check_pwd)
     CheckBox checkBox_password;
-
-    private LoadingDialog mLoadingDialog; //显示正在加载的对话框
+    MyDialog myDialog;
     private SharedPreferencesUtils helper;
     private NetServerImp netServerImp;
     MyApp myApp;
@@ -75,8 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         //判断是否登录过
         if (autoLogin()) {
-//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//            finish();//关闭页面
             login();//去登录就可以
         }
     }
@@ -178,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
         showLoading();//显示加载框
         //网络请求
         netServerImp = new NetServerImp(myApp);
-        netServerImp.getUser(getAccount(), getPassword());
+        netServerImp.getUser(getAccount(), getPassword(), myDialog);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -187,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
             case MyApp.LOGIN_SUCCESS:
                 if (messageEvent.getMessage() != "") {
                     showToast(messageEvent.getMessage());
-                    mLoadingDialog.close();
                 } else {
                     if (myApp.getUser() != null) {
                         //获取SharedPreferences对象，使用自定义类的方法来获取对象
@@ -197,16 +195,13 @@ public class LoginActivity extends AppCompatActivity {
                         loadCheckBoxState();//记录下当前用户记住密码和自动登录的状态;
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();//关闭页面
-                        mLoadingDialog.close();
                     } else {
                         showToast("登录失败");
-                        mLoadingDialog.close();
                     }
                 }
                 break;
             case MyApp.LOGIN_FAIL:
                 showToast("请检查你的网络是否连接正常");
-                mLoadingDialog.close();
                 break;
         }
     }
@@ -267,9 +262,8 @@ public class LoginActivity extends AppCompatActivity {
      * 显示加载的进度款
      */
     public void showLoading() {
-        mLoadingDialog = new LoadingDialog(LoginActivity.this);
-        mLoadingDialog.setLoadingText("正在登录...").setFailedText("登录失败");
-        mLoadingDialog.show();
+        myDialog = new MyDialog(LoginActivity.this, 0);
+        myDialog.showDialog();
     }
 
 
@@ -300,9 +294,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mLoadingDialog != null) {
-            mLoadingDialog.close();
-        }
+        if (myDialog != null)
+            myDialog.dissDilalog();
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
         super.onDestroy();

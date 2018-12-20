@@ -75,6 +75,8 @@ public class ApplyBean {
         private int deptNo;
         private int id;
         private int userNo;
+        private String fromUserName;
+        private String deptName;
         private List<ApplyContentListBean> applyContentList;
         private List<ReviewListBean> reviewList;
 
@@ -148,6 +150,22 @@ public class ApplyBean {
 
         public void setUserNo(int userNo) {
             this.userNo = userNo;
+        }
+
+        public String getFromUserName() {
+            return fromUserName;
+        }
+
+        public void setFromUserName(String fromUserName) {
+            this.fromUserName = fromUserName;
+        }
+
+        public String getDeptName() {
+            return deptName;
+        }
+
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
         }
 
         public List<ApplyContentListBean> getApplyContentList() {
@@ -273,6 +291,7 @@ public class ApplyBean {
             private String reviewState;
             private int reviewTypeNo;
             private int userNo;
+            private String reviewUserName;
 
             public int getId() {
                 return id;
@@ -324,6 +343,14 @@ public class ApplyBean {
 
             public int getUserNo() {
                 return userNo;
+            }
+
+            public String getReviewUserName() {
+                return reviewUserName;
+            }
+
+            public void setReviewUserName(String reviewUserName) {
+                this.reviewUserName = reviewUserName;
             }
 
             public void setUserNo(int userNo) {

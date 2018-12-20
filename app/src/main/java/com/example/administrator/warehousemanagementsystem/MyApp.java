@@ -23,7 +23,7 @@ public class MyApp extends Application {
     public static final int APPLY_DETAIL = 0x343;//获取订单详情
     public static final int COMMIT_APPLY = 0x2345;//同意/拒绝订单
     public static final int HAVE_DONE = 0x3432;//已完成订单
-    public static final int MY_APPLY_LIST=0x2321;
+    public static final int MY_APPLY_LIST=0x2321;//我的申请单list
 
     public UserBean.DataBean user;
 

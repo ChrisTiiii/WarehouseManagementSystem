@@ -15,6 +15,7 @@ import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.adapter.other.ViewPagerAdapter;
 import com.example.administrator.warehousemanagementsystem.fragment.mysp.SPFragment;
+import com.example.administrator.warehousemanagementsystem.util.ViewPagerSlide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,6 @@ import butterknife.Unbinder;
  * DATE: 2018/11/23 0023
  * Description: 我审批的总界面
  **/
-
 
 @SuppressLint("ValidFragment")
 public class MySPFragment extends Fragment {

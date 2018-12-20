@@ -3,6 +3,7 @@ package com.example.administrator.warehousemanagementsystem.net;
 import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
@@ -16,6 +17,7 @@ import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDo
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +44,7 @@ import rx.schedulers.Schedulers;
 public class NetServerImp {
     private Retrofit retrofit;
     private NetAPI netAPI;
-    private static final String BASE_URL = "http://10.101.80.119:8080/";  //10.101.80.119  10.101.208.119
+    private static final String BASE_URL = "http://10.101.80.120:8080/";  //10.101.80.119  10.101.208.119 120
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
@@ -100,16 +102,18 @@ public class NetServerImp {
      *
      * @param menuType
      */
-    public void getGoodsDetail(int menuType) {
+    public void getGoodsDetail(int menuType, MyDialog myDialog) {
         System.out.println(menuType);
         netAPI.getGoodsDetail(menuType).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GoodsDetailBean>() {
             @Override
             public void onCompleted() {
+                myDialog.dissDilalog();
                 System.out.println("getGoodsDetail加载完成");
             }
 
             @Override
             public void onError(Throwable e) {
+                myDialog.dissDilalog();
                 Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
             }
 
@@ -139,18 +143,20 @@ public class NetServerImp {
      * @param pass   密码
      *               获取用户信息 登录使用 并设置全局变量
      */
-    public void getUser(final String userid, String pass) {
+    public void getUser(final String userid, String pass, MyDialog myDialog) {
         netAPI.getUser(userid, pass, APP).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<UserBean>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         System.out.println("getUser加载完成");
                         EventBus.getDefault().post(new MessageEvent(myApp.LOGIN_SUCCESS, msg));
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         EventBus.getDefault().post(new MessageEvent(myApp.LOGIN_FAIL, "error"));
                         System.out.println("getUser加载失败：" + e.getMessage());
                     }
@@ -213,17 +219,19 @@ public class NetServerImp {
      *
      * @param userRoleNo 当前menuType
      */
-    public void getSPPerson(int userRoleNo) {
+    public void getSPPerson(int userRoleNo, MyDialog myDialog) {
         netAPI.getSPPerson(userRoleNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<SPPersonBean>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         System.out.println("getSPPerson加载完成");
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
@@ -311,12 +319,13 @@ public class NetServerImp {
      * @param page
      * @param size
      */
-    public void getReviewList(int page, int size, SmartRefreshLayout refreshLayout) {
+    public void getReviewList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
         netAPI.getReviewList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ReviewList>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         System.out.println("getReviewList已完成");
                         refreshLayout.finishRefresh();
                         refreshLayout.finishLoadmore();
@@ -324,6 +333,7 @@ public class NetServerImp {
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
@@ -341,16 +351,18 @@ public class NetServerImp {
     /**
      * 获取申请单详情
      */
-    public void getApply(String applyNo) {
+    public void getApply(String applyNo, MyDialog myDialog) {
         netAPI.getApply(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ApplyBean>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
@@ -427,12 +439,13 @@ public class NetServerImp {
     /**
      * 获取已完成订单
      */
-    public void getReviewListHaveDoneByMe(int page, int size, SmartRefreshLayout refreshLayout) {
+    public void getReviewListHaveDoneByMe(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
         netAPI.getReviewListHaveDoneByMe(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ReviewListHaveDone>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         System.out.println("getReviewList已完成");
                         refreshLayout.finishRefresh();
                         refreshLayout.finishLoadmore();
@@ -440,6 +453,7 @@ public class NetServerImp {
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
@@ -459,13 +473,14 @@ public class NetServerImp {
      */
 
 
-    public void getApplyList(int page, int size, SmartRefreshLayout refreshLayout) {
+    public void getApplyList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
         System.out.println("用户id:" + myApp.getUser().getId());
         netAPI.getApplyList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<MyApplyList>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         System.out.println("getApplyList已完成");
                         refreshLayout.finishRefresh();
                         refreshLayout.finishLoadmore();
@@ -473,6 +488,7 @@ public class NetServerImp {
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 

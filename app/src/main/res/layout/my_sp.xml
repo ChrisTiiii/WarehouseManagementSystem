@@ -11,8 +11,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:background="#cdcdcd"
-        android:layout_height="@dimen/dp_1" />
+        android:layout_height="@dimen/dp_1"
+        android:background="#cdcdcd" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/main_viewpager"

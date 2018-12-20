@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,7 +37,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<MyApplyList.DataBean> myApplyList;
     private OnItemClickListener onItemClickListener;
     private int type;//0 为未审批 1 为已审批  2为我的申请
-//    private static final int VIEW_TYPE = -1;
+    private static final int VIEW_TYPE = -1;
 
 
     public SPAdapter(Context context, MyApp myApp, List<MyApplyList.DataBean> myApplyList, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, int type) {
@@ -52,20 +53,12 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view;
-//        if (VIEW_TYPE == viewType) {
-//            view = LayoutInflater.from(context).inflate(R.layout.sp_item_nodata, viewGroup, false);
-//            return new NoDataViewHolder(view);
-//        }
-        view = LayoutInflater.from(context).inflate(R.layout.sp_item, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.sp_item, viewGroup, false);
         return new SPViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        if (viewHolder instanceof NoDataViewHolder) {
-            NoDataViewHolder noDataViewHolder = (NoDataViewHolder) viewHolder;
-        }
         if (viewHolder instanceof SPViewHolder) {
             SPViewHolder spViewHolder = (SPViewHolder) viewHolder;
             if (type == 0) {
@@ -85,7 +78,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
                 else if (doneList.get(i).getReviewState().equals("未通过"))
                     Glide.with(context).load(R.drawable.disagree).into(spViewHolder.ivHead);
-                spViewHolder.slProduct.setText("物品种类：" + doneList.get(i).getGoodsCount() + "个物资种类数");
+                spViewHolder.slProduct.setText("物品种类：" + doneList.get(i).getGoodsCount() + "个物资种类");
                 spViewHolder.slTime.setText(TimeUtil.stampToDate(String.valueOf(doneList.get(i).getReviewDate())));
                 spViewHolder.slperson.setText("来自" + doneList.get(i).getFromUserName() + "的申请");
                 spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +90,6 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 spViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                 spViewHolder.state.setText(doneList.get(i).getReviewState());
             } else if (type == 2) {
-                System.out.println(myApplyList.get(i).toString());
                 Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
                 spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
                 spViewHolder.slProduct.setText("物品用途：" + myApplyList.get(i).getApplyUsage());
@@ -110,9 +102,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
                 spViewHolder.state.setText(myApplyList.get(i).getApplyState());
             }
-
         }
-
     }
 
 
@@ -148,16 +138,6 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public class NoDataViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.ivGif)
-        ImageView ivGif;
-
-        public NoDataViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-        }
-    }
-
     static class SPViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_head)
         ImageView ivHead;
@@ -171,6 +151,10 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView slTime;
         @BindView(R.id.state)
         TextView state;
+        @BindView(R.id.no_data)
+        LinearLayout noData;
+        @BindView(R.id.have_data)
+        LinearLayout haveData;
 
         SPViewHolder(View view) {
             super(view);
@@ -185,6 +169,5 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-
 
 }

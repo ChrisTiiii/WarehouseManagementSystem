@@ -14,13 +14,11 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
-import com.example.administrator.warehousemanagementsystem.bean.SPDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.QRCodeUtil;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 import com.githang.stepview.StepView;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,9 +92,9 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //添加二维码,默认数据加载
             Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(details.getApplyId(), 480, 480);
             headViewHolder.ivCode.setImageBitmap(mBitmap);
-            headViewHolder.spPerson.setText(String.valueOf(details.getUserNo()));
+            headViewHolder.spPerson.setText(String.valueOf(details.getFromUserName()));
             headViewHolder.spBh.setText(details.getApplyId());
-            headViewHolder.tvSpBm.setText(String.valueOf(details.getDeptNo()));
+            headViewHolder.tvSpBm.setText(String.valueOf(details.getDeptName()));
             headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(details.getApplyStartdate())));
             //待审批
             if (viewType == 0) {
@@ -133,7 +131,6 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     headViewHolder.state.setText("申请已通过");
                 }
             }
-
         }
 
         if (viewHolder instanceof DetailViewHolder) {
@@ -156,14 +153,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int nowPoint = 0;//更改step状态位置
             if (details.getReviewList() != null)
                 for (int j = 0; j < details.getReviewList().size(); j++) {
-                    temp.add(String.valueOf(details.getReviewList().get(j).getUserNo()));
+                    temp.add(String.valueOf(details.getReviewList().get(j).getReviewUserName()));
                     if (!details.getReviewList().get(j).getReviewState().equals("等待审批"))
                         nowPoint = j;
                 }
             progressViewHolder.stepView.setSteps(temp);
             progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
         }
-
     }
 
     @Override

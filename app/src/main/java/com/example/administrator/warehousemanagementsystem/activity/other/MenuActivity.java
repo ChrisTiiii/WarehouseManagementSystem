@@ -18,6 +18,7 @@ import com.example.administrator.warehousemanagementsystem.adapter.ProductListAd
 import com.example.administrator.warehousemanagementsystem.bean.MenuListBean;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -62,6 +63,7 @@ public class MenuActivity extends AppCompatActivity {
     MyApp myApp;
     private static int pageNo = 1;// 设置pageNo的初始化值为1，即默认获取的是第一页的数据。
     private static int pageCount;//总页数，从服务端获取过来
+    private MyDialog myDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +74,8 @@ public class MenuActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         myApp = (MyApp) getApplication();
         netServerImp = new NetServerImp(myApp);
+        myDialog = new MyDialog(MenuActivity.this, 1);
+        myDialog.showDialog();
         Intent intent = getIntent();
         menu_type = intent.getExtras().getInt("type");
         initView(); //初始化控件
@@ -88,7 +92,6 @@ public class MenuActivity extends AppCompatActivity {
         recyclerviewAll.setAdapter(adapterAll);
         adapterDetail = new ProductListAdapter(MenuActivity.this, detailList);
         recyclerviewDetail.setAdapter(adapterDetail);
-
         adapterAll.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -96,6 +99,7 @@ public class MenuActivity extends AppCompatActivity {
                     allList.get(perPosition).setSelect(false);
                     allList.get(position).setSelect(true);
                     adapterAll.notifyDataSetChanged();
+                    myDialog.showDialog();
                     //设置右列表数据
                     loadDetailList(position);
                     checkList.clear();
@@ -208,8 +212,8 @@ public class MenuActivity extends AppCompatActivity {
     void rightData(int menuTypeNo) {
         detailList.clear();
         if (menu_type != 0)
-            netServerImp.getGoodsDetail(menuTypeNo);
-        else netServerImp.getSPPerson(menuTypeNo);
+            netServerImp.getGoodsDetail(menuTypeNo, myDialog);
+        else netServerImp.getSPPerson(menuTypeNo, myDialog);
     }
 
     //确定类型
