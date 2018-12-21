@@ -21,7 +21,7 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.other.Code;
 import com.example.administrator.warehousemanagementsystem.adapter.SPDetailAdapter;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
-import com.example.administrator.warehousemanagementsystem.bean.Purchase;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
@@ -61,9 +61,9 @@ public class SPDetailActivity extends AppCompatActivity {
 
     private List<ViewType> uiList;
     private ApplyBean.DataBean applyBean;//申领单
-    private Purchase.DataBean purchaseBean;//采购单
+    private PurchaseBean.DataBean purchaseBean;//采购单
     private SPDetailAdapter spDetailAdapter;
-    private int type;//type==0待审批 type==1 已审批 //自己
+    private int type;//type==0待审批 type==1 已审批 //2申领单 3采购单
     private AlertDialog.Builder builder;
     private Integer bh;//根据订单编号查询详情
     private Integer detailType;//分类哪一类订单
@@ -84,12 +84,22 @@ public class SPDetailActivity extends AppCompatActivity {
         if (detailType != null) {
             switch (detailType) {
                 case 300:
-                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type, 0);
+                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type, detailType);
                     recycler.setAdapter(spDetailAdapter);
                     netServerImp.getApply(String.valueOf(bh), myDialog);
                     break;
                 case 310:
-                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, purchaseBean, type, 1);
+                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, purchaseBean, type, detailType);
+                    recycler.setAdapter(spDetailAdapter);
+                    netServerImp.getPurchaseById(String.valueOf(bh), myDialog);
+                    break;
+                case 2://我的申领单
+                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type, detailType);
+                    recycler.setAdapter(spDetailAdapter);
+                    netServerImp.getApply(String.valueOf(bh), myDialog);
+                    break;
+                case 3://我的采购单
+                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, purchaseBean, type, detailType);
                     recycler.setAdapter(spDetailAdapter);
                     netServerImp.getPurchaseById(String.valueOf(bh), myDialog);
                     break;
@@ -111,7 +121,7 @@ public class SPDetailActivity extends AppCompatActivity {
                 finish();
                 break;
             case MyApp.PURCHASE_DETAIL:
-                purchaseBean = messageEvent.getPurchaseList();
+                purchaseBean = messageEvent.getPurchaseBean();
                 initPurchaseList(purchaseBean);
                 break;
         }
@@ -131,7 +141,7 @@ public class SPDetailActivity extends AppCompatActivity {
         intent = getIntent();
         type = intent.getExtras().getInt("type");
         detailType = intent.getExtras().getInt("detail_type");
-        System.out.println("type:" + type);
+        System.out.println("type:" + type + "detailType:+++++++++" + detailType);
         if (type == 1) {
             llBottom.setVisibility(View.GONE);
         }
@@ -153,14 +163,20 @@ public class SPDetailActivity extends AppCompatActivity {
             @Override
             public void onCodeClick(View view, int position) {
                 Intent intent = new Intent(SPDetailActivity.this, Code.class);
-                intent.putExtra("bh", applyBean.getApplyId());
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SPDetailActivity.this, view.findViewById(R.id.iv_code), "sharedView").toBundle());
+                if (detailType == 300 || detailType == 2) {
+                    intent.putExtra("bh", applyBean.getApplyId());
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SPDetailActivity.this, view.findViewById(R.id.iv_code), "sharedView").toBundle());
+                } else if (detailType == 310 || detailType == 3) {
+                    intent.putExtra("bh", purchaseBean.getPurcId());
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SPDetailActivity.this, view.findViewById(R.id.iv_code), "sharedView").toBundle());
+                }
+
             }
         });
     }
 
 
-    //获取网络数据并进行初始化
+    //获取我的申请网络数据并进行初始化
     private void initApplyList(ApplyBean.DataBean applyBean) {
         uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
         uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
@@ -170,11 +186,12 @@ public class SPDetailActivity extends AppCompatActivity {
         spDetailAdapter.updateList(applyBean);
     }
 
-    private void initPurchaseList(Purchase.DataBean purchaseBean) {
+    //获取我的采购
+    private void initPurchaseList(PurchaseBean.DataBean purchaseBean) {
         uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
         uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
         uiList.add(new ViewType(ViewType.SL_TYPE_EXPLAIN));
-        for (int i = 0; i < applyBean.getApplyContentList().size(); i++)
+        for (int i = 0; i < purchaseBean.getPurchaseContentList().size(); i++)
             uiList.add(1, new ViewType(ViewType.SL_TYPE_DETAIL));
         spDetailAdapter.updateList(purchaseBean);
 
@@ -202,39 +219,14 @@ public class SPDetailActivity extends AppCompatActivity {
 //                }).show();
                 break;
             case R.id.agree:
-                builder = new AlertDialog.Builder(SPDetailActivity.this);
-                builder.setTitle("确认提交吗?");
-                builder.setMessage("同意此次申请请按确定键");
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (applyBean.getReviewList() != null) {
-                            int temp = -1;
-                            for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
-                                if (myApp.getUser().getId() == dataBean.getUserNo())
-                                    temp = dataBean.getId();
-                            }
-                            System.out.println("review:" + temp);
-                            if (temp != -1)
-                                netServerImp.agreeReview(temp);
-                        }
-                    }
-                });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
-                break;
-            case R.id.disagree:
-                new MaterialDialog.Builder(this)
-                        .title("请输入拒绝理由")
-                        .inputRangeRes(2, 20, R.color.orange)
-                        .inputType(InputType.TYPE_CLASS_TEXT)
-                        .input("拒绝理由", null, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                if (detailType == 300) {//同意申请单
+                    builder = new AlertDialog.Builder(SPDetailActivity.this);
+                    builder.setTitle("确认提交吗?");
+                    builder.setMessage("同意此次申请请按确定键");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (applyBean.getReviewList() != null) {
                                 int temp = -1;
                                 for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
                                     if (myApp.getUser().getId() == dataBean.getUserNo())
@@ -242,12 +234,88 @@ public class SPDetailActivity extends AppCompatActivity {
                                 }
                                 System.out.println("review:" + temp);
                                 if (temp != -1)
-                                    netServerImp.refuseReview(temp);
+                                    netServerImp.agreeReview(temp);
                             }
-                        })
-                        .negativeText("取消")
-                        .positiveText("确定")
-                        .show();
+                        }
+                    });
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
+                    break;
+                } else if (detailType == 310) {//同意采购单
+                    builder = new AlertDialog.Builder(SPDetailActivity.this);
+                    builder.setTitle("确认提交吗?");
+                    builder.setMessage("同意此次申请请按确定键");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (purchaseBean.getReviewList() != null) {
+                                int temp = -1;
+                                for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
+                                    if (myApp.getUser().getId() == dataBean.getUserNo())
+                                        temp = dataBean.getId();
+                                }
+                                System.out.println("review:" + temp);
+                                if (temp != -1)
+                                    netServerImp.agreeReview(temp);
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
+                }
+
+            case R.id.disagree:
+                if (detailType == 300) {
+                    new MaterialDialog.Builder(this)
+                            .title("请输入拒绝理由")
+                            .inputRangeRes(2, 20, R.color.orange)
+                            .inputType(InputType.TYPE_CLASS_TEXT)
+                            .input("拒绝理由", null, new MaterialDialog.InputCallback() {
+                                @Override
+                                public void onInput(MaterialDialog dialog, CharSequence input) {
+                                    int temp = -1;
+                                    for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
+                                        if (myApp.getUser().getId() == dataBean.getUserNo())
+                                            temp = dataBean.getId();
+                                    }
+                                    System.out.println("review:" + temp);
+                                    if (temp != -1)
+                                        netServerImp.refuseReview(temp);
+                                }
+                            })
+                            .negativeText("取消")
+                            .positiveText("确定")
+                            .show();
+                } else if (detailType == 310) {
+                    new MaterialDialog.Builder(this)
+                            .title("请输入拒绝理由")
+                            .inputRangeRes(2, 20, R.color.orange)
+                            .inputType(InputType.TYPE_CLASS_TEXT)
+                            .input("拒绝理由", null, new MaterialDialog.InputCallback() {
+                                @Override
+                                public void onInput(MaterialDialog dialog, CharSequence input) {
+                                    int temp = -1;
+                                    for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
+                                        if (myApp.getUser().getId() == dataBean.getUserNo())
+                                            temp = dataBean.getId();
+                                    }
+                                    System.out.println("review:" + temp);
+                                    if (temp != -1)
+                                        netServerImp.refuseReview(temp);
+                                }
+                            })
+                            .negativeText("取消")
+                            .positiveText("确定")
+                            .show();
+                }
                 break;
         }
     }

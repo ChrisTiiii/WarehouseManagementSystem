@@ -77,12 +77,14 @@ public class MySPFragment extends Fragment {
     private void initView() {
         titleList = new ArrayList<>();
         uiList = new ArrayList<>();
-        titleList.add("我的申请");
         titleList.add("待审批");
         titleList.add("已审批");
-        uiList.add(SPFragment.newInstance(2, myApp));
+        titleList.add("我的申领");
+        titleList.add("我的采购");
         uiList.add(SPFragment.newInstance(0, myApp));
         uiList.add(SPFragment.newInstance(1, myApp));
+        uiList.add(SPFragment.newInstance(2, myApp));
+        uiList.add(SPFragment.newInstance(3, myApp));
         viewPagerAdapter = new ViewPagerAdapter(getFragmentManager(), titleList);
         viewPagerAdapter.setList(uiList);
         spViewpager.setAdapter(viewPagerAdapter);

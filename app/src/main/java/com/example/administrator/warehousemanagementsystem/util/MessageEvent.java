@@ -1,9 +1,10 @@
 package com.example.administrator.warehousemanagementsystem.util;
 
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
-import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
-import com.example.administrator.warehousemanagementsystem.bean.Purchase;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 
@@ -21,10 +22,11 @@ public class MessageEvent {
     private List<Map<String, Object>> mapList;
     private List<MyGoods> goodsList;
     private List<ReviewList.DataBean> reviewLists;
-    private ApplyBean.DataBean applyList;
     private List<ReviewListHaveDone.DataBean> haveDoneList;
-    private List<MyApplyList.DataBean> myApplyList;
-    private Purchase.DataBean purchaseList;
+    private List<ApplyList.DataBean> myApplyList;
+    private List<PurchaseList.DataBean> purchaseList;
+    private ApplyBean.DataBean applyList;//我的申请单
+    private PurchaseBean.DataBean purchaseBean;//我的采购单
 
 
     public MessageEvent(int tag) {
@@ -98,19 +100,27 @@ public class MessageEvent {
         this.haveDoneList = haveDoneList;
     }
 
-    public List<MyApplyList.DataBean> getMyApplyList() {
+    public List<ApplyList.DataBean> getMyApplyList() {
         return myApplyList;
     }
 
-    public void setMyApplyList(List<MyApplyList.DataBean> myApplyList) {
+    public void setMyApplyList(List<ApplyList.DataBean> myApplyList) {
         this.myApplyList = myApplyList;
     }
 
-    public Purchase.DataBean getPurchaseList() {
+    public List<PurchaseList.DataBean> getPurchaseList() {
         return purchaseList;
     }
 
-    public void setPurchaseList(Purchase.DataBean purchaseList) {
+    public void setPurchaseList(List<PurchaseList.DataBean> purchaseList) {
         this.purchaseList = purchaseList;
+    }
+
+    public PurchaseBean.DataBean getPurchaseBean() {
+        return purchaseBean;
+    }
+
+    public void setPurchaseBean(PurchaseBean.DataBean purchaseBean) {
+        this.purchaseBean = purchaseBean;
     }
 }

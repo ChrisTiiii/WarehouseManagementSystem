@@ -7,7 +7,7 @@ import java.util.List;
  * DATE: 2018/12/19 0019
  * Description:获取我的申请列表
  **/
-public class MyApplyList {
+public class ApplyList {
 
     /**
      * result : ok

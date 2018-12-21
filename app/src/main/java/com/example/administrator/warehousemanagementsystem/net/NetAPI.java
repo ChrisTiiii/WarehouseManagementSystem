@@ -5,24 +5,18 @@ import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
-import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
-import com.example.administrator.warehousemanagementsystem.bean.Purchase;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import okhttp3.RequestBody;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -53,7 +47,7 @@ public interface NetAPI {
 
     @FormUrlEncoded
     @POST("addPurchase.do")
-    Observable<Purchase> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier);//提交采购单
+    Observable<PurchaseBean> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier);//提交采购单
 
 
     @GET("getReviewListBy.do")
@@ -63,7 +57,7 @@ public interface NetAPI {
     Observable<ApplyBean> getApply(@Query("id") String id);//待审批申领单详情
 
     @GET("getPurchaseById.do")
-    Observable<Purchase> getPurchaseById(@Query("id") String id);//采购单详情
+    Observable<PurchaseBean> getPurchaseById(@Query("id") String id);//采购单详情
 
     @GET("agreeReview.do")
     Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交同意审批
@@ -76,6 +70,11 @@ public interface NetAPI {
 
 
     @GET("getApplyListBy.do")
-    Observable<MyApplyList> getApplyList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的申请
+    Observable<ApplyList> getApplyList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的申领单
+
+
+    @GET("getPurchaseListBy.do")
+    Observable<PurchaseList> getPurchaseList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的采购单
+
 
 }

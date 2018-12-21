@@ -7,7 +7,7 @@ import java.util.List;
  * DATE: 2018/12/18 0018
  * Description:
  **/
-public class Purchase {
+public class PurchaseBean {
 
     /**
      * result : ok

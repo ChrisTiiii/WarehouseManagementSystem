@@ -14,11 +14,13 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
-import com.example.administrator.warehousemanagementsystem.bean.Purchase;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.QRCodeUtil;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 import com.githang.stepview.StepView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +41,15 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final int SP_EXPLAIN = 2;//领用详情
     private final int SP_PROGRESS = 3;//进度
 
-    private int viewType;//待审 已审 我的
-    private int detailType;//0申领 1采购
+    private int viewType;//0待审 1已审 2我的申领 3我的采购
+    private int detailType;//300/2申领 310/3采购
     public List<ViewType> uiList;//界面布局list
     public ApplyBean.DataBean applyBean;//具体申领单数据list
-    public Purchase.DataBean purchaseBean;//具体采购单数据list
+    public PurchaseBean.DataBean purchaseBean;//具体采购单数据list
     public OnCodeClickListener onCodeClickListener;
     MyApp myApp;
 
+    //申领单
     public SPDetailAdapter(Context context, MyApp myApp, List<ViewType> uiList, ApplyBean.DataBean applyBean, int viewType, int detailType) {
         this.context = context;
         this.myApp = myApp;
@@ -56,8 +59,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.detailType = detailType;
     }
 
-
-    public SPDetailAdapter(Context context, MyApp myApp, List<ViewType> uiList, Purchase.DataBean purchaseBean, int viewType, int detailType) {
+    //采购单
+    public SPDetailAdapter(Context context, MyApp myApp, List<ViewType> uiList, PurchaseBean.DataBean purchaseBean, int viewType, int detailType) {
         this.context = context;
         this.myApp = myApp;
         this.uiList = uiList;
@@ -72,13 +75,14 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return uiList.get(position).getType();
     }
 
-
+    //初次加载apply
     public void updateList(ApplyBean.DataBean applyBean) {
         this.applyBean = applyBean;
         notifyDataSetChanged();
     }
 
-    public void updateList(Purchase.DataBean purchaseBean) {
+    //初次加载Purchase
+    public void updateList(PurchaseBean.DataBean purchaseBean) {
         this.purchaseBean = purchaseBean;
         notifyDataSetChanged();
     }
@@ -107,7 +111,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        if (detailType == 0) {
+        if (detailType == 300 || detailType == 2) {
             if (viewHolder instanceof HeadViewHolder) {
                 HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
                 //添加二维码,默认数据加载
@@ -115,6 +119,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 headViewHolder.ivCode.setImageBitmap(mBitmap);
                 headViewHolder.spPerson.setText(String.valueOf(applyBean.getFromUserName()));
                 headViewHolder.spBh.setText(applyBean.getApplyId());
+                headViewHolder.tvChange.setText("所在部门");
                 headViewHolder.tvSpBm.setText(String.valueOf(applyBean.getDeptName()));
                 headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(applyBean.getApplyStartdate())));
                 //待审批
@@ -181,15 +186,16 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 progressViewHolder.stepView.setSteps(temp);
                 progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
             }
-        } else if (detailType == 1) {
+        } else if (detailType == 310 || detailType == 3) {
             if (viewHolder instanceof HeadViewHolder) {
                 HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
                 //添加二维码,默认数据加载
                 Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(purchaseBean.getPurcId(), 480, 480);
                 headViewHolder.ivCode.setImageBitmap(mBitmap);
                 headViewHolder.spPerson.setText(String.valueOf(purchaseBean.getUserNo()));
-                headViewHolder.spBh.setText(purchaseBean.getPurcSupplier());
-//                headViewHolder.tvSpBm.setText(String.valueOf(purchaseBean.getDeptName()));
+                headViewHolder.spBh.setText(purchaseBean.getPurcId());
+                headViewHolder.tvChange.setText("供应商");
+                headViewHolder.tvSpBm.setText(String.valueOf(purchaseBean.getPurcSupplier()));
                 headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(purchaseBean.getPurcStartdate())));
                 //待审批
                 if (viewType == 0) {
@@ -199,7 +205,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 //已审批
                 if (viewType == 1) {
                     if (purchaseBean.getReviewList() != null)
-                        for (Purchase.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList())
+                        for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList())
                             if (myApp.getUser().getId() == dataBean.getUserNo())
                                 if (dataBean.getReviewState().equals("通过")) {
                                     Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
@@ -210,12 +216,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 }
                     headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
                 }
-                //我的审批
-                if (viewType == 2) {
+                //我的采购
+                if (viewType == 3) {
                     headViewHolder.state.setTextColor(context.getResources().getColor(R.color.steelblue));
                     Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
-                    headViewHolder.state.setText("我的申请单");
-                    for (Purchase.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
+                    headViewHolder.state.setText("我的采购单");
+                    for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
                         if (dataBean.getReviewState().equals("未通过")) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
                             headViewHolder.state.setText("申请未通过");
@@ -285,6 +291,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView state;
         @BindView(R.id.iv_code)
         ImageView ivCode;
+        @BindView(R.id.detail_change)
+        TextView tvChange;
 
         HeadViewHolder(View view) {
             super(view);

@@ -1,17 +1,16 @@
 package com.example.administrator.warehousemanagementsystem.net;
 
-import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
-import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
-import com.example.administrator.warehousemanagementsystem.bean.Purchase;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
@@ -27,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -260,7 +258,7 @@ public class NetServerImp {
     public void postPurchase(Integer userNo, String note, String goodsMap, String userNoList, String supplier) {
         netAPI.postPurchase(userNo, note, goodsMap, userNoList, supplier).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
-                .subscribe(new Subscriber<Purchase>() {
+                .subscribe(new Subscriber<PurchaseBean>() {
                     @Override
                     public void onCompleted() {
                         EventBus.getDefault().post(new MessageEvent(myApp.POST_SUCCESS, ""));
@@ -275,7 +273,7 @@ public class NetServerImp {
                     }
 
                     @Override
-                    public void onNext(Purchase purchase) {
+                    public void onNext(PurchaseBean purchase) {
                         System.out.println("result:" + purchase.getResult());
                         if (purchase.getResult().equals("ok")) {
                             System.out.println("data:" + purchase.getData().getPurchaseContentList().toString());
@@ -354,6 +352,7 @@ public class NetServerImp {
      * 获取申请单详情
      */
     public void getApply(String applyNo, MyDialog myDialog) {
+        System.out.println("applyNo:++++++++++" + applyNo);
         netAPI.getApply(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ApplyBean>() {
@@ -382,11 +381,17 @@ public class NetServerImp {
     }
 
 
+    /**
+     * 获取具体的采购单
+     *
+     * @param applyNo
+     * @param myDialog
+     */
     public void getPurchaseById(String applyNo, MyDialog myDialog) {
         System.out.println("applyNo" + applyNo);
         netAPI.getPurchaseById(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
-                .subscribe(new Subscriber<Purchase>() {
+                .subscribe(new Subscriber<PurchaseBean>() {
                     @Override
                     public void onCompleted() {
                         myDialog.dissDilalog();
@@ -399,11 +404,11 @@ public class NetServerImp {
                     }
 
                     @Override
-                    public void onNext(Purchase purchase) {
+                    public void onNext(PurchaseBean purchase) {
                         if (purchase.getResult().equals("ok")) {
                             if (purchase.getData() != null) {
                                 MessageEvent messageEvent = new MessageEvent(myApp.PURCHASE_DETAIL);
-                                messageEvent.setPurchaseList(purchase.getData());
+                                messageEvent.setPurchaseBean(purchase.getData());
                                 EventBus.getDefault().post(messageEvent);
                             }
                         }
@@ -501,15 +506,12 @@ public class NetServerImp {
     }
 
     /**
-     * 获取我提交的申请
+     * 获取我提交的申请单
      */
-
-
     public void getApplyList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
-        System.out.println("用户id:" + myApp.getUser().getId());
         netAPI.getApplyList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
-                .subscribe(new Subscriber<MyApplyList>() {
+                .subscribe(new Subscriber<ApplyList>() {
                     @Override
                     public void onCompleted() {
                         myDialog.dissDilalog();
@@ -525,10 +527,43 @@ public class NetServerImp {
                     }
 
                     @Override
-                    public void onNext(MyApplyList myApplyList) {
+                    public void onNext(ApplyList myApplyList) {
                         if (myApplyList.getResult().equals("ok")) {
                             MessageEvent messageEvent = new MessageEvent(myApp.MY_APPLY_LIST);
                             messageEvent.setMyApplyList(myApplyList.getData());
+                            EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+    }
+
+
+    /**
+     * 获取我的采购单列表
+     */
+    public void getPurchaseList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
+        netAPI.getPurchaseList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<PurchaseList>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getPurchaseList已完成");
+                        refreshLayout.finishRefresh();
+                        refreshLayout.finishLoadmore();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(PurchaseList purchaseList) {
+                        if (purchaseList.getResult().equals("ok")) {
+                            MessageEvent messageEvent = new MessageEvent(myApp.MY_PURCHASE_LIST);
+                            messageEvent.setPurchaseList(purchaseList.getData());
                             EventBus.getDefault().post(messageEvent);
                         }
                     }

@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,8 @@ import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.SPDetailActivity;
 import com.example.administrator.warehousemanagementsystem.adapter.mysp.SPAdapter;
-import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
@@ -56,17 +56,19 @@ public class SPFragment extends Fragment {
     private List<ReviewList.DataBean> waitList;
     private List<ReviewListHaveDone.DataBean> doneList;
     private List<ReviewListHaveDone.DataBean> preDoneList;
-    private List<MyApplyList.DataBean> myApplyList;
-    private List<MyApplyList.DataBean> preMyApplyList;
+    private List<ApplyList.DataBean> myApplyList;//我的申领单
+    private List<ApplyList.DataBean> preMyApplyList;
+    private List<PurchaseList.DataBean> prePurchaseList;
+    private List<PurchaseList.DataBean> purchaseList;//我的采购单
 
     private SPAdapter spAdapter;
-    private int type;//type==0待审批 type==1 已审批 2为我的申请
+    private int type;//type==0待审批 type==1 已审批 2申领 3 采购
     private NetServerImp netServerImp;
     private MyApp myApp;
     private int page_wait = 1;//待审批请求页
     private int page_done = 1;//已完成请求页
     private int page_me = 1;//我的申请
-
+    private int page_purchase = 1;//我的采购
     private MyDialog myDialog;
 
 
@@ -100,8 +102,8 @@ public class SPFragment extends Fragment {
             EventBus.getDefault().register(this);
         netServerImp = new NetServerImp(myApp);
         myDialog = new MyDialog(getContext(), 1);
-        initList();
-        initView();
+        initList();//初始化全部list
+        initView();//初始化界面
         loadData();//刷新和加载
         return view;
     }
@@ -112,6 +114,7 @@ public class SPFragment extends Fragment {
         waitList.clear();
         doneList.clear();
         myApplyList.clear();
+        purchaseList.clear();
         switch (type) {
             case 0:
                 myDialog.showDialog();
@@ -124,6 +127,10 @@ public class SPFragment extends Fragment {
             case 2:
                 myDialog.showDialog();
                 netServerImp.getApplyList(1, 5, refreshLayout, myDialog);
+                break;
+            case 3:
+                myDialog.showDialog();
+                netServerImp.getPurchaseList(1, 5, refreshLayout, myDialog);
                 break;
         }
     }
@@ -149,6 +156,11 @@ public class SPFragment extends Fragment {
                         myApplyList.clear();
                         netServerImp.getApplyList(1, 5, refreshLayout, myDialog);
                         break;
+                    case 3:
+                        page_purchase = 1;
+                        purchaseList.clear();
+                        netServerImp.getPurchaseList(1, 5, refreshLayout, myDialog);
+                        break;
                 }
             }
         });
@@ -165,6 +177,9 @@ public class SPFragment extends Fragment {
                         break;
                     case 2:
                         netServerImp.getApplyList(++page_me, 5, refreshLayout, myDialog);
+                        break;
+                    case 3:
+                        netServerImp.getPurchaseList(++page_purchase, 5, refreshLayout, myDialog);
                         break;
                 }
             }
@@ -192,10 +207,18 @@ public class SPFragment extends Fragment {
                 break;
             case MyApp.MY_APPLY_LIST:
                 preMyApplyList.clear();
-                for (MyApplyList.DataBean dataBean : messageEvent.getMyApplyList())
+                for (ApplyList.DataBean dataBean : messageEvent.getMyApplyList())
                     preMyApplyList.add(dataBean);
                 myApplyList.addAll(preMyApplyList);
                 spAdapter.notifyDataSetChanged();
+                break;
+            case MyApp.MY_PURCHASE_LIST:
+                prePurchaseList.clear();
+                for (PurchaseList.DataBean dataBean : messageEvent.getPurchaseList())
+                    prePurchaseList.add(dataBean);
+                purchaseList.addAll(prePurchaseList);
+                spAdapter.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -206,6 +229,8 @@ public class SPFragment extends Fragment {
         preDoneList = new ArrayList<>();
         myApplyList = new ArrayList<>();
         preMyApplyList = new ArrayList<>();
+        prePurchaseList = new ArrayList<>();
+        purchaseList = new ArrayList<>();
     }
 
 
@@ -218,24 +243,31 @@ public class SPFragment extends Fragment {
 
     //初始化适配器
     void whichAdapter() {
-        spAdapter = new SPAdapter(getContext(), myApp, myApplyList, waitList, doneList, type);
+        spAdapter = new SPAdapter(getContext(), myApp, waitList, doneList, myApplyList, purchaseList, type);
         recycler.setAdapter(spAdapter);
-        System.out.println("type:" + type);
         //跳转详情订单
         spAdapter.setOnItemClickListener(new SPAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getContext(), SPDetailActivity.class);
                 intent.putExtra("type", type);
-                if (type == 0) {
-                    intent.putExtra("bh", waitList.get(position).getObjNo());
-                    intent.putExtra("detail_type", waitList.get(position).getReviewTypeNo());
-                } else if (type == 1) {
-                    intent.putExtra("bh", doneList.get(position).getObjNo());
-                    intent.putExtra("detail_type", doneList.get(position).getReviewTypeNo());
-                } else if (type == 2) {
-                    intent.putExtra("bh", myApplyList.get(position).getId());
-                    intent.putExtra("detail_type", myApplyList.get(position).getReviewTypeNo());
+                switch (type) {
+                    case 0:
+                        intent.putExtra("bh", waitList.get(position).getObjNo());
+                        intent.putExtra("detail_type", waitList.get(position).getReviewTypeNo());
+                        break;
+                    case 1:
+                        intent.putExtra("bh", doneList.get(position).getObjNo());
+                        intent.putExtra("detail_type", doneList.get(position).getReviewTypeNo());
+                        break;
+                    case 2:
+                        intent.putExtra("bh", myApplyList.get(position).getId());
+                        intent.putExtra("detail_type", 2);//我的申领单
+                        break;
+                    case 3:
+                        intent.putExtra("bh", purchaseList.get(position).getId());
+                        intent.putExtra("detail_type", 3);//我的采购单
+                        break;
                 }
                 startActivity(intent);
             }

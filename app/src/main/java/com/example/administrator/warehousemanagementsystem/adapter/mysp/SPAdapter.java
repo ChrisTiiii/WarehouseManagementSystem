@@ -13,12 +13,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
-import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -36,18 +35,19 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private MyApp myApp;
     private List<ReviewList.DataBean> waitList;
     private List<ReviewListHaveDone.DataBean> doneList;
-    private List<MyApplyList.DataBean> myApplyList;
+    private List<ApplyList.DataBean> myApplyList;
+    private List<PurchaseList.DataBean> purchaseList;
     private OnItemClickListener onItemClickListener;
-    private int type;//0 为未审批 1 为已审批  2为我的申请
-    private static final int VIEW_TYPE = -1;
+    private int type;//0 为未审批 1 为已审批  2为我的申申领 3为我的采购
 
 
-    public SPAdapter(Context context, MyApp myApp, List<MyApplyList.DataBean> myApplyList, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, int type) {
+    public SPAdapter(Context context, MyApp myApp, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, List<ApplyList.DataBean> myApplyList, List<PurchaseList.DataBean> purchaseList, int type) {
         this.context = context;
         this.myApp = myApp;
-        this.myApplyList = myApplyList;
         this.waitList = waitList;
         this.doneList = doneList;
+        this.myApplyList = myApplyList;
+        this.purchaseList = purchaseList;
         this.type = type;
     }
 
@@ -62,69 +62,70 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof SPViewHolder) {
             SPViewHolder spViewHolder = (SPViewHolder) viewHolder;
-            if (type == 0) {
-                Glide.with(context).load(R.drawable.wait).into(spViewHolder.ivHead);
-                spViewHolder.slProduct.setText("物品种类：" + waitList.get(i).getGoodsCount() + "个物资种类");
-                spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(waitList.get(i).getStartDate()))));
-                spViewHolder.slperson.setText("来自" + waitList.get(i).getFromUserName() + "的申请");
-                spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onItemClickListener.onItemClick(v, i);
-                    }
-                });
-                spViewHolder.state.setText(waitList.get(i).getReviewState());
-                spViewHolder.slType.setText(waitList.get(i).getReviewType() + "单");
-            } else if (type == 1) {
-                if (doneList.get(i).getReviewState().equals("通过"))
-                    Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
-                else if (doneList.get(i).getReviewState().equals("未通过"))
-                    Glide.with(context).load(R.drawable.disagree).into(spViewHolder.ivHead);
-                spViewHolder.slProduct.setText("物品种类：" + doneList.get(i).getGoodsCount() + "个物资种类");
-                spViewHolder.slTime.setText(TimeUtil.stampToDate(String.valueOf(doneList.get(i).getReviewDate())));
-                spViewHolder.slperson.setText("来自" + doneList.get(i).getFromUserName() + "的申请");
-                spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onItemClickListener.onItemClick(v, i);
-                    }
-                });
-                spViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
-                spViewHolder.state.setText(doneList.get(i).getReviewState());
-                spViewHolder.slType.setText(doneList.get(i).getReviewType() + "单");
-            } else if (type == 2) {
-                Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
-                spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
-                spViewHolder.slProduct.setText("物品用途：" + myApplyList.get(i).getApplyUsage());
-                spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(myApplyList.get(i).getApplyStartdate()))));
-                spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onItemClickListener.onItemClick(v, i);
-                    }
-                });
-                spViewHolder.state.setText(myApplyList.get(i).getApplyState());
-                spViewHolder.slType.setText(myApplyList.get(i).getReviewType() + "单");
+            switch (type) {
+                case 0:
+                    Glide.with(context).load(R.drawable.wait).into(spViewHolder.ivHead);
+                    spViewHolder.slProduct.setText("物品种类：" + waitList.get(i).getGoodsCount() + "个物资种类");
+                    spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(waitList.get(i).getStartDate()))));
+                    spViewHolder.slperson.setText("来自" + waitList.get(i).getFromUserName() + "的申请");
+                    spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onItemClickListener.onItemClick(v, i);
+                        }
+                    });
+                    spViewHolder.state.setText(waitList.get(i).getReviewState());
+                    spViewHolder.slType.setText(waitList.get(i).getReviewType() + "单");
+                    break;
+                case 1:
+                    if (doneList.get(i).getReviewState().equals("通过"))
+                        Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
+                    else if (doneList.get(i).getReviewState().equals("未通过"))
+                        Glide.with(context).load(R.drawable.disagree).into(spViewHolder.ivHead);
+                    spViewHolder.slProduct.setText("物品种类：" + doneList.get(i).getGoodsCount() + "个物资种类");
+                    spViewHolder.slTime.setText(TimeUtil.stampToDate(String.valueOf(doneList.get(i).getReviewDate())));
+                    spViewHolder.slperson.setText("来自" + doneList.get(i).getFromUserName() + "的申请");
+                    spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onItemClickListener.onItemClick(v, i);
+                        }
+                    });
+                    spViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
+                    spViewHolder.state.setText(doneList.get(i).getReviewState());
+                    spViewHolder.slType.setText(doneList.get(i).getReviewType() + "单");
+                    break;
+                case 2:
+                    Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
+                    spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
+                    spViewHolder.slProduct.setText("物品用途：" + myApplyList.get(i).getApplyUsage());
+                    spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(myApplyList.get(i).getApplyStartdate()))));
+                    spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onItemClickListener.onItemClick(v, i);
+                        }
+                    });
+                    spViewHolder.state.setText(myApplyList.get(i).getApplyState());
+                    spViewHolder.slType.setText("申领单");
+                    break;
+                case 3:
+                    Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
+                    spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
+                    spViewHolder.slProduct.setText("物品用途：" + purchaseList.get(i).getPurcUsage());
+                    spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(purchaseList.get(i).getPurcStartdate()))));
+                    spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onItemClickListener.onItemClick(v, i);
+                        }
+                    });
+                    spViewHolder.state.setText(purchaseList.get(i).getPurcState());
+                    spViewHolder.slType.setText("采购单");
+                    break;
             }
         }
     }
-
-
-//    public int getItemViewType(int position) {
-//        switch (type) {
-//            case 0:
-//                if (waitList.size() <= 0)
-//                    return VIEW_TYPE;
-//            case 1:
-//                if (doneList.size() <= 0)
-//                    return VIEW_TYPE;
-//            case 2:
-//                if (myApplyList.size() <= 0)
-//                    return VIEW_TYPE;
-//            default:
-//                return super.getItemViewType(position);
-//        }
-//    }
 
 
     @Override
@@ -136,6 +137,8 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return doneList.size();
             case 2:
                 return myApplyList.size();
+            case 3:
+                return purchaseList.size();
             default:
                 return 0;
         }
