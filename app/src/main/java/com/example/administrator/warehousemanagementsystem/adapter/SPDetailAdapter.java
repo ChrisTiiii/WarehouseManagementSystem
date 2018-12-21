@@ -200,7 +200,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 headViewHolder.ivCode.setImageBitmap(mBitmap);
                 headViewHolder.spPerson.setText(String.valueOf(purchaseBean.getUserNo()));
                 headViewHolder.spBh.setText(purchaseBean.getPurcId());
-                headViewHolder.tvChange.setText("商品供应：");
+                headViewHolder.tvChange.setText("采购供应：");
                 headViewHolder.tvSpBm.setText(String.valueOf(purchaseBean.getPurcSupplier()));
                 headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(purchaseBean.getPurcStartdate())));
                 headViewHolder.llBao.setVisibility(View.GONE);
