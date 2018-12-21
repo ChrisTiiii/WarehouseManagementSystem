@@ -18,6 +18,8 @@ import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,7 +53,6 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @NonNull
     @Override
-
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.sp_item, viewGroup, false);
         return new SPViewHolder(view);
@@ -73,6 +74,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
                 spViewHolder.state.setText(waitList.get(i).getReviewState());
+                spViewHolder.slType.setText(waitList.get(i).getReviewType() + "单");
             } else if (type == 1) {
                 if (doneList.get(i).getReviewState().equals("通过"))
                     Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
@@ -89,6 +91,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
                 spViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                 spViewHolder.state.setText(doneList.get(i).getReviewState());
+                spViewHolder.slType.setText(doneList.get(i).getReviewType() + "单");
             } else if (type == 2) {
                 Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
                 spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
@@ -101,6 +104,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
                 spViewHolder.state.setText(myApplyList.get(i).getApplyState());
+                spViewHolder.slType.setText(myApplyList.get(i).getReviewType() + "单");
             }
         }
     }
@@ -155,6 +159,8 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LinearLayout noData;
         @BindView(R.id.have_data)
         LinearLayout haveData;
+        @BindView(R.id.sl_type)
+        TextView slType;
 
         SPViewHolder(View view) {
             super(view);

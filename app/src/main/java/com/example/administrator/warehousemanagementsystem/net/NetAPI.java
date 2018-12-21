@@ -32,7 +32,7 @@ import rx.Observable;
  * Description:
  **/
 public interface NetAPI {
-    @GET("login.do")
+    @POST("login.do")
     Observable<UserBean> getUser(@Query("userid") String userid, @Query("pass") String pass, @Query("from") String app);//用户登录，获取用户角色
 
     @GET("getGoodsListBy.do")
@@ -63,7 +63,7 @@ public interface NetAPI {
     Observable<ApplyBean> getApply(@Query("id") String id);//待审批申领单详情
 
     @GET("getPurchaseById.do")
-    Observable<ApplyBean> getCGApply(@Query("id") String id);//待审批采购单详情
+    Observable<Purchase> getPurchaseById(@Query("id") String id);//采购单详情
 
     @GET("agreeReview.do")
     Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交同意审批

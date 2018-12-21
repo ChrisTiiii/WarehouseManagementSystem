@@ -3,6 +3,7 @@ package com.example.administrator.warehousemanagementsystem.util;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.MyApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
+import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 
@@ -23,6 +24,7 @@ public class MessageEvent {
     private ApplyBean.DataBean applyList;
     private List<ReviewListHaveDone.DataBean> haveDoneList;
     private List<MyApplyList.DataBean> myApplyList;
+    private Purchase.DataBean purchaseList;
 
 
     public MessageEvent(int tag) {
@@ -102,5 +104,13 @@ public class MessageEvent {
 
     public void setMyApplyList(List<MyApplyList.DataBean> myApplyList) {
         this.myApplyList = myApplyList;
+    }
+
+    public Purchase.DataBean getPurchaseList() {
+        return purchaseList;
+    }
+
+    public void setPurchaseList(Purchase.DataBean purchaseList) {
+        this.purchaseList = purchaseList;
     }
 }

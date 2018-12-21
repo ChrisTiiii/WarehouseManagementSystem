@@ -193,9 +193,9 @@ public class SLFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (spAdapter.getType().equals("申领单"))
-                                    netServerImp.postApply(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0));
+                                    netServerImp.postApply(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0));
                                 else if (spAdapter.getType().equals("采购单"))
-                                    netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getNote(), getGoodsList(0), getLeader(0), "11");
+                                    netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), spAdapter.getCaigou());
                             }
                         });
                         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -217,11 +217,11 @@ public class SLFragment extends Fragment {
 
     //提交审批
     public String achieve() {
-        if (!spAdapter.getNote().equals("") && getGoodsList(0) != null && getLeader(0) != null) {
+        if (!spAdapter.getExplain().equals("") && getGoodsList(0) != null && getLeader(0) != null) {
             //获取userNo
             Map<String, Object> map = new HashMap<>();
             map.put("userNo", myApp.getUser().getId());
-            map.put("note", spAdapter.getNote());
+            map.put("note", spAdapter.getExplain());
             map.put("goodsMap", getGoodsList(0));
             map.put("userNoList", getLeader(0));
             Gson gson = new Gson();
@@ -235,11 +235,11 @@ public class SLFragment extends Fragment {
     //给用户提供提示
     public String dialogString() {
         if (spAdapter.getType().equals("采购单"))
-            if (myApp.getRoot() != 100 && myApp.getRoot() != 110 & myApp.getRoot() != 120)
-                return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getNote();
+            if (myApp.getRoot() != 100 && myApp.getRoot() != 110)
+                return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain() + "\n供应商：" + spAdapter.getCaigou();
             else return "权限不够";
         else
-            return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getNote();
+            return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
     }
 
     /**
@@ -270,6 +270,12 @@ public class SLFragment extends Fragment {
         return null;
     }
 
+    /**
+     * 获取领导
+     *
+     * @param type
+     * @return
+     */
     public String getLeader(int type) {
         if (spAdapter.getLeaderList() != null) {
             JSONArray jsonArray = new JSONArray();

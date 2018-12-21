@@ -227,12 +227,16 @@ public class SPFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getContext(), SPDetailActivity.class);
                 intent.putExtra("type", type);
-                if (type == 0)
+                if (type == 0) {
                     intent.putExtra("bh", waitList.get(position).getObjNo());
-                else if (type == 1)
+                    intent.putExtra("detail_type", waitList.get(position).getReviewTypeNo());
+                } else if (type == 1) {
                     intent.putExtra("bh", doneList.get(position).getObjNo());
-                else if (type == 2)
+                    intent.putExtra("detail_type", doneList.get(position).getReviewTypeNo());
+                } else if (type == 2) {
                     intent.putExtra("bh", myApplyList.get(position).getId());
+                    intent.putExtra("detail_type", myApplyList.get(position).getReviewTypeNo());
+                }
                 startActivity(intent);
             }
         });

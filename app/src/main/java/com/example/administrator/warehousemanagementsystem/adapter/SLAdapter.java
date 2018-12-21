@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     List<MyGoods> goodsList;
     List<MyLeader> leaderList;
-    private String use = "";
+    private String caigou = "";
     private String explain = "";
     private String type = "";
 
@@ -122,7 +123,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         goodsList.clear();
         leaderList.clear();
         uiList.clear();
-        use = "";
+        caigou = "";
         explain = "";
         uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
         uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
@@ -169,7 +170,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
             if (headViewHolder.etUse.getTag() instanceof TextWatcher)
                 headViewHolder.etUse.removeTextChangedListener((TextWatcher) headViewHolder.etUse.getTag());
-            headViewHolder.etUse.setText(use);
+            headViewHolder.etUse.setText(caigou);
             TextWatcher headWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -177,14 +178,13 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    use = "";
-                    use += s.toString();
-                    use.replaceAll(use, s.toString());
+                    caigou = "";
+                    caigou += s.toString();
+                    caigou.replaceAll(caigou, s.toString());
                 }
             };
             headViewHolder.etUse.addTextChangedListener(headWatcher);
@@ -192,6 +192,10 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             headViewHolder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position != 1)
+                        headViewHolder.caigou.setVisibility(View.GONE);
+                    else headViewHolder.caigou.setVisibility(View.VISIBLE);
+                    notifyDataSetChanged();
                     type = parent.getItemAtPosition(position).toString();
                 }
 
@@ -287,8 +291,12 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return list;
     }
 
-    public String getNote() {
-        return !use.equals("") && explain.equals("'") ? use + "," + explain : "暂无备注";
+    public String getExplain() {
+        return !explain.equals("") ? explain : "暂无备注";
+    }
+
+    public String getCaigou() {
+        return !caigou.equals("") ? caigou : "暂无采购商";
     }
 
     public List<MyGoods> getGoodsList() {
@@ -314,6 +322,8 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         EditText etUse;
         @BindView(R.id.spinner2)
         Spinner spinner;
+        @BindView(R.id.caigou)
+        LinearLayout caigou;
 
         HeadViewHolder(View view) {
             super(view);

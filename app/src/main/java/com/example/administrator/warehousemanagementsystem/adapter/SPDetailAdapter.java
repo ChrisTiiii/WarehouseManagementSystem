@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
+import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.QRCodeUtil;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
@@ -38,18 +39,32 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final int SP_EXPLAIN = 2;//领用详情
     private final int SP_PROGRESS = 3;//进度
 
-    private int viewType;
+    private int viewType;//待审 已审 我的
+    private int detailType;//0申领 1采购
     public List<ViewType> uiList;//界面布局list
-    public ApplyBean.DataBean details;//具体数据list
+    public ApplyBean.DataBean applyBean;//具体申领单数据list
+    public Purchase.DataBean purchaseBean;//具体采购单数据list
     public OnCodeClickListener onCodeClickListener;
     MyApp myApp;
 
-    public SPDetailAdapter(Context context, MyApp myApp, List<ViewType> uiList, ApplyBean.DataBean details, int viewType) {
+    public SPDetailAdapter(Context context, MyApp myApp, List<ViewType> uiList, ApplyBean.DataBean applyBean, int viewType, int detailType) {
         this.context = context;
         this.myApp = myApp;
         this.uiList = uiList;
-        this.details = details;
+        this.applyBean = applyBean;
         this.viewType = viewType;
+        this.detailType = detailType;
+    }
+
+
+    public SPDetailAdapter(Context context, MyApp myApp, List<ViewType> uiList, Purchase.DataBean purchaseBean, int viewType, int detailType) {
+        this.context = context;
+        this.myApp = myApp;
+        this.uiList = uiList;
+        this.purchaseBean = purchaseBean;
+        this.viewType = viewType;
+        this.detailType = detailType;
+
     }
 
     @Override
@@ -59,7 +74,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public void updateList(ApplyBean.DataBean applyBean) {
-        this.details = applyBean;
+        this.applyBean = applyBean;
+        notifyDataSetChanged();
+    }
+
+    public void updateList(Purchase.DataBean purchaseBean) {
+        this.purchaseBean = purchaseBean;
         notifyDataSetChanged();
     }
 
@@ -87,79 +107,156 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        if (viewHolder instanceof HeadViewHolder) {
-            HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
-            //添加二维码,默认数据加载
-            Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(details.getApplyId(), 480, 480);
-            headViewHolder.ivCode.setImageBitmap(mBitmap);
-            headViewHolder.spPerson.setText(String.valueOf(details.getFromUserName()));
-            headViewHolder.spBh.setText(details.getApplyId());
-            headViewHolder.tvSpBm.setText(String.valueOf(details.getDeptName()));
-            headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(details.getApplyStartdate())));
-            //待审批
-            if (viewType == 0) {
-                Glide.with(context).load(R.drawable.spwait).into(headViewHolder.ivHead);
-                headViewHolder.state.setText(details.getApplyState());
-            }
-            //已审批
-            if (viewType == 1) {
-                if (details.getReviewList() != null)
-                    for (ApplyBean.DataBean.ReviewListBean dataBean : details.getReviewList())
-                        if (myApp.getUser().getId() == dataBean.getUserNo())
-                            if (dataBean.getReviewState().equals("通过")) {
-                                Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
-                                headViewHolder.state.setText("审批通过");
-                            } else if (dataBean.getReviewState().equals("未通过")) {
-                                Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
-                                headViewHolder.state.setText("审批未通过");
-                            }
-                headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            }
-            //我的审批
-            if (viewType == 2) {
-                headViewHolder.state.setTextColor(context.getResources().getColor(R.color.steelblue));
-                Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
-                headViewHolder.state.setText("我的申请单");
-                for (ApplyBean.DataBean.ReviewListBean dataBean : details.getReviewList()) {
-                    if (dataBean.getReviewState().equals("未通过")) {
+        if (detailType == 0) {
+            if (viewHolder instanceof HeadViewHolder) {
+                HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
+                //添加二维码,默认数据加载
+                Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(applyBean.getApplyId(), 480, 480);
+                headViewHolder.ivCode.setImageBitmap(mBitmap);
+                headViewHolder.spPerson.setText(String.valueOf(applyBean.getFromUserName()));
+                headViewHolder.spBh.setText(applyBean.getApplyId());
+                headViewHolder.tvSpBm.setText(String.valueOf(applyBean.getDeptName()));
+                headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(applyBean.getApplyStartdate())));
+                //待审批
+                if (viewType == 0) {
+                    Glide.with(context).load(R.drawable.spwait).into(headViewHolder.ivHead);
+                    headViewHolder.state.setText(applyBean.getApplyState());
+                }
+                //已审批
+                if (viewType == 1) {
+                    if (applyBean.getReviewList() != null)
+                        for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList())
+                            if (myApp.getUser().getId() == dataBean.getUserNo())
+                                if (dataBean.getReviewState().equals("通过")) {
+                                    Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
+                                    headViewHolder.state.setText("审批通过");
+                                } else if (dataBean.getReviewState().equals("未通过")) {
+                                    Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
+                                    headViewHolder.state.setText("审批未通过");
+                                }
+                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                }
+                //我的审批
+                if (viewType == 2) {
+                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.steelblue));
+                    Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
+                    headViewHolder.state.setText("我的申请单");
+                    for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
+                        if (dataBean.getReviewState().equals("未通过")) {
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setText("申请未通过");
+                        }
+                    }
+                    if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
                         headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                        headViewHolder.state.setText("申请未通过");
+                        headViewHolder.state.setText("申请已通过");
                     }
                 }
-                if (details.getReviewList().get(details.getReviewList().size() - 1).getReviewState().equals("通过")) {
+            }
+
+            if (viewHolder instanceof DetailViewHolder) {
+                DetailViewHolder detailViewHolder = (DetailViewHolder) viewHolder;
+                //通过当前位置计算出list列表当前项
+                if (applyBean.getApplyContentList() != null && (i - 1) >= 0) {
+                    detailViewHolder.tvDetailId.setText(i + "");
+                    detailViewHolder.tvDetailName.setText(applyBean.getApplyContentList().get(i - 1).getGoodsName());
+                    detailViewHolder.tvNum.setText(String.valueOf(applyBean.getApplyContentList().get(i - 1).getGoodsNum()));
+                }
+            }
+            if (viewHolder instanceof ExplainViewHolder) {
+                ExplainViewHolder explainViewHolder = (ExplainViewHolder) viewHolder;
+                explainViewHolder.tvExplain.setText(applyBean.getApplyUsage());
+            }
+
+            if (viewHolder instanceof ProgressViewHolder) {
+                ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
+                List<String> temp = new ArrayList<>();
+                int nowPoint = 0;//更改step状态位置
+                if (applyBean.getReviewList() != null)
+                    for (int j = 0; j < applyBean.getReviewList().size(); j++) {
+                        temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
+                        if (!applyBean.getReviewList().get(j).getReviewState().equals("等待审批"))
+                            nowPoint = j;
+                    }
+                progressViewHolder.stepView.setSteps(temp);
+                progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
+            }
+        } else if (detailType == 1) {
+            if (viewHolder instanceof HeadViewHolder) {
+                HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
+                //添加二维码,默认数据加载
+                Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(purchaseBean.getPurcId(), 480, 480);
+                headViewHolder.ivCode.setImageBitmap(mBitmap);
+                headViewHolder.spPerson.setText(String.valueOf(purchaseBean.getUserNo()));
+                headViewHolder.spBh.setText(purchaseBean.getPurcSupplier());
+//                headViewHolder.tvSpBm.setText(String.valueOf(purchaseBean.getDeptName()));
+                headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(purchaseBean.getPurcStartdate())));
+                //待审批
+                if (viewType == 0) {
+                    Glide.with(context).load(R.drawable.spwait).into(headViewHolder.ivHead);
+                    headViewHolder.state.setText(purchaseBean.getPurcState());
+                }
+                //已审批
+                if (viewType == 1) {
+                    if (purchaseBean.getReviewList() != null)
+                        for (Purchase.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList())
+                            if (myApp.getUser().getId() == dataBean.getUserNo())
+                                if (dataBean.getReviewState().equals("通过")) {
+                                    Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
+                                    headViewHolder.state.setText("审批通过");
+                                } else if (dataBean.getReviewState().equals("未通过")) {
+                                    Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
+                                    headViewHolder.state.setText("审批未通过");
+                                }
                     headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    headViewHolder.state.setText("申请已通过");
                 }
+                //我的审批
+                if (viewType == 2) {
+                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.steelblue));
+                    Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
+                    headViewHolder.state.setText("我的申请单");
+                    for (Purchase.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
+                        if (dataBean.getReviewState().equals("未通过")) {
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setText("申请未通过");
+                        }
+                    }
+                    if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                        headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                        headViewHolder.state.setText("申请已通过");
+                    }
+                }
+            }
+
+            if (viewHolder instanceof DetailViewHolder) {
+                DetailViewHolder detailViewHolder = (DetailViewHolder) viewHolder;
+                //通过当前位置计算出list列表当前项
+                if (purchaseBean.getPurchaseContentList() != null && (i - 1) >= 0) {
+                    detailViewHolder.tvDetailId.setText(i + "");
+                    detailViewHolder.tvDetailName.setText(purchaseBean.getPurchaseContentList().get(i - 1).getGoodsName());
+                    detailViewHolder.tvNum.setText(String.valueOf(purchaseBean.getPurchaseContentList().get(i - 1).getGoodsNum()));
+                }
+            }
+            if (viewHolder instanceof ExplainViewHolder) {
+                ExplainViewHolder explainViewHolder = (ExplainViewHolder) viewHolder;
+                explainViewHolder.tvExplain.setText(purchaseBean.getPurcUsage());
+            }
+
+            if (viewHolder instanceof ProgressViewHolder) {
+                ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
+                List<String> temp = new ArrayList<>();
+                int nowPoint = 0;//更改step状态位置
+                if (purchaseBean.getReviewList() != null)
+                    for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
+                        temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getUserNo()));
+                        if (!purchaseBean.getReviewList().get(j).getReviewState().equals("等待审批"))
+                            nowPoint = j;
+                    }
+                progressViewHolder.stepView.setSteps(temp);
+                progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
             }
         }
 
-        if (viewHolder instanceof DetailViewHolder) {
-            DetailViewHolder detailViewHolder = (DetailViewHolder) viewHolder;
-            //通过当前位置计算出list列表当前项
-            if (details.getApplyContentList() != null && (i - 1) >= 0) {
-                detailViewHolder.tvDetailId.setText(i + "");
-                detailViewHolder.tvDetailName.setText(details.getApplyContentList().get(i - 1).getGoodsName());
-                detailViewHolder.tvNum.setText(String.valueOf(details.getApplyContentList().get(i - 1).getGoodsNum()));
-            }
-        }
-        if (viewHolder instanceof ExplainViewHolder) {
-            ExplainViewHolder explainViewHolder = (ExplainViewHolder) viewHolder;
-            explainViewHolder.tvExplain.setText(details.getApplyUsage());
-        }
-
-        if (viewHolder instanceof ProgressViewHolder) {
-            ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
-            List<String> temp = new ArrayList<>();
-            int nowPoint = 0;//更改step状态位置
-            if (details.getReviewList() != null)
-                for (int j = 0; j < details.getReviewList().size(); j++) {
-                    temp.add(String.valueOf(details.getReviewList().get(j).getReviewUserName()));
-                    if (!details.getReviewList().get(j).getReviewState().equals("等待审批"))
-                        nowPoint = j;
-                }
-            progressViewHolder.stepView.setSteps(temp);
-            progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
-        }
     }
 
     @Override

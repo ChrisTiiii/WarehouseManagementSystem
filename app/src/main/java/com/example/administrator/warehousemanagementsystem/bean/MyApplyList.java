@@ -69,6 +69,8 @@ public class MyApplyList {
         private int id;
         private Object reviewList;
         private int userNo;
+        private String reviewType;
+        private Integer reviewTypeNo;
 
         @Override
         public String toString() {
@@ -169,6 +171,22 @@ public class MyApplyList {
 
         public int getUserNo() {
             return userNo;
+        }
+
+        public String getReviewType() {
+            return reviewType;
+        }
+
+        public void setReviewType(String reviewType) {
+            this.reviewType = reviewType;
+        }
+
+        public Integer getReviewTypeNo() {
+            return reviewTypeNo;
+        }
+
+        public void setReviewTypeNo(Integer reviewTypeNo) {
+            this.reviewTypeNo = reviewTypeNo;
         }
 
         public void setUserNo(int userNo) {

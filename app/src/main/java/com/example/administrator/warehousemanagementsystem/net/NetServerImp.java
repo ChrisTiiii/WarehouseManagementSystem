@@ -277,7 +277,9 @@ public class NetServerImp {
                     @Override
                     public void onNext(Purchase purchase) {
                         System.out.println("result:" + purchase.getResult());
-                        if (purchase.getResult().equals("ok")) ;
+                        if (purchase.getResult().equals("ok")) {
+                            System.out.println("data:" + purchase.getData().getPurchaseContentList().toString());
+                        }
                     }
                 });
     }
@@ -372,6 +374,36 @@ public class NetServerImp {
                             if (applyBean.getData() != null) {
                                 MessageEvent messageEvent = new MessageEvent(myApp.APPLY_DETAIL);
                                 messageEvent.setApplyList(applyBean.getData());
+                                EventBus.getDefault().post(messageEvent);
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    public void getPurchaseById(String applyNo, MyDialog myDialog) {
+        System.out.println("applyNo" + applyNo);
+        netAPI.getPurchaseById(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<Purchase>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(Purchase purchase) {
+                        if (purchase.getResult().equals("ok")) {
+                            if (purchase.getData() != null) {
+                                MessageEvent messageEvent = new MessageEvent(myApp.PURCHASE_DETAIL);
+                                messageEvent.setPurchaseList(purchase.getData());
                                 EventBus.getDefault().post(messageEvent);
                             }
                         }

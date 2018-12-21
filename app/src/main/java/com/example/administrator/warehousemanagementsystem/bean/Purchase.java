@@ -157,6 +157,19 @@ public class Purchase {
             private int id;
             private int purcNo;
 
+            @Override
+            public String toString() {
+                return "PurchaseContentListBean{" +
+                        "annotation='" + annotation + '\'' +
+                        ", goodsIdNo='" + goodsIdNo + '\'' +
+                        ", goodsName='" + goodsName + '\'' +
+                        ", goodsNo=" + goodsNo +
+                        ", goodsNum=" + goodsNum +
+                        ", id=" + id +
+                        ", purcNo=" + purcNo +
+                        '}';
+            }
+
             public String getAnnotation() {
                 return annotation;
             }

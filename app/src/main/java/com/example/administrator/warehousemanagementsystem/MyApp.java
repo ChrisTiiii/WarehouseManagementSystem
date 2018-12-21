@@ -20,14 +20,15 @@ public class MyApp extends Application {
     public static final int MENU_DETAIL = 0x322;//获取商品
     public static final int POST_SUCCESS = 0x232;//提交成功
     public static final int SP_LIST = 0x858;//获取角色的待审批
-    public static final int APPLY_DETAIL = 0x343;//获取订单详情
+    public static final int APPLY_DETAIL = 0x343;//获取申领订单详情
+    public static final int PURCHASE_DETAIL = 0x1236;//获取采购单详情
     public static final int COMMIT_APPLY = 0x2345;//同意/拒绝订单
     public static final int HAVE_DONE = 0x3432;//已完成订单
-    public static final int MY_APPLY_LIST=0x2321;//我的申请单list
+    public static final int MY_APPLY_LIST = 0x2321;//我的申请单list
 
     public UserBean.DataBean user;
 
-    public  UserBean.DataBean getUser() {
+    public UserBean.DataBean getUser() {
         return user != null ? user : null;
     }
 

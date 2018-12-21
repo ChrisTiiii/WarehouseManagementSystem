@@ -21,18 +21,20 @@ public class MyDialog {
 
     public void showDialog() {
         switch (type) {
-            case 0://登录
+            case 0://登录哪位
                 dialog = new MaterialDialog.Builder(context)
                         .title("正在登录")
                         .content("请稍后....")
                         .progress(true, 0)
                         .show();
+                dialog.setCanceledOnTouchOutside(false);
                 break;
             case 1://加载数据
                 dialog = new MaterialDialog.Builder(context)
                         .title("数据加载中").content("请稍后....")
                         .progress(true, 0)
                         .show();
+                dialog.setCanceledOnTouchOutside(false);
                 break;
         }
     }

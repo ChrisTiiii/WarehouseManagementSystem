@@ -21,6 +21,7 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.other.Code;
 import com.example.administrator.warehousemanagementsystem.adapter.SPDetailAdapter;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
+import com.example.administrator.warehousemanagementsystem.bean.Purchase;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
@@ -59,11 +60,13 @@ public class SPDetailActivity extends AppCompatActivity {
     LinearLayout llBottom;
 
     private List<ViewType> uiList;
-    private ApplyBean.DataBean applyBean;
+    private ApplyBean.DataBean applyBean;//申领单
+    private Purchase.DataBean purchaseBean;//采购单
     private SPDetailAdapter spDetailAdapter;
     private int type;//type==0待审批 type==1 已审批 //自己
     private AlertDialog.Builder builder;
     private Integer bh;//根据订单编号查询详情
+    private Integer detailType;//分类哪一类订单
     private NetServerImp netServerImp;
     MyApp myApp;
     Intent intent;
@@ -78,8 +81,20 @@ public class SPDetailActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         initView();
         witchRoot();//根据权限显示不同界面
-
-        netServerImp.getApply(String.valueOf(bh), myDialog);
+        if (detailType != null) {
+            switch (detailType) {
+                case 300:
+                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type, 0);
+                    recycler.setAdapter(spDetailAdapter);
+                    netServerImp.getApply(String.valueOf(bh), myDialog);
+                    break;
+                case 310:
+                    spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, purchaseBean, type, 1);
+                    recycler.setAdapter(spDetailAdapter);
+                    netServerImp.getPurchaseById(String.valueOf(bh), myDialog);
+                    break;
+            }
+        }
         if (spDetailAdapter != null)
             clickCode();
     }
@@ -90,10 +105,14 @@ public class SPDetailActivity extends AppCompatActivity {
         switch (messageEvent.getTag()) {
             case MyApp.APPLY_DETAIL:
                 applyBean = messageEvent.getApplyList();
-                initList(applyBean);
+                initApplyList(applyBean);
                 break;
             case MyApp.COMMIT_APPLY:
                 finish();
+                break;
+            case MyApp.PURCHASE_DETAIL:
+                purchaseBean = messageEvent.getPurchaseList();
+                initPurchaseList(purchaseBean);
                 break;
         }
     }
@@ -111,6 +130,7 @@ public class SPDetailActivity extends AppCompatActivity {
     public void witchRoot() {
         intent = getIntent();
         type = intent.getExtras().getInt("type");
+        detailType = intent.getExtras().getInt("detail_type");
         System.out.println("type:" + type);
         if (type == 1) {
             llBottom.setVisibility(View.GONE);
@@ -125,8 +145,6 @@ public class SPDetailActivity extends AppCompatActivity {
                 layoutRemove.setVisibility(View.GONE);
             }
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type);
-        recycler.setAdapter(spDetailAdapter);
     }
 
     //点击code放大
@@ -143,13 +161,23 @@ public class SPDetailActivity extends AppCompatActivity {
 
 
     //获取网络数据并进行初始化
-    private void initList(ApplyBean.DataBean applyBean) {
+    private void initApplyList(ApplyBean.DataBean applyBean) {
         uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
         uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
         uiList.add(new ViewType(ViewType.SL_TYPE_EXPLAIN));
         for (int i = 0; i < applyBean.getApplyContentList().size(); i++)
             uiList.add(1, new ViewType(ViewType.SL_TYPE_DETAIL));
         spDetailAdapter.updateList(applyBean);
+    }
+
+    private void initPurchaseList(Purchase.DataBean purchaseBean) {
+        uiList.add(new ViewType(ViewType.SL_TYPE_HEAD));
+        uiList.add(new ViewType(ViewType.SL_TYPE_ADD));
+        uiList.add(new ViewType(ViewType.SL_TYPE_EXPLAIN));
+        for (int i = 0; i < applyBean.getApplyContentList().size(); i++)
+            uiList.add(1, new ViewType(ViewType.SL_TYPE_DETAIL));
+        spDetailAdapter.updateList(purchaseBean);
+
     }
 
 
