@@ -74,67 +74,97 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:paddingTop="@dimen/dp_10">
 
                 <TextView
-                    android:layout_width="@dimen/dp_0"
+                    android:id="@+id/tt_bh"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="审批编号"
+                    android:text="审批编号："
                     android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/sp_bh"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_toRightOf="@+id/tt_bh"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_5" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="@dimen/dp_0"
+                    android:id="@+id/tt_time"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="申请时间"
+                    android:text="申请时间："
                     android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/tv_sp_usefor"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_toRightOf="@id/tt_time"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_5" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/detail_change"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="所在部门"
+                    android:text="所在部门："
                     android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/tv_sp_bm"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_toRightOf="@+id/detail_change"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_5" />
 
-            </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ll_bao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tt_bao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="报警信息："
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tv_bao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tt_bao"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_5" />
+
+            </RelativeLayout>
 
 
         </LinearLayout>
@@ -165,7 +195,7 @@
             android:textSize="@dimen/sp_15" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -179,6 +209,14 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="物品数量"
+            android:textSize="@dimen/sp_15" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="备注信息"
             android:textSize="@dimen/sp_15" />
 
     </LinearLayout>

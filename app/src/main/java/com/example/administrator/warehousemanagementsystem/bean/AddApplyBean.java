@@ -11,7 +11,7 @@ public class AddApplyBean {
 
     /**
      * result : ok
-     * data : {"applyContentList":[{"annotation":"","applyNo":3,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":12,"id":3},{"annotation":"","applyNo":3,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":5,"id":4}],"applyFinishdate":null,"applyId":"015446824190142","applyStartdate":1544682419013,"applyState":"进行中","applyUsage":"测试用途","applyWarning":"","deptNo":1,"id":3,"reviewList":[{"id":3,"objNo":3,"reviewDate":null,"reviewState":"等待审批","reviewType":300,"userNo":3},{"id":4,"objNo":3,"reviewDate":null,"reviewState":"等待审批","reviewType":300,"userNo":4}],"userNo":2}
+     * data : {"applyContentList":[{"annotation":"暂无","applyNo":45,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":20,"id":73},{"annotation":"暂无","applyNo":45,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":5,"id":74},{"annotation":"暂无","applyNo":45,"goodsIdNo":"6920459902387","goodsName":"康师傅冰红茶","goodsNo":3,"goodsNum":8,"id":75}],"applyFinishdate":null,"applyId":"015453711055705","applyStartdate":1545371105570,"applyState":"进行中","applyUsage":"测试csasas撒大大用途","applyWarning":"本单位暂不存在领用超限情况","deptName":"","deptNo":1,"fromUserName":"","id":45,"reviewList":[{"fromUserName":"","goodsCount":0,"id":97,"objNo":45,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewType":"","reviewTypeNo":300,"reviewUserName":"收费站站长1","startDate":null,"userNo":3},{"fromUserName":"","goodsCount":0,"id":98,"objNo":45,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewType":"","reviewTypeNo":300,"reviewUserName":"仓库管理员1","startDate":null,"userNo":4},{"fromUserName":"","goodsCount":0,"id":99,"objNo":45,"reviewDate":null,"reviewIndex":2,"reviewState":"等待审批","reviewType":"","reviewTypeNo":300,"reviewUserName":"主任1","startDate":null,"userNo":5}],"userNo":2}
      */
 
     private String result;
@@ -35,16 +35,18 @@ public class AddApplyBean {
 
     public static class DataBean {
         /**
-         * applyContentList : [{"annotation":"","applyNo":3,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":12,"id":3},{"annotation":"","applyNo":3,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":5,"id":4}]
+         * applyContentList : [{"annotation":"暂无","applyNo":45,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":20,"id":73},{"annotation":"暂无","applyNo":45,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":5,"id":74},{"annotation":"暂无","applyNo":45,"goodsIdNo":"6920459902387","goodsName":"康师傅冰红茶","goodsNo":3,"goodsNum":8,"id":75}]
          * applyFinishdate : null
-         * applyId : 015446824190142
-         * applyStartdate : 1544682419013
+         * applyId : 015453711055705
+         * applyStartdate : 1545371105570
          * applyState : 进行中
-         * applyUsage : 测试用途
-         * applyWarning :
+         * applyUsage : 测试csasas撒大大用途
+         * applyWarning : 本单位暂不存在领用超限情况
+         * deptName :
          * deptNo : 1
-         * id : 3
-         * reviewList : [{"id":3,"objNo":3,"reviewDate":null,"reviewState":"等待审批","reviewType":300,"userNo":3},{"id":4,"objNo":3,"reviewDate":null,"reviewState":"等待审批","reviewType":300,"userNo":4}]
+         * fromUserName :
+         * id : 45
+         * reviewList : [{"fromUserName":"","goodsCount":0,"id":97,"objNo":45,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewType":"","reviewTypeNo":300,"reviewUserName":"收费站站长1","startDate":null,"userNo":3},{"fromUserName":"","goodsCount":0,"id":98,"objNo":45,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewType":"","reviewTypeNo":300,"reviewUserName":"仓库管理员1","startDate":null,"userNo":4},{"fromUserName":"","goodsCount":0,"id":99,"objNo":45,"reviewDate":null,"reviewIndex":2,"reviewState":"等待审批","reviewType":"","reviewTypeNo":300,"reviewUserName":"主任1","startDate":null,"userNo":5}]
          * userNo : 2
          */
 
@@ -54,28 +56,13 @@ public class AddApplyBean {
         private String applyState;
         private String applyUsage;
         private String applyWarning;
+        private String deptName;
         private int deptNo;
+        private String fromUserName;
         private int id;
         private int userNo;
         private List<ApplyContentListBean> applyContentList;
         private List<ReviewListBean> reviewList;
-
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "applyFinishdate=" + applyFinishdate +
-                    ", applyId='" + applyId + '\'' +
-                    ", applyStartdate=" + applyStartdate +
-                    ", applyState='" + applyState + '\'' +
-                    ", applyUsage='" + applyUsage + '\'' +
-                    ", applyWarning='" + applyWarning + '\'' +
-                    ", deptNo=" + deptNo +
-                    ", id=" + id +
-                    ", userNo=" + userNo +
-                    ", applyContentList=" + applyContentList +
-                    ", reviewList=" + reviewList +
-                    '}';
-        }
 
         public Object getApplyFinishdate() {
             return applyFinishdate;
@@ -125,12 +112,28 @@ public class AddApplyBean {
             this.applyWarning = applyWarning;
         }
 
+        public String getDeptName() {
+            return deptName;
+        }
+
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
+        }
+
         public int getDeptNo() {
             return deptNo;
         }
 
         public void setDeptNo(int deptNo) {
             this.deptNo = deptNo;
+        }
+
+        public String getFromUserName() {
+            return fromUserName;
+        }
+
+        public void setFromUserName(String fromUserName) {
+            this.fromUserName = fromUserName;
         }
 
         public int getId() {
@@ -167,13 +170,13 @@ public class AddApplyBean {
 
         public static class ApplyContentListBean {
             /**
-             * annotation :
-             * applyNo : 3
+             * annotation : 暂无
+             * applyNo : 45
              * goodsIdNo : 6901668005731
              * goodsName : 奥利奥夹心饼干
              * goodsNo : 1
-             * goodsNum : 12
-             * id : 3
+             * goodsNum : 20
+             * id : 73
              */
 
             private String annotation;
@@ -183,19 +186,6 @@ public class AddApplyBean {
             private int goodsNo;
             private int goodsNum;
             private int id;
-
-            @Override
-            public String toString() {
-                return "ApplyContentListBean{" +
-                        "annotation='" + annotation + '\'' +
-                        ", applyNo=" + applyNo +
-                        ", goodsIdNo='" + goodsIdNo + '\'' +
-                        ", goodsName='" + goodsName + '\'' +
-                        ", goodsNo=" + goodsNo +
-                        ", goodsNum=" + goodsNum +
-                        ", id=" + id +
-                        '}';
-            }
 
             public String getAnnotation() {
                 return annotation;
@@ -256,20 +246,48 @@ public class AddApplyBean {
 
         public static class ReviewListBean {
             /**
-             * id : 3
-             * objNo : 3
+             * fromUserName :
+             * goodsCount : 0
+             * id : 97
+             * objNo : 45
              * reviewDate : null
+             * reviewIndex : 0
              * reviewState : 等待审批
-             * reviewType : 300
+             * reviewType :
+             * reviewTypeNo : 300
+             * reviewUserName : 收费站站长1
+             * startDate : null
              * userNo : 3
              */
 
+            private String fromUserName;
+            private int goodsCount;
             private int id;
             private int objNo;
             private Object reviewDate;
+            private int reviewIndex;
             private String reviewState;
-            private int reviewType;
+            private String reviewType;
+            private int reviewTypeNo;
+            private String reviewUserName;
+            private Object startDate;
             private int userNo;
+
+            public String getFromUserName() {
+                return fromUserName;
+            }
+
+            public void setFromUserName(String fromUserName) {
+                this.fromUserName = fromUserName;
+            }
+
+            public int getGoodsCount() {
+                return goodsCount;
+            }
+
+            public void setGoodsCount(int goodsCount) {
+                this.goodsCount = goodsCount;
+            }
 
             public int getId() {
                 return id;
@@ -295,6 +313,14 @@ public class AddApplyBean {
                 this.reviewDate = reviewDate;
             }
 
+            public int getReviewIndex() {
+                return reviewIndex;
+            }
+
+            public void setReviewIndex(int reviewIndex) {
+                this.reviewIndex = reviewIndex;
+            }
+
             public String getReviewState() {
                 return reviewState;
             }
@@ -303,12 +329,36 @@ public class AddApplyBean {
                 this.reviewState = reviewState;
             }
 
-            public int getReviewType() {
+            public String getReviewType() {
                 return reviewType;
             }
 
-            public void setReviewType(int reviewType) {
+            public void setReviewType(String reviewType) {
                 this.reviewType = reviewType;
+            }
+
+            public int getReviewTypeNo() {
+                return reviewTypeNo;
+            }
+
+            public void setReviewTypeNo(int reviewTypeNo) {
+                this.reviewTypeNo = reviewTypeNo;
+            }
+
+            public String getReviewUserName() {
+                return reviewUserName;
+            }
+
+            public void setReviewUserName(String reviewUserName) {
+                this.reviewUserName = reviewUserName;
+            }
+
+            public Object getStartDate() {
+                return startDate;
+            }
+
+            public void setStartDate(Object startDate) {
+                this.startDate = startDate;
             }
 
             public int getUserNo() {

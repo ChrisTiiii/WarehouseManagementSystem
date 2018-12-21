@@ -98,7 +98,7 @@ public class ReportFragment extends Fragment {
         if (messageEvent.getTag() == MyApp.REPORT_BT) {
             if (messageEvent.getMapList() != null) {
                 Description description = new Description();
-                description.setText("宁通仓库管理上月支出");
+                description.setText("宁通仓库管理(随机数据)");
                 picChart.setDescription(description);
                 for (Map<String, Object> map : messageEvent.getMapList()) {
                     String name = (String) map.get("name");

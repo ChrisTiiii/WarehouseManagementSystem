@@ -25,6 +25,7 @@ import com.example.administrator.warehousemanagementsystem.bean.MyLeader;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -64,6 +65,7 @@ public class SLFragment extends Fragment {
     private MyApp myApp;
     private NetServerImp netServerImp;
     private AlertDialog.Builder builder;
+    private MyDialog myDialog;
 
     @SuppressLint("ValidFragment")
     public SLFragment(MyApp myApp) {
@@ -74,6 +76,7 @@ public class SLFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         netServerImp = new NetServerImp(myApp);
+        myDialog = new MyDialog(getContext(), 2);
         if (null != rootView) {
             ViewGroup parent = (ViewGroup) rootView.getParent();
             if (!EventBus.getDefault().isRegistered(this))
@@ -182,7 +185,7 @@ public class SLFragment extends Fragment {
             builder = new AlertDialog.Builder(getContext());
             builder.setTitle("用户须知");
             builder.setMessage("若您有重复申领物品则按照最新物品明细进行提交申领\n");
-            if (!dialogString().equals("权限不够"))
+            if (!dialogString().equals("权限不够")) {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -192,10 +195,11 @@ public class SLFragment extends Fragment {
                         builder.setPositiveButton("确定提交", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                myDialog.showDialog();
                                 if (spAdapter.getType().equals("申领单"))
-                                    netServerImp.postApply(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0));
+                                    netServerImp.postApply(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), myDialog);
                                 else if (spAdapter.getType().equals("采购单"))
-                                    netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), spAdapter.getCaigou());
+                                    netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), spAdapter.getCaigou(), myDialog);
                             }
                         });
                         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -206,7 +210,8 @@ public class SLFragment extends Fragment {
                         }).show();
                     }
                 });
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                builder.show();
+            } else builder.setNegativeButton("权限不够", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 }
@@ -217,7 +222,7 @@ public class SLFragment extends Fragment {
 
     //提交审批
     public String achieve() {
-        if (!spAdapter.getExplain().equals("") && getGoodsList(0) != null && getLeader(0) != null) {
+        if ((!spAdapter.getExplain().equals("")) && getGoodsList(0) != null && getLeader(0) != null) {
             //获取userNo
             Map<String, Object> map = new HashMap<>();
             map.put("userNo", myApp.getUser().getId());
@@ -256,10 +261,17 @@ public class SLFragment extends Fragment {
             for (MyGoods temp : goodsList) {
                 if (temp.getNum() != null) {
                     try {
-                        if (type != 0)
-                            jsonObject.put(temp.getName(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
-                        else
-                            jsonObject.put(temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
+                        if (type != 0) {
+                            if (temp.getNum().equals("")) {
+                                jsonObject.put(temp.getName(), 0);
+                            } else
+                                jsonObject.put(temp.getName(), Integer.parseInt(temp.getNum()));
+                        } else {
+                            if (temp.getNum().equals("")) {
+                                jsonObject.put(temp.getCode(), 0);
+                            } else
+                                jsonObject.put(temp.getCode(), Integer.parseInt(temp.getNum()));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -267,7 +279,7 @@ public class SLFragment extends Fragment {
             }
             return jsonObject.toString().equals("") ? null : jsonObject.toString();
         }
-        return null;
+        return "{}";
     }
 
     /**

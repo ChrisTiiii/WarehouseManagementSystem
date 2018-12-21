@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -19,8 +21,6 @@ import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.QRCodeUtil;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 import com.githang.stepview.StepView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
  * Description:审批item详情
  **/
 public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
 
     private Context context;
     private final int SP_HEAD = 0;//物品用途
@@ -119,9 +120,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 headViewHolder.ivCode.setImageBitmap(mBitmap);
                 headViewHolder.spPerson.setText(String.valueOf(applyBean.getFromUserName()));
                 headViewHolder.spBh.setText(applyBean.getApplyId());
-                headViewHolder.tvChange.setText("所在部门");
+                headViewHolder.tvChange.setText("所在部门：");
                 headViewHolder.tvSpBm.setText(String.valueOf(applyBean.getDeptName()));
                 headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(applyBean.getApplyStartdate())));
+                headViewHolder.llBao.setVisibility(View.VISIBLE);
+                headViewHolder.tvBao.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                headViewHolder.tvBao.setText(applyBean.getApplyWarning());
                 //待审批
                 if (viewType == 0) {
                     Glide.with(context).load(R.drawable.spwait).into(headViewHolder.ivHead);
@@ -152,10 +156,11 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
-                    if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
-                        headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                        headViewHolder.state.setText("申请已通过");
-                    }
+                    if (applyBean.getReviewList().size() > 0)
+                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setText("申请已通过");
+                        }
                 }
             }
 
@@ -166,6 +171,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     detailViewHolder.tvDetailId.setText(i + "");
                     detailViewHolder.tvDetailName.setText(applyBean.getApplyContentList().get(i - 1).getGoodsName());
                     detailViewHolder.tvNum.setText(String.valueOf(applyBean.getApplyContentList().get(i - 1).getGoodsNum()));
+                    detailViewHolder.tvWarning.setText(applyBean.getApplyContentList().get(i - 1).getAnnotation());
                 }
             }
             if (viewHolder instanceof ExplainViewHolder) {
@@ -194,9 +200,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 headViewHolder.ivCode.setImageBitmap(mBitmap);
                 headViewHolder.spPerson.setText(String.valueOf(purchaseBean.getUserNo()));
                 headViewHolder.spBh.setText(purchaseBean.getPurcId());
-                headViewHolder.tvChange.setText("供应商");
+                headViewHolder.tvChange.setText("商品供应：");
                 headViewHolder.tvSpBm.setText(String.valueOf(purchaseBean.getPurcSupplier()));
                 headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(purchaseBean.getPurcStartdate())));
+                headViewHolder.llBao.setVisibility(View.GONE);
                 //待审批
                 if (viewType == 0) {
                     Glide.with(context).load(R.drawable.spwait).into(headViewHolder.ivHead);
@@ -227,10 +234,11 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
-                    if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
-                        headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                        headViewHolder.state.setText("申请已通过");
-                    }
+                    if (purchaseBean.getReviewList().size() > 0)
+                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setText("申请已通过");
+                        }
                 }
             }
 
@@ -241,6 +249,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     detailViewHolder.tvDetailId.setText(i + "");
                     detailViewHolder.tvDetailName.setText(purchaseBean.getPurchaseContentList().get(i - 1).getGoodsName());
                     detailViewHolder.tvNum.setText(String.valueOf(purchaseBean.getPurchaseContentList().get(i - 1).getGoodsNum()));
+                    detailViewHolder.tvWarning.setText(purchaseBean.getPurchaseContentList().get(i - 1).getAnnotation());
                 }
             }
             if (viewHolder instanceof ExplainViewHolder) {
@@ -293,6 +302,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ImageView ivCode;
         @BindView(R.id.detail_change)
         TextView tvChange;
+        @BindView(R.id.tv_bao)
+        TextView tvBao;
+        @BindView(R.id.ll_bao)
+        RelativeLayout llBao;
 
         HeadViewHolder(View view) {
             super(view);
@@ -314,6 +327,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView tvDetailName;
         @BindView(R.id.tv_num)
         TextView tvNum;
+        @BindView(R.id.tv_warning)
+        TextView tvWarning;
 
         DetailViewHolder(View view) {
             super(view);

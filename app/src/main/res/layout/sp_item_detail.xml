@@ -3,15 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
     <LinearLayout
         android:id="@+id/linear_head"
-        android:paddingTop="@dimen/dp_5"
-        android:paddingBottom="@dimen/dp_5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_8">
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_5">
 
 
         <TextView
@@ -21,17 +20,17 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_5"
             android:text="序号"
-            android:textSize="@dimen/sp_15" />
+            android:textSize="@dimen/sp_13" />
 
         <TextView
             android:id="@+id/tv_detail_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_5"
             android:text="物品名称"
-            android:textSize="@dimen/sp_15" />
+            android:textSize="@dimen/sp_13" />
 
         <TextView
             android:id="@+id/tv_num"
@@ -40,7 +39,17 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="物品数量"
-            android:textSize="@dimen/sp_15" />
+            android:textSize="@dimen/sp_13" />
+
+
+        <TextView
+            android:id="@+id/tv_warning"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="备注信息"
+            android:textSize="@dimen/sp_13" />
 
         <!--<TextView-->
         <!--android:id="@+id/tv_detail_id"-->

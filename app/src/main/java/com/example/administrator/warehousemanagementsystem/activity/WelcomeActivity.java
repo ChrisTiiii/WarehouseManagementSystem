@@ -14,7 +14,7 @@ import me.wangyuwei.particleview.ParticleView;
 /**
  * author: ZhongMing
  * DATE: 2018/12/18 0018
- * Description:
+ * Description:欢迎页
  **/
 public class WelcomeActivity extends AppCompatActivity {
     @BindView(R.id.wel)

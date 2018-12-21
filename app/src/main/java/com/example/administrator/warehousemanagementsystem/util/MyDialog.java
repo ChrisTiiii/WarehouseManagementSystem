@@ -36,6 +36,13 @@ public class MyDialog {
                         .show();
                 dialog.setCanceledOnTouchOutside(false);
                 break;
+            case 2:
+                dialog = new MaterialDialog.Builder(context)
+                        .title("正在提交您的申请").content("请稍后....")
+                        .progress(true, 0)
+                        .show();
+                dialog.setCanceledOnTouchOutside(false);
+                break;
         }
     }
 

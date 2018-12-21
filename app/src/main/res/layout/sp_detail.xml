@@ -51,19 +51,19 @@
                 android:textSize="@dimen/sp_16" />
 
             <!--<View-->
-                <!--android:layout_width="@dimen/dp_5"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:background="@color/white" />-->
+            <!--android:layout_width="@dimen/dp_5"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/white" />-->
 
             <!--<Button-->
-                <!--android:id="@+id/deliver"-->
-                <!--android:layout_width="@dimen/dp_0"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@color/dodgerblue"-->
-                <!--android:text="转交"-->
-                <!--android:textColor="@color/white"-->
-                <!--android:textSize="@dimen/sp_16" />-->
+            <!--android:id="@+id/deliver"-->
+            <!--android:layout_width="@dimen/dp_0"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@color/dodgerblue"-->
+            <!--android:text="转交"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/sp_16" />-->
 
 
         </LinearLayout>
@@ -71,7 +71,8 @@
         <LinearLayout
             android:id="@+id/layout_remove"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/revocation"
@@ -80,7 +81,8 @@
                 android:background="@color/dodgerblue"
                 android:text="撤销"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone" />
 
         </LinearLayout>
 

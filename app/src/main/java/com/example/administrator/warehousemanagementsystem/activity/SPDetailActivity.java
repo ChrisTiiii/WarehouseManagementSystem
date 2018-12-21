@@ -63,7 +63,7 @@ public class SPDetailActivity extends AppCompatActivity {
     private ApplyBean.DataBean applyBean;//申领单
     private PurchaseBean.DataBean purchaseBean;//采购单
     private SPDetailAdapter spDetailAdapter;
-    private int type;//type==0待审批 type==1 已审批 //2申领单 3采购单
+    private int type;//type==0待审批 type==1 已审批 // 2申领单 3采购单
     private AlertDialog.Builder builder;
     private Integer bh;//根据订单编号查询详情
     private Integer detailType;//分类哪一类订单
@@ -140,20 +140,38 @@ public class SPDetailActivity extends AppCompatActivity {
     public void witchRoot() {
         intent = getIntent();
         type = intent.getExtras().getInt("type");
-        detailType = intent.getExtras().getInt("detail_type");
-        System.out.println("type:" + type + "detailType:+++++++++" + detailType);
+        detailType = intent.getExtras().getInt("detail_type");//详情类型 300申领单 310采购单 2我的申请单 3我的采购单
+        bh = intent.getExtras().getInt("bh");//订单编号
         if (type == 1) {
             llBottom.setVisibility(View.GONE);
         }
-        bh = intent.getExtras().getInt("bh");
-        if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 100 || myApp.getRoot() == 120) {
-                layoutButton.setVisibility(View.GONE);
-                layoutRemove.setVisibility(View.VISIBLE);
-            } else {
-                layoutButton.setVisibility(View.VISIBLE);
-                layoutRemove.setVisibility(View.GONE);
-            }
+        switch (detailType) {
+            case 300:
+                if (myApp.getRoot() != -1)
+                    if (myApp.getRoot() == 100) {
+                        llBottom.setVisibility(View.GONE);
+                    } else {
+                        layoutButton.setVisibility(View.VISIBLE);
+                        layoutRemove.setVisibility(View.GONE);
+                    }
+                break;
+            case 310:
+                if (myApp.getRoot() != -1)
+                    if (myApp.getRoot() == 100) {
+                        llBottom.setVisibility(View.GONE);
+                    } else {
+                        layoutButton.setVisibility(View.VISIBLE);
+                        layoutRemove.setVisibility(View.GONE);
+                    }
+                break;
+            case 2:
+                llBottom.setVisibility(View.GONE);
+                break;
+            case 3:
+                llBottom.setVisibility(View.GONE);
+                break;
+
+        }
         recycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -175,6 +193,52 @@ public class SPDetailActivity extends AppCompatActivity {
         });
     }
 
+    private int getPurchaseState() {
+        int unPoint = 0;//获取当前状态值
+        int passPoint = 0;
+        if (purchaseBean.getReviewList() != null)
+            for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
+                if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过"))
+                    unPoint = j;
+            }
+        if (purchaseBean.getReviewList() != null)
+            for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
+                if (purchaseBean.getReviewList().get(j).getReviewState().equals("通过"))
+                    passPoint = j;
+            }
+        if (unPoint != 0) {
+            return -1;
+        }
+        if (passPoint != 0) {
+            return passPoint != applyBean.getReviewList().size() ? -1 : 1;
+        }
+        return 0;
+    }
+
+    private int getApplyState() {
+        List<String> temp = new ArrayList<>();
+        int unPoint = 0;//获取当前状态值
+        int passPoint = 0;
+        if (applyBean.getReviewList() != null)
+            for (int j = 0; j < applyBean.getReviewList().size(); j++) {
+                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
+                if (applyBean.getReviewList().get(j).getReviewState().equals("未通过"))
+                    unPoint = j;
+            }
+        if (applyBean.getReviewList() != null)
+            for (int j = 0; j < applyBean.getReviewList().size(); j++) {
+                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
+                if (applyBean.getReviewList().get(j).getReviewState().equals("通过"))
+                    passPoint = j;
+            }
+        if (unPoint != 0) {
+            return -1;
+        }
+        if (passPoint != 0) {
+            return passPoint != applyBean.getReviewList().size() ? -1 : 1;
+        }
+        return 0;
+    }
 
     //获取我的申请网络数据并进行初始化
     private void initApplyList(ApplyBean.DataBean applyBean) {
@@ -244,7 +308,6 @@ public class SPDetailActivity extends AppCompatActivity {
 
                         }
                     }).show();
-                    break;
                 } else if (detailType == 310) {//同意采购单
                     builder = new AlertDialog.Builder(SPDetailActivity.this);
                     builder.setTitle("确认提交吗?");
@@ -271,7 +334,7 @@ public class SPDetailActivity extends AppCompatActivity {
                         }
                     }).show();
                 }
-
+                break;
             case R.id.disagree:
                 if (detailType == 300) {
                     new MaterialDialog.Builder(this)

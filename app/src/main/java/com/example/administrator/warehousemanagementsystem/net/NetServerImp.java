@@ -255,12 +255,13 @@ public class NetServerImp {
 
     }
 
-    public void postPurchase(Integer userNo, String note, String goodsMap, String userNoList, String supplier) {
+    public void postPurchase(Integer userNo, String note, String goodsMap, String userNoList, String supplier, MyDialog myDialog) {
         netAPI.postPurchase(userNo, note, goodsMap, userNoList, supplier).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<PurchaseBean>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         EventBus.getDefault().post(new MessageEvent(myApp.POST_SUCCESS, ""));
                         Toast.makeText(myApp, "提交成功", Toast.LENGTH_SHORT).show();
                         System.out.println("postApply success");
@@ -268,8 +269,9 @@ public class NetServerImp {
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
-                        System.out.println(e.getMessage());
+                        System.out.println("错误原因：" + e.getMessage());
                     }
 
                     @Override
@@ -286,12 +288,14 @@ public class NetServerImp {
     /**
      * 提交申领数据订单
      */
-    public void postApply(Integer userNo, String note, String goodsMap, String userNoList) {
+    public void postApply(Integer userNo, String note, String goodsMap, String userNoList, MyDialog myDialog) {
+        System.out.println(userNo + note + goodsMap + userNoList);
         netAPI.postApply(userNo, note, goodsMap, userNoList).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<AddApplyBean>() {
                     @Override
                     public void onCompleted() {
+                        myDialog.dissDilalog();
                         EventBus.getDefault().post(new MessageEvent(myApp.POST_SUCCESS, ""));
                         Toast.makeText(myApp, "提交成功", Toast.LENGTH_SHORT).show();
                         System.out.println("postApply success");
@@ -299,8 +303,9 @@ public class NetServerImp {
 
                     @Override
                     public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        System.out.println("错误提示：" + e.getMessage());
                         Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
-                        System.out.println(e.getMessage());
                     }
 
                     @Override
