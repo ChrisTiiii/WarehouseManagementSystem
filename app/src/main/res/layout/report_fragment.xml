@@ -5,6 +5,14 @@
     android:orientation="vertical">
 
     <Button
+        android:id="@+id/btn_bb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="查看报表"
+        android:textColor="@color/steelblue" />
+
+    <Button
         android:id="@+id/btn_intent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +27,7 @@
         android:background="@null"
         android:text="清空"
         android:textColor="@color/steelblue" />
+
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pic_chart"

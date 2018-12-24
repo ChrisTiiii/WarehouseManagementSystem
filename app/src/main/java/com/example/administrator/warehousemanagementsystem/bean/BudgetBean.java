@@ -4,14 +4,14 @@ import java.util.List;
 
 /**
  * author: ZhongMing
- * DATE: 2018/12/18 0018
+ * DATE: 2018/12/24 0024
  * Description:
  **/
-public class PurchaseBean {
+public class BudgetBean {
 
     /**
      * result : ok
-     * data : {"id":3,"purcFinishdate":null,"purcId":"115450239615014","purcStartdate":1545023961501,"purcState":"进行中","purcSupplier":"供应商xxxxx","purcUsage":"采购单测试用途","purchaseContentList":[{"annotation":"","goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":30,"id":5,"purcNo":3},{"annotation":"","goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":50,"id":6,"purcNo":3}],"reviewList":[{"id":34,"objNo":3,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":300,"userNo":5},{"id":35,"objNo":3,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":300,"userNo":6}],"userNo":4}
+     * data : {"budgDate":1545029544129,"budgId":"215450295441293","budgState":"进行中","budgUsage":"预算单！！！","budgetContentList":[{"annotation":"","budgNo":2,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":300,"id":3},{"annotation":"","budgNo":2,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":500,"id":4}],"deptNo":1,"id":2,"reviewList":[{"id":36,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":320,"userNo":3},{"id":37,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":320,"userNo":5}],"userNo":2}
      */
 
     private String result;
@@ -35,29 +35,87 @@ public class PurchaseBean {
 
     public static class DataBean {
         /**
-         * id : 3
-         * purcFinishdate : null
-         * purcId : 115450239615014
-         * purcStartdate : 1545023961501
-         * purcState : 进行中
-         * purcSupplier : 供应商xxxxx
-         * purcUsage : 采购单测试用途
-         * purchaseContentList : [{"annotation":"","goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":30,"id":5,"purcNo":3},{"annotation":"","goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":50,"id":6,"purcNo":3}]
-         * reviewList : [{"id":34,"objNo":3,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":300,"userNo":5},{"id":35,"objNo":3,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":300,"userNo":6}]
-         * userNo : 4
+         * budgDate : 1545029544129
+         * budgId : 215450295441293
+         * budgState : 进行中
+         * budgUsage : 预算单！！！
+         * budgetContentList : [{"annotation":"","budgNo":2,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":300,"id":3},{"annotation":"","budgNo":2,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":500,"id":4}]
+         * deptNo : 1
+         * id : 2
+         * reviewList : [{"id":36,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":320,"userNo":3},{"id":37,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":320,"userNo":5}]
+         * userNo : 2
          */
 
+        private long budgDate;
+        private String budgId;
+        private String budgState;
+        private String budgUsage;
+        private int deptNo;
         private int id;
-        private Object purcFinishdate;
-        private String purcId;
-        private long purcStartdate;
-        private String purcState;
-        private String purcSupplier;
-        private String purcUsage;
-        private int userNo;
         private String fromUserName;
-        private List<PurchaseContentListBean> purchaseContentList;
+        private String deptName;
+        private int userNo;
+
+        private List<BudgetContentListBean> budgetContentList;
         private List<ReviewListBean> reviewList;
+
+
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "budgDate=" + budgDate +
+                    ", budgId='" + budgId + '\'' +
+                    ", budgState='" + budgState + '\'' +
+                    ", budgUsage='" + budgUsage + '\'' +
+                    ", deptNo=" + deptNo +
+                    ", id=" + id +
+                    ", fromUserName='" + fromUserName + '\'' +
+                    ", deptName='" + deptName + '\'' +
+                    ", userNo=" + userNo +
+                    ", budgetContentList=" + budgetContentList +
+                    ", reviewList=" + reviewList +
+                    '}';
+        }
+
+        public long getBudgDate() {
+            return budgDate;
+        }
+
+        public void setBudgDate(long budgDate) {
+            this.budgDate = budgDate;
+        }
+
+        public String getBudgId() {
+            return budgId;
+        }
+
+        public void setBudgId(String budgId) {
+            this.budgId = budgId;
+        }
+
+        public String getBudgState() {
+            return budgState;
+        }
+
+        public void setBudgState(String budgState) {
+            this.budgState = budgState;
+        }
+
+        public String getBudgUsage() {
+            return budgUsage;
+        }
+
+        public void setBudgUsage(String budgUsage) {
+            this.budgUsage = budgUsage;
+        }
+
+        public int getDeptNo() {
+            return deptNo;
+        }
+
+        public void setDeptNo(int deptNo) {
+            this.deptNo = deptNo;
+        }
 
         public int getId() {
             return id;
@@ -67,52 +125,12 @@ public class PurchaseBean {
             this.id = id;
         }
 
-        public Object getPurcFinishdate() {
-            return purcFinishdate;
+        public String getDeptName() {
+            return deptName;
         }
 
-        public void setPurcFinishdate(Object purcFinishdate) {
-            this.purcFinishdate = purcFinishdate;
-        }
-
-        public String getPurcId() {
-            return purcId;
-        }
-
-        public void setPurcId(String purcId) {
-            this.purcId = purcId;
-        }
-
-        public long getPurcStartdate() {
-            return purcStartdate;
-        }
-
-        public void setPurcStartdate(long purcStartdate) {
-            this.purcStartdate = purcStartdate;
-        }
-
-        public String getPurcState() {
-            return purcState;
-        }
-
-        public void setPurcState(String purcState) {
-            this.purcState = purcState;
-        }
-
-        public String getPurcSupplier() {
-            return purcSupplier;
-        }
-
-        public void setPurcSupplier(String purcSupplier) {
-            this.purcSupplier = purcSupplier;
-        }
-
-        public String getPurcUsage() {
-            return purcUsage;
-        }
-
-        public void setPurcUsage(String purcUsage) {
-            this.purcUsage = purcUsage;
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
         }
 
         public String getFromUserName() {
@@ -131,12 +149,12 @@ public class PurchaseBean {
             this.userNo = userNo;
         }
 
-        public List<PurchaseContentListBean> getPurchaseContentList() {
-            return purchaseContentList;
+        public List<BudgetContentListBean> getBudgetContentList() {
+            return budgetContentList;
         }
 
-        public void setPurchaseContentList(List<PurchaseContentListBean> purchaseContentList) {
-            this.purchaseContentList = purchaseContentList;
+        public void setBudgetContentList(List<BudgetContentListBean> budgetContentList) {
+            this.budgetContentList = budgetContentList;
         }
 
         public List<ReviewListBean> getReviewList() {
@@ -147,37 +165,24 @@ public class PurchaseBean {
             this.reviewList = reviewList;
         }
 
-        public static class PurchaseContentListBean {
+        public static class BudgetContentListBean {
             /**
              * annotation :
+             * budgNo : 2
              * goodsIdNo : 6901668005731
              * goodsName : 奥利奥夹心饼干
              * goodsNo : 1
-             * goodsNum : 30
-             * id : 5
-             * purcNo : 3
+             * goodsNum : 300
+             * id : 3
              */
 
             private String annotation;
+            private int budgNo;
             private String goodsIdNo;
             private String goodsName;
             private int goodsNo;
             private int goodsNum;
             private int id;
-            private int purcNo;
-
-            @Override
-            public String toString() {
-                return "PurchaseContentListBean{" +
-                        "annotation='" + annotation + '\'' +
-                        ", goodsIdNo='" + goodsIdNo + '\'' +
-                        ", goodsName='" + goodsName + '\'' +
-                        ", goodsNo=" + goodsNo +
-                        ", goodsNum=" + goodsNum +
-                        ", id=" + id +
-                        ", purcNo=" + purcNo +
-                        '}';
-            }
 
             public String getAnnotation() {
                 return annotation;
@@ -185,6 +190,14 @@ public class PurchaseBean {
 
             public void setAnnotation(String annotation) {
                 this.annotation = annotation;
+            }
+
+            public int getBudgNo() {
+                return budgNo;
+            }
+
+            public void setBudgNo(int budgNo) {
+                this.budgNo = budgNo;
             }
 
             public String getGoodsIdNo() {
@@ -226,25 +239,17 @@ public class PurchaseBean {
             public void setId(int id) {
                 this.id = id;
             }
-
-            public int getPurcNo() {
-                return purcNo;
-            }
-
-            public void setPurcNo(int purcNo) {
-                this.purcNo = purcNo;
-            }
         }
 
         public static class ReviewListBean {
             /**
-             * id : 34
-             * objNo : 3
+             * id : 36
+             * objNo : 2
              * reviewDate : null
              * reviewIndex : 0
              * reviewState : 等待审批
-             * reviewTypeNo : 300
-             * userNo : 5
+             * reviewTypeNo : 320
+             * userNo : 3
              */
 
             private int id;
@@ -253,8 +258,8 @@ public class PurchaseBean {
             private int reviewIndex;
             private String reviewState;
             private int reviewTypeNo;
-            private int userNo;
             private String reviewUserName;
+            private int userNo;
 
             public int getId() {
                 return id;

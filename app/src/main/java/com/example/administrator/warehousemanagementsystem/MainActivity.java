@@ -6,11 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.administrator.warehousemanagementsystem.fragment.ReportFragment;
 import com.example.administrator.warehousemanagementsystem.fragment.MySPFragment;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     List<Fragment> listFragment;
     private int lastfragment;//用于记录上个选择的Fragmenet
     MyApp myApp;
+    // 用来计算返回键的点击间隔时间
+    private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,4 +144,20 @@ public class MainActivity extends AppCompatActivity {
         transaction.show(listFragment.get(index)).commitAllowingStateLoss();
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                //弹出提示，可以有多种方式
+                Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

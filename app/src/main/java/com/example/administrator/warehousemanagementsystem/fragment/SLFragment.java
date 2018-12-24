@@ -196,10 +196,17 @@ public class SLFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 myDialog.showDialog();
-                                if (spAdapter.getType().equals("申领单"))
-                                    netServerImp.postApply(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), myDialog);
-                                else if (spAdapter.getType().equals("采购单"))
-                                    netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), spAdapter.getCaigou(), myDialog);
+                                switch (spAdapter.getType()) {
+                                    case "申领单":
+                                        netServerImp.postApply(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), myDialog);
+                                        break;
+                                    case "采购单":
+                                        netServerImp.postPurchase(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), spAdapter.getCaigou(), myDialog);
+                                        break;
+                                    case "预算单":
+                                        netServerImp.postBudget(myApp.getUser().getId(), spAdapter.getExplain(), getGoodsList(0), getLeader(0), myDialog);
+                                        break;
+                                }
                             }
                         });
                         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -239,12 +246,21 @@ public class SLFragment extends Fragment {
 
     //给用户提供提示
     public String dialogString() {
-        if (spAdapter.getType().equals("采购单"))
-            if (myApp.getRoot() != 100 && myApp.getRoot() != 110)
-                return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain() + "\n供应商：" + spAdapter.getCaigou();
-            else return "权限不够";
-        else
-            return "确定要提交如下申请的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
+        switch (spAdapter.getType()) {
+            case "申领单"://只有100收费站管理员,仓库管理员可以申请
+                if (myApp.getRoot() == 100 || myApp.getRoot() == 120)
+                    return "确定要提交如下申领的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
+                else return "权限不够";
+            case "采购单"://只有120仓库管理员可以
+                if (myApp.getRoot() == 120)
+                    return "确定要提交如下采购的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain() + "\n供应商：" + spAdapter.getCaigou();
+                else return "权限不够";
+            case "预算单"://只有100收费站管理员可以申请
+                if (myApp.getRoot() == 100)
+                    return "确定要提交如下预算的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
+                else return "权限不够";
+        }
+        return "出错";
     }
 
     /**

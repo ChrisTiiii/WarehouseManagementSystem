@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
+import com.example.administrator.warehousemanagementsystem.activity.ReportActivity;
 import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.github.mikephil.charting.charts.PieChart;
@@ -48,9 +50,12 @@ public class ReportFragment extends Fragment {
     PieChart picChart;
     @BindView(R.id.clear)
     Button clear;
+    @BindView(R.id.btn_bb)
+    Button btnBb;
 
     private List<PieEntry> things;//饼状图个体
     private ArrayList<Integer> colors;//饼状图色体
+    private List<String> listCK;
 
     public static ReportFragment newInstance() {
         Bundle args = new Bundle();
@@ -67,6 +72,12 @@ public class ReportFragment extends Fragment {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         things = new ArrayList<>();
+        listCK = new ArrayList<>();
+        listCK.add("一号仓库");
+        listCK.add("二号仓库");
+        listCK.add("三号仓库");
+        listCK.add("四号仓库");
+        listCK.add("全部仓库");
         return view;
     }
 
@@ -123,7 +134,7 @@ public class ReportFragment extends Fragment {
     }
 
 
-    @OnClick({R.id.btn_intent, R.id.clear})
+    @OnClick({R.id.btn_intent, R.id.clear, R.id.btn_bb})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_intent:
@@ -140,6 +151,23 @@ public class ReportFragment extends Fragment {
                         picChart.invalidate();
                     }
                 });
+                break;
+            case R.id.btn_bb:
+                new MaterialDialog.Builder(getContext())
+                        .title("标题")
+                        .positiveText("确认")
+                        .items(listCK)
+                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                System.out.println("which：" + listCK.get(which));
+                                Intent intent1 = new Intent(getContext(), ReportActivity.class);
+                                intent1.putExtra("which", listCK.get(which));
+                                startActivity(intent1);
+                                return true;
+                            }
+                        })
+                        .show();
                 break;
         }
     }

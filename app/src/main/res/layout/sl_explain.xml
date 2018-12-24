@@ -24,7 +24,7 @@
         android:singleLine="true"
         android:layout_weight="2"
         android:background="@null"
-        android:hint="请输入物品申请/采购详情说明"
+        android:hint="请输入物品申请/采购/预算详情说明"
         android:inputType="textMultiLine"
         android:paddingTop="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"

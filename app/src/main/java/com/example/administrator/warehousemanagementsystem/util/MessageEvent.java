@@ -2,6 +2,8 @@ package com.example.administrator.warehousemanagementsystem.util;
 
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.BudgetBean;
+import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
@@ -21,12 +23,14 @@ public class MessageEvent {
     private String message;
     private List<Map<String, Object>> mapList;
     private List<MyGoods> goodsList;
-    private List<ReviewList.DataBean> reviewLists;
-    private List<ReviewListHaveDone.DataBean> haveDoneList;
-    private List<ApplyList.DataBean> myApplyList;
-    private List<PurchaseList.DataBean> purchaseList;
+    private List<ReviewList.DataBean> reviewLists;//待审批
+    private List<ReviewListHaveDone.DataBean> haveDoneList;//已审批
+    private List<ApplyList.DataBean> myApplyList;//我的申请List
+    private List<PurchaseList.DataBean> purchaseList;//我的采购
+    private List<BudgetList.DataBean> budgetList;//我的预算
     private ApplyBean.DataBean applyList;//我的申请单
     private PurchaseBean.DataBean purchaseBean;//我的采购单
+    private BudgetBean.DataBean budgetBean;//我的预算单
 
 
     public MessageEvent(int tag) {
@@ -122,5 +126,21 @@ public class MessageEvent {
 
     public void setPurchaseBean(PurchaseBean.DataBean purchaseBean) {
         this.purchaseBean = purchaseBean;
+    }
+
+    public BudgetBean.DataBean getBudgetBean() {
+        return budgetBean;
+    }
+
+    public void setBudgetBean(BudgetBean.DataBean budgetBean) {
+        this.budgetBean = budgetBean;
+    }
+
+    public List<BudgetList.DataBean> getBudgetList() {
+        return budgetList;
+    }
+
+    public void setBudgetList(List<BudgetList.DataBean> budgetList) {
+        this.budgetList = budgetList;
     }
 }

@@ -77,19 +77,66 @@ public class MySPFragment extends Fragment {
     private void initView() {
         titleList = new ArrayList<>();
         uiList = new ArrayList<>();
-        titleList.add("待审批");
-        titleList.add("已审批");
-        titleList.add("我的申领");
-        titleList.add("我的采购");
-        uiList.add(SPFragment.newInstance(0, myApp));
-        uiList.add(SPFragment.newInstance(1, myApp));
-        uiList.add(SPFragment.newInstance(2, myApp));
-        uiList.add(SPFragment.newInstance(3, myApp));
+        whitchRoot();
         viewPagerAdapter = new ViewPagerAdapter(getFragmentManager(), titleList);
         viewPagerAdapter.setList(uiList);
         spViewpager.setAdapter(viewPagerAdapter);
         spTab.setupWithViewPager(spViewpager);
         spTab.setTabMode(TabLayout.MODE_FIXED);
+    }
+
+    private void whitchRoot() {
+        switch (myApp.getRoot()) {
+            case 100://收费站管理员
+                titleList.add("我的申领");
+                titleList.add("我的预算");
+                uiList.add(SPFragment.newInstance(2, myApp));
+                uiList.add(SPFragment.newInstance(4, myApp));
+                break;
+            case 110://收费站站长
+                titleList.add("待审批");
+                titleList.add("已审批");
+                uiList.add(SPFragment.newInstance(0, myApp));
+                uiList.add(SPFragment.newInstance(1, myApp));
+                break;
+            case 120://仓库管理员
+                titleList.add("我的申领");
+                titleList.add("我的采购");
+                uiList.add(SPFragment.newInstance(2, myApp));
+                uiList.add(SPFragment.newInstance(3, myApp));
+                break;
+            case 130://主任
+                titleList.add("待审批");
+                titleList.add("已审批");
+                uiList.add(SPFragment.newInstance(0, myApp));
+                uiList.add(SPFragment.newInstance(1, myApp));
+                break;
+            case 140://处长
+                titleList.add("待审批");
+                titleList.add("已审批");
+                titleList.add("申领");
+                titleList.add("采购");
+                titleList.add("预算");
+                uiList.add(SPFragment.newInstance(0, myApp));
+                uiList.add(SPFragment.newInstance(1, myApp));
+                uiList.add(SPFragment.newInstance(2, myApp));
+                uiList.add(SPFragment.newInstance(3, myApp));
+                uiList.add(SPFragment.newInstance(4, myApp));
+                break;
+            default:
+                titleList.add("待审批");
+                titleList.add("已审批");
+                titleList.add("申领");
+                titleList.add("采购");
+                titleList.add("预算");
+                uiList.add(SPFragment.newInstance(0, myApp));
+                uiList.add(SPFragment.newInstance(1, myApp));
+                uiList.add(SPFragment.newInstance(2, myApp));
+                uiList.add(SPFragment.newInstance(3, myApp));
+                uiList.add(SPFragment.newInstance(4, myApp));
+                break;
+        }
+
     }
 
     @Override

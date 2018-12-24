@@ -16,6 +16,7 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.SPDetailActivity;
 import com.example.administrator.warehousemanagementsystem.adapter.mysp.SPAdapter;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
@@ -53,22 +54,26 @@ public class SPFragment extends Fragment {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
     private List<ReviewList.DataBean> preWaitList;
-    private List<ReviewList.DataBean> waitList;
-    private List<ReviewListHaveDone.DataBean> doneList;
+    private List<ReviewList.DataBean> waitList;//待审批
+    private List<ReviewListHaveDone.DataBean> doneList;//已审批
     private List<ReviewListHaveDone.DataBean> preDoneList;
     private List<ApplyList.DataBean> myApplyList;//我的申领单
     private List<ApplyList.DataBean> preMyApplyList;
-    private List<PurchaseList.DataBean> prePurchaseList;
     private List<PurchaseList.DataBean> purchaseList;//我的采购单
+    private List<PurchaseList.DataBean> prePurchaseList;
+
+    private List<BudgetList.DataBean> budgetList;//我的预算单
+    private List<BudgetList.DataBean> preBudgetList;
 
     private SPAdapter spAdapter;
-    private int type;//type==0待审批 type==1 已审批 2申领 3 采购
+    private int type;//type==0待审批 type==1 已审批 2我的申领 3 我的采购 4我的预算 5年度预算参考
     private NetServerImp netServerImp;
     private MyApp myApp;
     private int page_wait = 1;//待审批请求页
     private int page_done = 1;//已完成请求页
-    private int page_me = 1;//我的申请
-    private int page_purchase = 1;//我的采购
+    private int page_me = 1;//我的申领单
+    private int page_purchase = 1;//我的采购单
+    private int page_budget = 1;//我的预算单
     private MyDialog myDialog;
 
 
@@ -115,22 +120,32 @@ public class SPFragment extends Fragment {
         doneList.clear();
         myApplyList.clear();
         purchaseList.clear();
+        budgetList.clear();
+        page_wait = 1;
+        page_done = 1;
+        page_me = 1;
+        page_purchase = 1;
+        page_budget = 1;
         switch (type) {
             case 0:
                 myDialog.showDialog();
-                netServerImp.getReviewList(1, 5, refreshLayout, myDialog);
+                netServerImp.getReviewList(page_wait, 5, refreshLayout, myDialog);
                 break;
             case 1:
                 myDialog.showDialog();
-                netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout, myDialog);
+                netServerImp.getReviewListHaveDoneByMe(page_done, 5, refreshLayout, myDialog);
                 break;
             case 2:
                 myDialog.showDialog();
-                netServerImp.getApplyList(1, 5, refreshLayout, myDialog);
+                netServerImp.getApplyList(page_me, 5, refreshLayout, myDialog);
                 break;
             case 3:
                 myDialog.showDialog();
-                netServerImp.getPurchaseList(1, 5, refreshLayout, myDialog);
+                netServerImp.getPurchaseList(page_purchase, 5, refreshLayout, myDialog);
+                break;
+            case 4:
+                myDialog.showDialog();
+                netServerImp.getBudgetList(page_budget, 5, refreshLayout, myDialog);
                 break;
         }
     }
@@ -144,22 +159,27 @@ public class SPFragment extends Fragment {
                     case 0:
                         page_wait = 1;
                         waitList.clear();
-                        netServerImp.getReviewList(1, 5, refreshLayout, myDialog);
+                        netServerImp.getReviewList(page_wait, 5, refreshLayout, myDialog);
                         break;
                     case 1:
                         page_done = 1;
                         doneList.clear();
-                        netServerImp.getReviewListHaveDoneByMe(1, 5, refreshLayout, myDialog);
+                        netServerImp.getReviewListHaveDoneByMe(page_done, 5, refreshLayout, myDialog);
                         break;
                     case 2:
                         page_me = 1;
                         myApplyList.clear();
-                        netServerImp.getApplyList(1, 5, refreshLayout, myDialog);
+                        netServerImp.getApplyList(page_me, 5, refreshLayout, myDialog);
                         break;
                     case 3:
                         page_purchase = 1;
                         purchaseList.clear();
-                        netServerImp.getPurchaseList(1, 5, refreshLayout, myDialog);
+                        netServerImp.getPurchaseList(page_purchase, 5, refreshLayout, myDialog);
+                        break;
+                    case 4:
+                        page_budget = 1;
+                        budgetList.clear();
+                        netServerImp.getBudgetList(page_budget, 5, refreshLayout, myDialog);
                         break;
                 }
             }
@@ -181,6 +201,10 @@ public class SPFragment extends Fragment {
                     case 3:
                         netServerImp.getPurchaseList(++page_purchase, 5, refreshLayout, myDialog);
                         break;
+                    case 4:
+                        netServerImp.getBudgetList(++page_budget, 5, refreshLayout, myDialog);
+                        break;
+
                 }
             }
         });
@@ -191,32 +215,39 @@ public class SPFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getReviewList(MessageEvent messageEvent) {
         switch (messageEvent.getTag()) {
-            case MyApp.SP_LIST:
+            case MyApp.SP_LIST://待审批
                 preWaitList.clear();
                 for (ReviewList.DataBean dataBean : messageEvent.getReviewLists())
                     preWaitList.add(dataBean);
                 waitList.addAll(preWaitList);
                 spAdapter.notifyDataSetChanged();
                 break;
-            case MyApp.HAVE_DONE:
+            case MyApp.HAVE_DONE://已审批
                 preDoneList.clear();
                 for (ReviewListHaveDone.DataBean dataBean : messageEvent.getHaveDoneList())
                     preDoneList.add(dataBean);
                 doneList.addAll(preDoneList);
                 spAdapter.notifyDataSetChanged();
                 break;
-            case MyApp.MY_APPLY_LIST:
+            case MyApp.MY_APPLY_LIST://我的申领
                 preMyApplyList.clear();
                 for (ApplyList.DataBean dataBean : messageEvent.getMyApplyList())
                     preMyApplyList.add(dataBean);
                 myApplyList.addAll(preMyApplyList);
                 spAdapter.notifyDataSetChanged();
                 break;
-            case MyApp.MY_PURCHASE_LIST:
+            case MyApp.MY_PURCHASE_LIST://我的采购
                 prePurchaseList.clear();
                 for (PurchaseList.DataBean dataBean : messageEvent.getPurchaseList())
                     prePurchaseList.add(dataBean);
                 purchaseList.addAll(prePurchaseList);
+                spAdapter.notifyDataSetChanged();
+                break;
+            case MyApp.MY_BUDGET_LIST://我的预算
+                preBudgetList.clear();
+                for (BudgetList.DataBean dataBean : messageEvent.getBudgetList())
+                    preBudgetList.add(dataBean);
+                budgetList.addAll(preBudgetList);
                 spAdapter.notifyDataSetChanged();
                 break;
         }
@@ -231,6 +262,8 @@ public class SPFragment extends Fragment {
         preMyApplyList = new ArrayList<>();
         prePurchaseList = new ArrayList<>();
         purchaseList = new ArrayList<>();
+        budgetList = new ArrayList<>();
+        preBudgetList = new ArrayList<>();
     }
 
 
@@ -243,7 +276,7 @@ public class SPFragment extends Fragment {
 
     //初始化适配器
     void whichAdapter() {
-        spAdapter = new SPAdapter(getContext(), myApp, waitList, doneList, myApplyList, purchaseList, type);
+        spAdapter = new SPAdapter(getContext(), myApp, waitList, doneList, myApplyList, purchaseList, budgetList, type);
         recycler.setAdapter(spAdapter);
         //跳转详情订单
         spAdapter.setOnItemClickListener(new SPAdapter.OnItemClickListener() {
@@ -268,6 +301,9 @@ public class SPFragment extends Fragment {
                         intent.putExtra("bh", purchaseList.get(position).getId());
                         intent.putExtra("detail_type", 3);//我的采购单
                         break;
+                    case 4:
+                        intent.putExtra("bh", budgetList.get(position).getId());
+                        intent.putExtra("detail_type", 4);//我的预算单
                 }
                 startActivity(intent);
             }

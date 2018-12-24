@@ -64,4 +64,6 @@ dependencies {
     implementation 'me.wangyuwei:ParticleView:1.0.4'
     //gif
     implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
+    //报表
+    implementation 'com.github.huangyanbin:SmartTable:2.2.0'
 }

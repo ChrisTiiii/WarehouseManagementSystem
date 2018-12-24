@@ -26,6 +26,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".activity.other.Code" />
         <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.ReportActivity" />
     </application>
 
 </manifest>

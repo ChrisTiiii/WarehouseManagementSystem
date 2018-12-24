@@ -6,6 +6,8 @@ import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
+import com.example.administrator.warehousemanagementsystem.bean.BudgetBean;
+import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
@@ -319,6 +321,39 @@ public class NetServerImp {
 
 
     /**
+     * 提交预算单
+     */
+
+    public void postBudget(Integer userNo, String note, String goodsMap, String userNoList, MyDialog myDialog) {
+        System.out.println(userNo + note + goodsMap + userNoList);
+        netAPI.postBudget(userNo, note, goodsMap, userNoList).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BudgetBean>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        EventBus.getDefault().post(new MessageEvent(myApp.POST_SUCCESS, ""));
+                        Toast.makeText(myApp, "提交成功", Toast.LENGTH_SHORT).show();
+                        System.out.println("postBudget success");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        System.out.println("错误提示：" + e.getMessage());
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(BudgetBean budget) {
+                        System.out.println("result:" + budget.getResult());
+                        if (budget.getResult().equals("ok"))
+                            System.out.println("data:" + budget.getData().getBudgetContentList().toString());
+                    }
+                });
+    }
+
+    /**
      * 获取待审批订单List
      *
      * @param page
@@ -356,9 +391,9 @@ public class NetServerImp {
     /**
      * 获取申请单详情
      */
-    public void getApply(String applyNo, MyDialog myDialog) {
+    public void getApplyById(String applyNo, MyDialog myDialog) {
         System.out.println("applyNo:++++++++++" + applyNo);
-        netAPI.getApply(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getApplyById(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ApplyBean>() {
                     @Override
@@ -414,6 +449,39 @@ public class NetServerImp {
                             if (purchase.getData() != null) {
                                 MessageEvent messageEvent = new MessageEvent(myApp.PURCHASE_DETAIL);
                                 messageEvent.setPurchaseBean(purchase.getData());
+                                EventBus.getDefault().post(messageEvent);
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    /**
+     * 获取预算单详情
+     */
+    public void getBudgetById(String applyNo, MyDialog myDialog) {
+        System.out.println("applyNo:++++++++++" + applyNo);
+        netAPI.getBudgetById(applyNo).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BudgetBean>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(BudgetBean budgetBean) {
+                        if (budgetBean.getResult().equals("ok")) {
+                            if (budgetBean.getData() != null) {
+                                MessageEvent messageEvent = new MessageEvent(myApp.BUDGET_DETAIL);
+                                messageEvent.setBudgetBean(budgetBean.getData());
                                 EventBus.getDefault().post(messageEvent);
                             }
                         }
@@ -576,4 +644,38 @@ public class NetServerImp {
 
 
     }
+
+    /**
+     * 获取我提交的申请单
+     */
+    public void getBudgetList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
+        netAPI.getBudgetList(myApp.user.getId(), page, size).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BudgetList>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getBudgetList已完成");
+                        refreshLayout.finishRefresh();
+                        refreshLayout.finishLoadmore();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(BudgetList budgetList) {
+                        if (budgetList.getResult().equals("ok")) {
+                            MessageEvent messageEvent = new MessageEvent(myApp.MY_BUDGET_LIST);
+                            messageEvent.setBudgetList(budgetList.getData());
+                            EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+    }
+
+
 }

@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
@@ -37,17 +38,19 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<ReviewListHaveDone.DataBean> doneList;
     private List<ApplyList.DataBean> myApplyList;
     private List<PurchaseList.DataBean> purchaseList;
+    private List<BudgetList.DataBean> budgetList;
     private OnItemClickListener onItemClickListener;
-    private int type;//0 为未审批 1 为已审批  2为我的申申领 3为我的采购
+    private int type;//0 为未审批 1 为已审批  2为我的申申领 3为我的采购 4位我的预算
 
 
-    public SPAdapter(Context context, MyApp myApp, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, List<ApplyList.DataBean> myApplyList, List<PurchaseList.DataBean> purchaseList, int type) {
+    public SPAdapter(Context context, MyApp myApp, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, List<ApplyList.DataBean> myApplyList, List<PurchaseList.DataBean> purchaseList, List<BudgetList.DataBean> budgetList, int type) {
         this.context = context;
         this.myApp = myApp;
         this.waitList = waitList;
         this.doneList = doneList;
         this.myApplyList = myApplyList;
         this.purchaseList = purchaseList;
+        this.budgetList = budgetList;
         this.type = type;
     }
 
@@ -123,6 +126,20 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     spViewHolder.state.setText(purchaseList.get(i).getPurcState());
                     spViewHolder.slType.setText("采购单");
                     break;
+                case 4:
+                    Glide.with(context).load(R.drawable.sh).into(spViewHolder.ivHead);
+                    spViewHolder.slperson.setText(myApp.getUser().getUserName() + "的申请");
+                    spViewHolder.slProduct.setText("物品用途：" + budgetList.get(i).getBudgUsage());
+                    spViewHolder.slTime.setText(String.valueOf(TimeUtil.stampToDate(String.valueOf(budgetList.get(i).getBudgDate()))));
+                    spViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onItemClickListener.onItemClick(v, i);
+                        }
+                    });
+                    spViewHolder.state.setText(budgetList.get(i).getBudgState());
+                    spViewHolder.slType.setText("预算单");
+                    break;
             }
         }
     }
@@ -139,6 +156,8 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return myApplyList.size();
             case 3:
                 return purchaseList.size();
+            case 4:
+                return budgetList.size();
             default:
                 return 0;
         }
