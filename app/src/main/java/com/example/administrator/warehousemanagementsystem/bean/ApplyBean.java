@@ -293,6 +293,20 @@ public class ApplyBean {
             private int userNo;
             private String reviewUserName;
 
+            @Override
+            public String toString() {
+                return "ReviewListBean{" +
+                        "id=" + id +
+                        ", objNo=" + objNo +
+                        ", reviewDate=" + reviewDate +
+                        ", reviewIndex=" + reviewIndex +
+                        ", reviewState='" + reviewState + '\'' +
+                        ", reviewTypeNo=" + reviewTypeNo +
+                        ", userNo=" + userNo +
+                        ", reviewUserName='" + reviewUserName + '\'' +
+                        '}';
+            }
+
             public int getId() {
                 return id;
             }

@@ -1,5 +1,6 @@
 package com.example.administrator.warehousemanagementsystem.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +16,10 @@ import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.ReportActivity;
 import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
+import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
+import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
+import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -41,6 +45,7 @@ import butterknife.Unbinder;
  * DATE: 2018/11/20 0020
  * Description:报表fragmnet
  **/
+@SuppressLint("ValidFragment")
 public class ReportFragment extends Fragment {
 
     Unbinder unbinder;
@@ -56,10 +61,18 @@ public class ReportFragment extends Fragment {
     private List<PieEntry> things;//饼状图个体
     private ArrayList<Integer> colors;//饼状图色体
     private List<String> listCK;
+    NetServerImp netServerImp;
+    MyApp myApp;
+    MyDialog myDialog;
 
-    public static ReportFragment newInstance() {
+    @SuppressLint("ValidFragment")
+    public ReportFragment(MyApp myApp) {
+        this.myApp = myApp;
+    }
+
+    public static ReportFragment newInstance(MyApp myApp) {
         Bundle args = new Bundle();
-        ReportFragment fragment = new ReportFragment();
+        ReportFragment fragment = new ReportFragment(myApp);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,14 +84,15 @@ public class ReportFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
+        myDialog = new MyDialog(getContext(), 1);
+        netServerImp = new NetServerImp(myApp);
+        initList();
+        return view;
+    }
+
+    private void initList() {
         things = new ArrayList<>();
         listCK = new ArrayList<>();
-        listCK.add("一号仓库");
-        listCK.add("二号仓库");
-        listCK.add("三号仓库");
-        listCK.add("四号仓库");
-        listCK.add("全部仓库");
-        return view;
     }
 
 
@@ -106,25 +120,51 @@ public class ReportFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateData(MessageEvent messageEvent) {
-        if (messageEvent.getTag() == MyApp.REPORT_BT) {
-            if (messageEvent.getMapList() != null) {
-                Description description = new Description();
-                description.setText("宁通仓库管理(随机数据)");
-                picChart.setDescription(description);
-                for (Map<String, Object> map : messageEvent.getMapList()) {
-                    String name = (String) map.get("name");
-                    things.add(new PieEntry(randomNum(), name));
+        switch (messageEvent.getTag()) {
+            case MyApp.REPORT_BT:
+                if (messageEvent.getMapList() != null) {
+                    Description description = new Description();
+                    description.setText("宁通仓库管理(随机数据)");
+                    picChart.setDescription(description);
+                    for (Map<String, Object> map : messageEvent.getMapList()) {
+                        String name = (String) map.get("name");
+                        things.add(new PieEntry(randomNum(), name));
+                    }
+                    PieDataSet dataSet = new PieDataSet(things, "Label");
+                    initColor();
+                    dataSet.setColors(colors);
+                    PieData pieData = new PieData(dataSet);
+                    pieData.setDrawValues(true);
+                    picChart.setData(pieData);
+                    picChart.invalidate();
                 }
-                PieDataSet dataSet = new PieDataSet(things, "Label");
-                initColor();
-                dataSet.setColors(colors);
-                PieData pieData = new PieData(dataSet);
-                pieData.setDrawValues(true);
-                picChart.setData(pieData);
-                picChart.invalidate();
-            }
-
-
+                break;
+            case MyApp.STOREHOUSE_LIST:
+                if (messageEvent.getStorehouseList() != null) {
+                    listCK.clear();
+                    for (StorehouseList.DataBean bean : messageEvent.getStorehouseList()) {
+                        listCK.add(bean.getStorehouseName());
+                    }
+                    new MaterialDialog.Builder(getContext())
+                            .title("标题")
+                            .positiveText("确认")
+                            .items(listCK)
+                            .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    if (which != -1) {
+                                        System.out.println("which：" + listCK.get(which));
+                                        Intent intent = new Intent(getContext(), ReportActivity.class);
+                                        intent.putExtra("which", listCK.get(which));
+                                        startActivity(intent);
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            })
+                            .show();
+                }
+                break;
         }
     }
 
@@ -153,21 +193,8 @@ public class ReportFragment extends Fragment {
                 });
                 break;
             case R.id.btn_bb:
-                new MaterialDialog.Builder(getContext())
-                        .title("标题")
-                        .positiveText("确认")
-                        .items(listCK)
-                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                System.out.println("which：" + listCK.get(which));
-                                Intent intent1 = new Intent(getContext(), ReportActivity.class);
-                                intent1.putExtra("which", listCK.get(which));
-                                startActivity(intent1);
-                                return true;
-                            }
-                        })
-                        .show();
+                myDialog.showDialog();
+                netServerImp.getStorehouseList(myDialog);
                 break;
         }
     }

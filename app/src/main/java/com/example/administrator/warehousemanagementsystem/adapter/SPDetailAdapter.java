@@ -142,7 +142,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 headViewHolder.tvSpBm.setText(String.valueOf(applyBean.getDeptName()));
                 headViewHolder.tvSpUsefor.setText(TimeUtil.stampToDate(String.valueOf(applyBean.getApplyStartdate())));
                 headViewHolder.llBao.setVisibility(View.VISIBLE);
-                headViewHolder.tvBao.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                headViewHolder.tvBao.setTextColor(context.getResources().getColor(R.color.red));
                 headViewHolder.tvBao.setText(applyBean.getApplyWarning());
                 //待审批
                 if (viewType == 0) {
@@ -161,7 +161,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批未通过");
                                 }
-                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                 }
                 //我的审批
                 if (viewType == 2) {
@@ -170,13 +170,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     headViewHolder.state.setText("我的申请单");
                     for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
                         if (dataBean.getReviewState().equals("未通过")) {
-                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
                     if (applyBean.getReviewList().size() > 0)
                         if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
-                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请已通过");
                         }
                 }
@@ -201,14 +201,32 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
                 List<String> temp = new ArrayList<>();
                 int nowPoint = 0;//更改step状态位置
-                if (applyBean.getReviewList() != null)
+                boolean bol = false;//记录是否有未通过
+                if (applyBean.getReviewList() != null) {
                     for (int j = 0; j < applyBean.getReviewList().size(); j++) {
-                        temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
-                        if (!applyBean.getReviewList().get(j).getReviewState().equals("等待审批"))
-                            nowPoint = j;
+                        System.out.println(applyBean.getReviewList().get(j).toString());
+                        if (!applyBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
+                            if (applyBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                                bol = true;
+                                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()) + applyBean.getReviewList().get(j).getReviewState());
+                            } else
+                                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
+                            nowPoint = 0;
+                            nowPoint += j + 1;
+                        } else
+                            temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
                     }
+                }
                 progressViewHolder.stepView.setSteps(temp);
-                progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
+                System.out.println("当前状态" + (nowPoint + 1));
+                if (bol) {
+                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
+                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
+                    progressViewHolder.tvDisagree.setText("拒绝理由");
+                } else {
+                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+                }
             }
         } else if (detailType == 310 || detailType == 3) {//采购单
             if (viewHolder instanceof HeadViewHolder) {
@@ -239,7 +257,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批未通过");
                                 }
-                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                 }
                 //我的采购
                 if (viewType == 3) {
@@ -248,13 +266,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     headViewHolder.state.setText("我的采购单");
                     for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
                         if (dataBean.getReviewState().equals("未通过")) {
-                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
                     if (purchaseBean.getReviewList().size() > 0)
                         if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
-                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请已通过");
                         }
                 }
@@ -279,14 +297,32 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
                 List<String> temp = new ArrayList<>();
                 int nowPoint = 0;//更改step状态位置
-                if (purchaseBean.getReviewList() != null)
+                boolean bol = false;//记录是否有未通过
+                if (purchaseBean.getReviewList() != null) {
                     for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
-                        temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()));
-                        if (!purchaseBean.getReviewList().get(j).getReviewState().equals("等待审批"))
-                            nowPoint = j;
+                        System.out.println(purchaseBean.getReviewList().get(j).toString());
+                        if (!purchaseBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
+                            if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                                bol = true;
+                                temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()) + purchaseBean.getReviewList().get(j).getReviewState());
+                            } else
+                                temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()));
+                            nowPoint = 0;
+                            nowPoint += j + 1;
+                        } else
+                            temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()));
                     }
+                }
                 progressViewHolder.stepView.setSteps(temp);
-                progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
+                System.out.println("当前状态" + (nowPoint + 1));
+                if (bol) {
+                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
+                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
+                    progressViewHolder.tvDisagree.setText("拒绝理由");
+                } else {
+                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+                }
             }
         } else if (detailType == 320 || detailType == 4) {//预算单
             if (viewHolder instanceof HeadViewHolder) {
@@ -316,7 +352,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批未通过");
                                 }
-                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                    headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                 }
                 //我的预算
                 if (viewType == 4) {
@@ -325,13 +361,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     headViewHolder.state.setText("我的预算单");
                     for (BudgetBean.DataBean.ReviewListBean dataBean : budgetBean.getReviewList()) {
                         if (dataBean.getReviewState().equals("未通过")) {
-                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
                     if (budgetBean.getReviewList().size() > 0)
                         if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
-                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请已通过");
                         }
                 }
@@ -356,14 +392,32 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
                 List<String> temp = new ArrayList<>();
                 int nowPoint = 0;//更改step状态位置
-                if (budgetBean.getReviewList() != null)
+                boolean bol = false;//记录是否有未通过
+                if (budgetBean.getReviewList() != null) {
                     for (int j = 0; j < budgetBean.getReviewList().size(); j++) {
-                        temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()));
-                        if (!budgetBean.getReviewList().get(j).getReviewState().equals("等待审批"))
-                            nowPoint = j;
+                        System.out.println(budgetBean.getReviewList().get(j).toString());
+                        if (!budgetBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
+                            if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                                bol = true;
+                                temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()) + budgetBean.getReviewList().get(j).getReviewState());
+                            } else
+                                temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()));
+                            nowPoint = 0;
+                            nowPoint += j + 1;
+                        } else
+                            temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()));
                     }
+                }
                 progressViewHolder.stepView.setSteps(temp);
-                progressViewHolder.stepView.selectedStep(++nowPoint);//当前状态
+                System.out.println("当前状态" + (nowPoint + 1));
+                if (bol) {
+                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
+                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
+                    progressViewHolder.tvDisagree.setText("拒绝理由");
+                } else {
+                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+                }
             }
         }
 
@@ -444,6 +498,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ProgressViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.step_view)
         StepView stepView;
+        @BindView(R.id.tv_disagree)
+        TextView tvDisagree;
+        @BindView(R.id.tvtv_disagree)
+        TextView disagreeLayout;
 
         ProgressViewHolder(View view) {
             super(view);

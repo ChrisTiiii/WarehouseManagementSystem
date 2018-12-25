@@ -100,10 +100,10 @@ public class MySPFragment extends Fragment {
                 uiList.add(SPFragment.newInstance(1, myApp));
                 break;
             case 120://仓库管理员
-                titleList.add("我的申领");
                 titleList.add("我的采购");
-                uiList.add(SPFragment.newInstance(2, myApp));
+                titleList.add("我的申领");
                 uiList.add(SPFragment.newInstance(3, myApp));
+                uiList.add(SPFragment.newInstance(2, myApp));
                 break;
             case 130://主任
                 titleList.add("待审批");

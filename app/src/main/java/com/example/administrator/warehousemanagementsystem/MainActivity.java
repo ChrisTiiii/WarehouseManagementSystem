@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 listFragment.add(MySPFragment.newInstance(myApp));
                 listFragment.add(new SLFragment(myApp));
-                listFragment.add(ReportFragment.newInstance());
+                listFragment.add(ReportFragment.newInstance(myApp));
                 listFragment.add(new PersonFragment(myApp));
             }
 

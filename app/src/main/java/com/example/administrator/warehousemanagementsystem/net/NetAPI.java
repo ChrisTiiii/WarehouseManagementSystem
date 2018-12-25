@@ -13,6 +13,7 @@ import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
+import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 
 import retrofit2.http.Field;
@@ -87,6 +88,10 @@ public interface NetAPI {
 
     @GET("getBudgetListBy.do")
     Observable<BudgetList> getBudgetList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的预算单
+
+
+    @GET("getStorehouseList.do")
+    Observable<StorehouseList> getStorehouseList();//获取仓库名
 
 
 }

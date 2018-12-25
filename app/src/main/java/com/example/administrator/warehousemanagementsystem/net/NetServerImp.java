@@ -16,6 +16,7 @@ import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
+import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.example.administrator.warehousemanagementsystem.util.MyDialog;
@@ -605,6 +606,7 @@ public class NetServerImp {
                             MessageEvent messageEvent = new MessageEvent(myApp.MY_APPLY_LIST);
                             messageEvent.setMyApplyList(myApplyList.getData());
                             EventBus.getDefault().post(messageEvent);
+
                         }
                     }
                 });
@@ -677,5 +679,36 @@ public class NetServerImp {
                 });
     }
 
+
+    /**
+     * 获取全部仓库名
+     */
+
+    public void getStorehouseList(MyDialog myDialog) {
+        netAPI.getStorehouseList().subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<StorehouseList>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getStorehouseList已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(StorehouseList storehouseList) {
+                        if (storehouseList.getResult().equals("ok")) {
+                            MessageEvent messageEvent = new MessageEvent(myApp.STOREHOUSE_LIST);
+                            messageEvent.setStorehouseList(storehouseList.getData());
+                            EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+    }
 
 }

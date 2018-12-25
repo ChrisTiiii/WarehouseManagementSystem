@@ -4,13 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MainActivity;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
@@ -18,7 +20,6 @@ import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.example.administrator.warehousemanagementsystem.util.MyDialog;
 import com.example.administrator.warehousemanagementsystem.util.SharedPreferencesUtils;
-import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,9 +46,13 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.check_pwd)
     CheckBox checkBox_password;
     MyDialog myDialog;
+    @BindView(R.id.pwdclick)
+    ImageView pwdclick;
     private SharedPreferencesUtils helper;
     private NetServerImp netServerImp;
     MyApp myApp;
+
+    private static boolean canSee = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -277,7 +282,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.check_pwd, R.id.check_login, R.id.login})
+    @OnClick({R.id.check_pwd, R.id.check_login, R.id.login, R.id.pwdclick})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.check_pwd:
@@ -287,6 +292,18 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.login:
                 loadUserName();    //无论如何保存一下用户名
                 login(); //登陆
+                break;
+            case R.id.pwdclick:
+                //通过全局的一个变量的设置，这个就是判断控件里面的内容是不是能被看到
+                if (canSee == false) {
+                    //如果是不能看到密码的情况下，
+                    et_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    canSee = true;
+                } else {
+                    //如果是能看到密码的状态下
+                    et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    canSee = false;
+                }
                 break;
         }
     }

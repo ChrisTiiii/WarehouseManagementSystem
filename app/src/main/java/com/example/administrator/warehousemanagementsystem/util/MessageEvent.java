@@ -9,6 +9,7 @@ import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
+import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class MessageEvent {
     private String message;
     private List<Map<String, Object>> mapList;
     private List<MyGoods> goodsList;
+    private List<StorehouseList.DataBean> storehouseList;//仓库名
     private List<ReviewList.DataBean> reviewLists;//待审批
     private List<ReviewListHaveDone.DataBean> haveDoneList;//已审批
     private List<ApplyList.DataBean> myApplyList;//我的申请List
@@ -142,5 +144,13 @@ public class MessageEvent {
 
     public void setBudgetList(List<BudgetList.DataBean> budgetList) {
         this.budgetList = budgetList;
+    }
+
+    public List<StorehouseList.DataBean> getStorehouseList() {
+        return storehouseList;
+    }
+
+    public void setStorehouseList(List<StorehouseList.DataBean> storehouseList) {
+        this.storehouseList = storehouseList;
     }
 }
