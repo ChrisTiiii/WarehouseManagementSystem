@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="领用详情"
+        android:text="申请详情"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20" />
 
@@ -23,7 +23,7 @@
         android:layout_below="@+id/tv"
         android:layout_weight="2"
         android:background="@null"
-        android:hint="请输入物品领用详情说明"
+        android:hint="请输入物品申请详情说明"
         android:inputType="textMultiLine"
         android:paddingTop="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"

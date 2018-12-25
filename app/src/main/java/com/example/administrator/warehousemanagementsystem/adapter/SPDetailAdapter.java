@@ -3,15 +3,16 @@ package com.example.administrator.warehousemanagementsystem.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baoyachi.stepview.VerticalStepView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
@@ -21,7 +22,6 @@ import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.example.administrator.warehousemanagementsystem.util.QRCodeUtil;
 import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
-import com.githang.stepview.StepView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,7 @@ import butterknife.ButterKnife;
  * Description:审批item详情
  **/
 public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
 
     private Context context;
     private final int SP_HEAD = 0;//物品用途
@@ -105,6 +106,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.budgetBean = budgetBean;
         notifyDataSetChanged();
     }
+
 
     @NonNull
     @Override
@@ -177,7 +179,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (applyBean.getReviewList().size() > 0)
                         if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
-                            headViewHolder.state.setText("申请已通过");
+                            headViewHolder.state.setText("申请通过");
                         }
                 }
             }
@@ -200,32 +202,33 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (viewHolder instanceof ProgressViewHolder) {
                 ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
                 List<String> temp = new ArrayList<>();
-                int nowPoint = 0;//更改step状态位置
+                int nowPoint = 1;//更改step状态位置
                 boolean bol = false;//记录是否有未通过
+                temp.add(applyBean.getFromUserName() + "  发起");
                 if (applyBean.getReviewList() != null) {
                     for (int j = 0; j < applyBean.getReviewList().size(); j++) {
-                        System.out.println(applyBean.getReviewList().get(j).toString());
                         if (!applyBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (applyBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                            if (applyBean.getReviewList().get(j).getReviewState().equals("未通过"))
                                 bol = true;
-                                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()) + applyBean.getReviewList().get(j).getReviewState());
-                            } else
-                                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
-                            nowPoint = 0;
-                            nowPoint += j + 1;
-                        } else
-                            temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
+                            nowPoint = 1;
+                            nowPoint += j;
+                        }
+                        temp.add(applyBean.getReviewList().get(j).getReviewUserName() + "  " + applyBean.getReviewList().get(j).getReviewState());
                     }
+                    if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过"))
+                        temp.add("您的申请已完成了审批流程:)");
                 }
-                progressViewHolder.stepView.setSteps(temp);
-                System.out.println("当前状态" + (nowPoint + 1));
-                if (bol) {
-                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+                System.out.println("当前步数：" + nowPoint);
+                if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
                     progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
                     progressViewHolder.tvDisagree.setText("拒绝理由");
+                    setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+                    if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                        setStepView(progressViewHolder, temp, nowPoint + 2);
+                    } else
+                        setStepView(progressViewHolder, temp, nowPoint);
                 }
             }
         } else if (detailType == 310 || detailType == 3) {//采购单
@@ -273,7 +276,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (purchaseBean.getReviewList().size() > 0)
                         if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
-                            headViewHolder.state.setText("申请已通过");
+                            headViewHolder.state.setText("申请通过");
                         }
                 }
             }
@@ -292,37 +295,47 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ExplainViewHolder explainViewHolder = (ExplainViewHolder) viewHolder;
                 explainViewHolder.tvExplain.setText(purchaseBean.getPurcUsage());
             }
-
             if (viewHolder instanceof ProgressViewHolder) {
                 ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
                 List<String> temp = new ArrayList<>();
-                int nowPoint = 0;//更改step状态位置
+                int nowPoint = 1;//更改step状态位置
                 boolean bol = false;//记录是否有未通过
+                temp.add(purchaseBean.getFromUserName() + "  发起");
                 if (purchaseBean.getReviewList() != null) {
                     for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
-                        System.out.println(purchaseBean.getReviewList().get(j).toString());
                         if (!purchaseBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                            if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过"))
                                 bol = true;
-                                temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()) + purchaseBean.getReviewList().get(j).getReviewState());
-                            } else
-                                temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()));
-                            nowPoint = 0;
-                            nowPoint += j + 1;
-                        } else
-                            temp.add(String.valueOf(purchaseBean.getReviewList().get(j).getReviewUserName()));
+                            nowPoint = 1;
+                            nowPoint += j;
+                        }
+                        temp.add(purchaseBean.getReviewList().get(j).getReviewUserName() + "  " + purchaseBean.getReviewList().get(j).getReviewState());
                     }
+                    if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过"))
+                        temp.add("您的申请已完成了审批流程:)");
                 }
-                progressViewHolder.stepView.setSteps(temp);
-                System.out.println("当前状态" + (nowPoint + 1));
-                if (bol) {
-                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+                System.out.println("当前步数：" + nowPoint);
+                if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
                     progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
                     progressViewHolder.tvDisagree.setText("拒绝理由");
+                    setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+                    if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                        setStepView(progressViewHolder, temp, nowPoint + 2);
+                    } else
+                        setStepView(progressViewHolder, temp, nowPoint);
                 }
+//                progressViewHolder.stepView.setSteps(temp);
+//                System.out.println("当前状态" + (nowPoint + 1));
+//                if (bol) {
+//                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+//                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
+//                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
+//                    progressViewHolder.tvDisagree.setText("拒绝理由");
+//                } else {
+//                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+//                }
             }
         } else if (detailType == 320 || detailType == 4) {//预算单
             if (viewHolder instanceof HeadViewHolder) {
@@ -368,7 +381,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (budgetBean.getReviewList().size() > 0)
                         if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
-                            headViewHolder.state.setText("申请已通过");
+                            headViewHolder.state.setText("申请通过");
                         }
                 }
             }
@@ -391,37 +404,48 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (viewHolder instanceof ProgressViewHolder) {
                 ProgressViewHolder progressViewHolder = (ProgressViewHolder) viewHolder;
                 List<String> temp = new ArrayList<>();
-                int nowPoint = 0;//更改step状态位置
+                int nowPoint = 1;//更改step状态位置
                 boolean bol = false;//记录是否有未通过
+                temp.add(budgetBean.getFromUserName() + "  发起");
                 if (budgetBean.getReviewList() != null) {
                     for (int j = 0; j < budgetBean.getReviewList().size(); j++) {
-                        System.out.println(budgetBean.getReviewList().get(j).toString());
                         if (!budgetBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                            if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过"))
                                 bol = true;
-                                temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()) + budgetBean.getReviewList().get(j).getReviewState());
-                            } else
-                                temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()));
-                            nowPoint = 0;
-                            nowPoint += j + 1;
-                        } else
-                            temp.add(String.valueOf(budgetBean.getReviewList().get(j).getReviewUserName()));
+                            nowPoint = 1;
+                            nowPoint += j;
+                        }
+                        temp.add(budgetBean.getReviewList().get(j).getReviewUserName() + "  " + budgetBean.getReviewList().get(j).getReviewState());
                     }
+                    if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过"))
+                        temp.add("您的申请已完成了审批流程:)");
                 }
-                progressViewHolder.stepView.setSteps(temp);
-                System.out.println("当前状态" + (nowPoint + 1));
-                if (bol) {
-                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+                if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
                     progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
                     progressViewHolder.tvDisagree.setText("拒绝理由");
+                    setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+                    if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                        setStepView(progressViewHolder, temp, nowPoint + 2);
+                    } else
+                        setStepView(progressViewHolder, temp, nowPoint);
                 }
+//                progressViewHolder.stepView.setSteps(temp);
+//                System.out.println("当前状态" + (nowPoint + 1));
+//                if (bol) {
+//                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
+//                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
+//                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
+//                    progressViewHolder.tvDisagree.setText("拒绝理由");
+//                } else {
+//                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
+//                }
             }
         }
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -496,8 +520,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     static class ProgressViewHolder extends RecyclerView.ViewHolder {
+        //        @BindView(R.id.step_view)
+//        StepView stepView;
         @BindView(R.id.step_view)
-        StepView stepView;
+        VerticalStepView stepView;
         @BindView(R.id.tv_disagree)
         TextView tvDisagree;
         @BindView(R.id.tvtv_disagree)
@@ -515,6 +541,28 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setOnCodeClickListener(OnCodeClickListener onCodeClickListener) {
         this.onCodeClickListener = onCodeClickListener;
+    }
+
+    /**
+     * 设置自定义viewType
+     *
+     * @param progressViewHolder
+     * @param temp               全部展示数据
+     * @param nowPoint           当前位置
+     */
+    public void setStepView(ProgressViewHolder progressViewHolder, List<String> temp, int nowPoint) {
+        progressViewHolder.stepView.setStepsViewIndicatorComplectingPosition(nowPoint)//设置完成的步数
+                .reverseDraw(true)//default is true
+                .setStepViewTexts(temp)//总步骤
+                .setLinePaddingProportion(0.85f)//设置indicator线与线间距的比例系数
+                .setStepsViewIndicatorCompletedLineColor(context.getResources().getColor(R.color.lime))//设置StepsViewIndicator完成线的颜色
+                .setStepsViewIndicatorUnCompletedLineColor(context.getResources().getColor(R.color.gainsboro))//设置StepsViewIndicator未完成线的颜色
+                .setStepViewComplectedTextColor(context.getResources().getColor(R.color.steelblue))//设置StepsView text完成线的颜色
+                .setStepViewUnComplectedTextColor(context.getResources().getColor(R.color.grey))//设置StepsView text未完成线的颜色
+                .setStepsViewIndicatorCompleteIcon(ContextCompat.getDrawable(context, R.drawable.correct))//设置StepsViewIndicator CompleteIcon
+                .setStepsViewIndicatorDefaultIcon(ContextCompat.getDrawable(context, R.drawable.point))//设置StepsViewIndicator DefaultIcon
+                .setStepsViewIndicatorAttentionIcon(ContextCompat.getDrawable(context, R.drawable.attention));//设置StepsViewIndicator AttentionIcon
+
     }
 
 }

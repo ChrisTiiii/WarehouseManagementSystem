@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 /**
  * author: ZhongMing
  * DATE: 2018/12/20 0020
- * Description:
+ * Description:自定义dialog
  **/
 public class MyDialog {
     private Context context;

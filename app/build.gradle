@@ -51,7 +51,10 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-7'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4-7'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
+    //步骤
     implementation 'com.githang:stepview:0.1'
+    implementation 'com.github.baoyachi:StepView:1.9'
+
     implementation 'com.github.ForgetAll:LoadingDialog:v1.0.1'
     implementation 'com.google.zxing:core:3.3.0'
     //饼状图

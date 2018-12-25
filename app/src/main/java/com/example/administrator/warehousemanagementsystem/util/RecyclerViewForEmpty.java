@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 /**
  * author: ZhongMing
  * DATE: 2018/12/20 0020
- * Description:
+ * Description:recyclerview设置空布局
  **/
 public class RecyclerViewForEmpty extends RecyclerView {
     private View emptyView;
