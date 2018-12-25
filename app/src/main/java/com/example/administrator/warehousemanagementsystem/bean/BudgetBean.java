@@ -259,6 +259,7 @@ public class BudgetBean {
             private String reviewState;
             private int reviewTypeNo;
             private String reviewUserName;
+            private String reviewReason;
             private int userNo;
 
             public int getId() {
@@ -311,6 +312,14 @@ public class BudgetBean {
 
             public String getReviewUserName() {
                 return reviewUserName;
+            }
+
+            public String getReviewReason() {
+                return reviewReason;
+            }
+
+            public void setReviewReason(String reviewReason) {
+                this.reviewReason = reviewReason;
             }
 
             public void setReviewUserName(String reviewUserName) {

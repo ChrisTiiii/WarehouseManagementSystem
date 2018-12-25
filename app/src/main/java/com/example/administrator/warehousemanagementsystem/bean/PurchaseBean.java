@@ -255,6 +255,7 @@ public class PurchaseBean {
             private int reviewTypeNo;
             private int userNo;
             private String reviewUserName;
+            private String reviewReason;
 
             public int getId() {
                 return id;
@@ -290,6 +291,14 @@ public class PurchaseBean {
 
             public String getReviewState() {
                 return reviewState;
+            }
+
+            public String getReviewReason() {
+                return reviewReason;
+            }
+
+            public void setReviewReason(String reviewReason) {
+                this.reviewReason = reviewReason;
             }
 
             public void setReviewState(String reviewState) {

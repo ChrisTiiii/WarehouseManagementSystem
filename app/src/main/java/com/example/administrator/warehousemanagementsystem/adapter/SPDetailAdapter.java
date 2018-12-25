@@ -204,12 +204,15 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 List<String> temp = new ArrayList<>();
                 int nowPoint = 1;//更改step状态位置
                 boolean bol = false;//记录是否有未通过
+                String unpass = "";
                 temp.add(applyBean.getFromUserName() + "  发起");
                 if (applyBean.getReviewList() != null) {
                     for (int j = 0; j < applyBean.getReviewList().size(); j++) {
                         if (!applyBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (applyBean.getReviewList().get(j).getReviewState().equals("未通过"))
+                            if (applyBean.getReviewList().get(j).getReviewState().equals("未通过")) {
                                 bol = true;
+                                unpass = applyBean.getReviewList().get(j).getReviewReason();
+                            }
                             nowPoint = 1;
                             nowPoint += j;
                         }
@@ -222,7 +225,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
                     progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
-                    progressViewHolder.tvDisagree.setText("拒绝理由");
+                    progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
                     if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
@@ -300,12 +303,15 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 List<String> temp = new ArrayList<>();
                 int nowPoint = 1;//更改step状态位置
                 boolean bol = false;//记录是否有未通过
+                String unpass = "";
                 temp.add(purchaseBean.getFromUserName() + "  发起");
                 if (purchaseBean.getReviewList() != null) {
                     for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
                         if (!purchaseBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过"))
+                            if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过")) {
                                 bol = true;
+                                unpass = purchaseBean.getReviewList().get(j).getReviewReason();
+                            }
                             nowPoint = 1;
                             nowPoint += j;
                         }
@@ -318,7 +324,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
                     progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
-                    progressViewHolder.tvDisagree.setText("拒绝理由");
+                    progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
                     if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
@@ -406,12 +412,15 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 List<String> temp = new ArrayList<>();
                 int nowPoint = 1;//更改step状态位置
                 boolean bol = false;//记录是否有未通过
+                String unpass = "";
                 temp.add(budgetBean.getFromUserName() + "  发起");
                 if (budgetBean.getReviewList() != null) {
                     for (int j = 0; j < budgetBean.getReviewList().size(); j++) {
                         if (!budgetBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过"))
+                            if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过")) {
                                 bol = true;
+                                unpass = budgetBean.getReviewList().get(j).getReviewReason();
+                            }
                             nowPoint = 1;
                             nowPoint += j;
                         }
@@ -423,7 +432,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
                     progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
-                    progressViewHolder.tvDisagree.setText("拒绝理由");
+                    progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
                     if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数

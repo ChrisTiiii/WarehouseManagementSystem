@@ -85,15 +85,15 @@ public class SPDetailActivity extends AppCompatActivity {
         initView();
         witchRoot();//根据权限显示不同界面
         if (detailType != null) {
-            if(detailType==300||detailType==2){//我的申领单
+            if (detailType == 300 || detailType == 2) {//我的申领单
                 spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, applyBean, type, detailType);
                 recycler.setAdapter(spDetailAdapter);
                 netServerImp.getApplyById(String.valueOf(bh), myDialog);
-            }else if(detailType==310||detailType==3){//我的采购单
+            } else if (detailType == 310 || detailType == 3) {//我的采购单
                 spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, purchaseBean, type, detailType);
                 recycler.setAdapter(spDetailAdapter);
                 netServerImp.getPurchaseById(String.valueOf(bh), myDialog);
-            }else if(detailType==320||detailType==4){//我的预算单
+            } else if (detailType == 320 || detailType == 4) {//我的预算单
                 spDetailAdapter = new SPDetailAdapter(SPDetailActivity.this, myApp, uiList, budgetBean, type, detailType);
                 recycler.setAdapter(spDetailAdapter);
                 netServerImp.getBudgetById(String.valueOf(bh), myDialog);
@@ -397,6 +397,7 @@ public class SPDetailActivity extends AppCompatActivity {
                                 .input("拒绝理由", null, new MaterialDialog.InputCallback() {
                                     @Override
                                     public void onInput(MaterialDialog dialog, CharSequence input) {
+                                        System.out.println(String.valueOf(input));
                                         int temp = -1;
                                         for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
                                             if (myApp.getUser().getId() == dataBean.getUserNo())
@@ -404,7 +405,7 @@ public class SPDetailActivity extends AppCompatActivity {
                                         }
                                         System.out.println("review:" + temp);
                                         if (temp != -1)
-                                            netServerImp.refuseReview(temp);
+                                            netServerImp.refuseReview(temp, String.valueOf(input));
                                     }
                                 })
                                 .negativeText("取消")
@@ -419,6 +420,8 @@ public class SPDetailActivity extends AppCompatActivity {
                                 .input("拒绝理由", null, new MaterialDialog.InputCallback() {
                                     @Override
                                     public void onInput(MaterialDialog dialog, CharSequence input) {
+                                        System.out.println(String.valueOf(input));
+
                                         int temp = -1;
                                         for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
                                             if (myApp.getUser().getId() == dataBean.getUserNo())
@@ -426,7 +429,7 @@ public class SPDetailActivity extends AppCompatActivity {
                                         }
                                         System.out.println("review:" + temp);
                                         if (temp != -1)
-                                            netServerImp.refuseReview(temp);
+                                            netServerImp.refuseReview(temp, String.valueOf(input));
                                     }
                                 })
                                 .negativeText("取消")
@@ -447,7 +450,7 @@ public class SPDetailActivity extends AppCompatActivity {
                                                 temp = dataBean.getId();
                                         }
                                         if (temp != -1)
-                                            netServerImp.refuseReview(temp);
+                                            netServerImp.refuseReview(temp, String.valueOf(input));
                                     }
                                 })
                                 .negativeText("取消")

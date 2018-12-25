@@ -62,7 +62,7 @@ public interface NetAPI {
     Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交同意审批
 
     @GET("refuseReview.do")
-    Observable<BackData> refuseReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交拒绝审批
+    Observable<BackData> refuseReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo, @Query("reason") String reason);//提交拒绝审批
 
     @GET("getReviewListWaitForMe.do")
     Observable<ReviewList> getReviewList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取待审批订单

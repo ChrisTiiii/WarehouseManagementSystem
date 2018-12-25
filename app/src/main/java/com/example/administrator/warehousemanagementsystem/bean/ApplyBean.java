@@ -291,6 +291,7 @@ public class ApplyBean {
             private String reviewState;
             private int reviewTypeNo;
             private int userNo;
+            private String reviewReason;
             private String reviewUserName;
 
             @Override
@@ -357,6 +358,14 @@ public class ApplyBean {
 
             public int getUserNo() {
                 return userNo;
+            }
+
+            public String getReviewReason() {
+                return reviewReason;
+            }
+
+            public void setReviewReason(String reviewReason) {
+                this.reviewReason = reviewReason;
             }
 
             public String getReviewUserName() {

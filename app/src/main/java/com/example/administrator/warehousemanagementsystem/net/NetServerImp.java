@@ -523,8 +523,8 @@ public class NetServerImp {
     /**
      * 拒绝请求
      */
-    public void refuseReview(Integer reviewNo) {
-        netAPI.refuseReview(myApp.user.getId(), reviewNo).subscribeOn(Schedulers.io())//IO线程加载数据
+    public void refuseReview(Integer reviewNo, String reason) {
+        netAPI.refuseReview(myApp.user.getId(), reviewNo, reason).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<BackData>() {
                     @Override
