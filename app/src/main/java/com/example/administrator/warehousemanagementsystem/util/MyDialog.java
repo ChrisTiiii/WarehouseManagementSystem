@@ -1,8 +1,13 @@
 package com.example.administrator.warehousemanagementsystem.util;
 
 import android.content.Context;
+import android.text.InputType;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * author: ZhongMing
@@ -13,15 +18,23 @@ public class MyDialog {
     private Context context;
     private Integer type;
     private MaterialDialog dialog;
+    private List<Map<String, Object>> checkList;
+
 
     public MyDialog(Context context, Integer type) {
         this.context = context;
         this.type = type;
     }
 
+    public void showDialog(int menuType, List<Map<String, Object>> checkList) {
+
+
+
+    }
+
     public void showDialog() {
         switch (type) {
-            case 0://登录哪位
+            case 0://登录等待
                 dialog = new MaterialDialog.Builder(context)
                         .title("正在登录")
                         .content("请稍后....")
@@ -36,13 +49,14 @@ public class MyDialog {
                         .show();
                 dialog.setCanceledOnTouchOutside(false);
                 break;
-            case 2:
+            case 2://提交请求
                 dialog = new MaterialDialog.Builder(context)
                         .title("正在提交您的申请").content("请稍后....")
                         .progress(true, 0)
                         .show();
                 dialog.setCanceledOnTouchOutside(false);
                 break;
+
         }
     }
 

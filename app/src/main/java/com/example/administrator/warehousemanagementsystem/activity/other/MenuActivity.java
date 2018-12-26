@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
@@ -64,6 +66,8 @@ public class MenuActivity extends AppCompatActivity {
     private static int pageNo = 1;// 设置pageNo的初始化值为1，即默认获取的是第一页的数据。
     private static int pageCount;//总页数，从服务端获取过来
     private MyDialog myDialog;
+    private Map<String, Object> map;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +82,7 @@ public class MenuActivity extends AppCompatActivity {
         myDialog.showDialog();
         Intent intent = getIntent();
         menu_type = intent.getExtras().getInt("type");
+        map = new HashMap<>();
         initView(); //初始化控件
     }
 
@@ -222,7 +227,7 @@ public class MenuActivity extends AppCompatActivity {
             if (detailList.get(position).isSelect()) {
                 checkList.remove(detailList.get(position).getMap().get("name"));
             } else {
-                Map<String, Object> map = new HashMap<>();
+//                Map<String, Object> map = new HashMap<>();
                 map.put("name", detailList.get(position).getMap().get("name"));
                 map.put("code", detailList.get(position).getMap().get("code"));
                 checkList.add(map);
@@ -238,7 +243,6 @@ public class MenuActivity extends AppCompatActivity {
                     Toast.makeText(MenuActivity.this, "最多只能选择一个", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Map<String, Object> map = new HashMap<>();
                 map.put("name", detailList.get(position).getMap().get("name"));
                 map.put("code", detailList.get(position).getMap().get("code"));
                 checkList.add(map);
@@ -256,15 +260,44 @@ public class MenuActivity extends AppCompatActivity {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkList.size() > 0)
-                    if (menu_type == 1)
-                        EventBus.getDefault().post(new MessageEvent(MyApp.SL_CHOOSE_PRODUCT, checkList));
-                    else if (menu_type == 0)
-                        EventBus.getDefault().post(new MessageEvent(MyApp.SL_SPPERSON, checkList));
-                    else if (menu_type == 3) {
-                        EventBus.getDefault().post(new MessageEvent(MyApp.REPORT_BT, checkList));
+                if (checkList.size() > 0) {
+                    switch (menu_type) {
+                        case 0:
+                            EventBus.getDefault().post(new MessageEvent(MyApp.SL_SPPERSON, checkList));
+                            finish();
+                            break;
+                        case 1:
+                            MaterialDialog.Builder builder = new MaterialDialog.Builder(MenuActivity.this);
+                            builder.title("请输入数量")
+                                    .inputType(InputType.TYPE_CLASS_NUMBER)
+                                    .input(checkList.get(0).get("name") + "的数量", null, new MaterialDialog.InputCallback() {
+                                        @Override
+                                        public void onInput(MaterialDialog dialog, CharSequence input) {
+                                            map.put("num", input);
+                                            checkList.add(map);
+                                            EventBus.getDefault().post(new MessageEvent(MyApp.SL_CHOOSE_PRODUCT, checkList));
+                                            System.out.println(input.equals(""));
+                                            if (!String.valueOf(input).equals(""))
+                                                finish();
+                                            else {
+                                                checkList.clear();
+                                                Toast.makeText(myApp, "数量不能为空", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    })
+                                    .positiveText("确定")
+                                    .negativeText("取消")
+                                    .show();
+                            break;
+                        case 3:
+                            EventBus.getDefault().post(new MessageEvent(MyApp.REPORT_BT, checkList));
+                            finish();
+                            break;
+                        default:
+                            finish();
                     }
-                finish();
+                } else
+                    finish();
             }
         });
     }

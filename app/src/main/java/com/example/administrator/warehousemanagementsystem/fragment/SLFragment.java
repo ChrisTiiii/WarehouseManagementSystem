@@ -158,7 +158,8 @@ public class SLFragment extends Fragment {
                 if (messageEvent.getMapList() != null) {
                     String code = String.valueOf(messageEvent.getMapList().get(0).get("code"));
                     String name = String.valueOf(messageEvent.getMapList().get(0).get("name"));
-                    MyGoods myGoods = new MyGoods(code, name, null);
+                    String num = String.valueOf(messageEvent.getMapList().get(0).get("num"));
+                    MyGoods myGoods = new MyGoods(code, name, num);
                     spAdapter.addData(uiList.size() - 2, myGoods);
                 }
                 break;

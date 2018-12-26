@@ -43,7 +43,6 @@ public class MySPFragment extends Fragment {
     private ViewPagerAdapter viewPagerAdapter;
     private MyApp myApp;
 
-    @SuppressLint("ValidFragment")
     public MySPFragment(MyApp myApp) {
         this.myApp = myApp;
     }
@@ -54,6 +53,7 @@ public class MySPFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Nullable
     @Override

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.MyLeader;
 import com.example.administrator.warehousemanagementsystem.bean.ViewType;
 import com.githang.stepview.StepView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -323,13 +326,12 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.spinner2)
         Spinner spinner;
         @BindView(R.id.caigou)
-        LinearLayout caigou;
+        RelativeLayout caigou;
 
         HeadViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
-
     }
 
     class DetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -340,7 +342,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.et_detail_name)
         TextView etName;
         @BindView(R.id.et_num)
-        EditText etNum;
+        TextView etNum;
 
         DetailViewHolder(View view) {
             super(view);

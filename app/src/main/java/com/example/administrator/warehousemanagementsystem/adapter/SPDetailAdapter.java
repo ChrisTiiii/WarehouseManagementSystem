@@ -32,10 +32,9 @@ import butterknife.ButterKnife;
 /**
  * author: ZhongMing
  * DATE: 2018/11/26 0026
- * Description:审批item详情
+ * Description:审批订单详情
  **/
 public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
 
     private Context context;
     private final int SP_HEAD = 0;//物品用途
@@ -218,8 +217,9 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         temp.add(applyBean.getReviewList().get(j).getReviewUserName() + "  " + applyBean.getReviewList().get(j).getReviewState());
                     }
-                    if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过"))
-                        temp.add("您的申请已完成了审批流程:)");
+                    if (applyBean.getReviewList().size() > 0)
+                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过"))
+                            temp.add("您的申请已完成了审批流程:)");
                 }
                 System.out.println("当前步数：" + nowPoint);
                 if (bol) {//如果被拒绝了显示拒绝理由
@@ -228,10 +228,11 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
-                        setStepView(progressViewHolder, temp, nowPoint + 2);
-                    } else
-                        setStepView(progressViewHolder, temp, nowPoint);
+                    if (applyBean.getReviewList().size() > 0)
+                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                            setStepView(progressViewHolder, temp, nowPoint + 2);
+                        } else
+                            setStepView(progressViewHolder, temp, nowPoint);
                 }
             }
         } else if (detailType == 310 || detailType == 3) {//采购单
@@ -317,8 +318,9 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         temp.add(purchaseBean.getReviewList().get(j).getReviewUserName() + "  " + purchaseBean.getReviewList().get(j).getReviewState());
                     }
-                    if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过"))
-                        temp.add("您的申请已完成了审批流程:)");
+                    if (purchaseBean.getReviewList().size() > 0)
+                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过"))
+                            temp.add("您的申请已完成了审批流程:)");
                 }
                 System.out.println("当前步数：" + nowPoint);
                 if (bol) {//如果被拒绝了显示拒绝理由
@@ -327,21 +329,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
-                        setStepView(progressViewHolder, temp, nowPoint + 2);
-                    } else
-                        setStepView(progressViewHolder, temp, nowPoint);
+                    if (purchaseBean.getReviewList().size() > 0)
+                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                            setStepView(progressViewHolder, temp, nowPoint + 2);
+                        } else
+                            setStepView(progressViewHolder, temp, nowPoint);
                 }
-//                progressViewHolder.stepView.setSteps(temp);
-//                System.out.println("当前状态" + (nowPoint + 1));
-//                if (bol) {
-//                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
-//                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
-//                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
-//                    progressViewHolder.tvDisagree.setText("拒绝理由");
-//                } else {
-//                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
-//                }
             }
         } else if (detailType == 320 || detailType == 4) {//预算单
             if (viewHolder instanceof HeadViewHolder) {
@@ -426,8 +419,9 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         temp.add(budgetBean.getReviewList().get(j).getReviewUserName() + "  " + budgetBean.getReviewList().get(j).getReviewState());
                     }
-                    if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过"))
-                        temp.add("您的申请已完成了审批流程:)");
+                    if (budgetBean.getReviewList().size() > 0)
+                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过"))
+                            temp.add("您的申请已完成了审批流程:)");
                 }
                 if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
@@ -435,21 +429,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
-                        setStepView(progressViewHolder, temp, nowPoint + 2);
-                    } else
-                        setStepView(progressViewHolder, temp, nowPoint);
+                    if (budgetBean.getReviewList().size() > 0)
+                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                            setStepView(progressViewHolder, temp, nowPoint + 2);
+                        } else
+                            setStepView(progressViewHolder, temp, nowPoint);
                 }
-//                progressViewHolder.stepView.setSteps(temp);
-//                System.out.println("当前状态" + (nowPoint + 1));
-//                if (bol) {
-//                    progressViewHolder.stepView.selectedStep(nowPoint);//当前状态
-//                    progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
-//                    progressViewHolder.tvDisagree.setTextColor(context.getResources().getColor(R.color.red));
-//                    progressViewHolder.tvDisagree.setText("拒绝理由");
-//                } else {
-//                    progressViewHolder.stepView.selectedStep(nowPoint + 1);//当前状态
-//                }
             }
         }
 

@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -21,12 +21,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.other.MenuActivity" />
-        <activity android:name=".activity.SPDetailActivity" />
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".activity.other.MenuActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SPDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.other.Code" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.ReportActivity" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ReportActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

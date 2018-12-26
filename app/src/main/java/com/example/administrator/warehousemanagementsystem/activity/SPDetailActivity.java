@@ -70,7 +70,6 @@ public class SPDetailActivity extends AppCompatActivity {
     private AlertDialog.Builder builder;
     private Integer bh;//根据订单编号查询详情
     private Integer detailType;//分类哪一类订单
-
     MyApp myApp;
     Intent intent;
     MyDialog myDialog;
@@ -204,53 +203,6 @@ public class SPDetailActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private int getPurchaseState() {
-        int unPoint = 0;//获取当前状态值
-        int passPoint = 0;
-        if (purchaseBean.getReviewList() != null)
-            for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
-                if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过"))
-                    unPoint = j;
-            }
-        if (purchaseBean.getReviewList() != null)
-            for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
-                if (purchaseBean.getReviewList().get(j).getReviewState().equals("通过"))
-                    passPoint = j;
-            }
-        if (unPoint != 0) {
-            return -1;
-        }
-        if (passPoint != 0) {
-            return passPoint != applyBean.getReviewList().size() ? -1 : 1;
-        }
-        return 0;
-    }
-
-    private int getApplyState() {
-        List<String> temp = new ArrayList<>();
-        int unPoint = 0;//获取当前状态值
-        int passPoint = 0;
-        if (applyBean.getReviewList() != null)
-            for (int j = 0; j < applyBean.getReviewList().size(); j++) {
-                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
-                if (applyBean.getReviewList().get(j).getReviewState().equals("未通过"))
-                    unPoint = j;
-            }
-        if (applyBean.getReviewList() != null)
-            for (int j = 0; j < applyBean.getReviewList().size(); j++) {
-                temp.add(String.valueOf(applyBean.getReviewList().get(j).getReviewUserName()));
-                if (applyBean.getReviewList().get(j).getReviewState().equals("通过"))
-                    passPoint = j;
-            }
-        if (unPoint != 0) {
-            return -1;
-        }
-        if (passPoint != 0) {
-            return passPoint != applyBean.getReviewList().size() ? -1 : 1;
-        }
-        return 0;
     }
 
     //获取我的申请网络数据并进行初始化
@@ -397,7 +349,6 @@ public class SPDetailActivity extends AppCompatActivity {
                                 .input("拒绝理由", null, new MaterialDialog.InputCallback() {
                                     @Override
                                     public void onInput(MaterialDialog dialog, CharSequence input) {
-                                        System.out.println(String.valueOf(input));
                                         int temp = -1;
                                         for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
                                             if (myApp.getUser().getId() == dataBean.getUserNo())
@@ -420,8 +371,6 @@ public class SPDetailActivity extends AppCompatActivity {
                                 .input("拒绝理由", null, new MaterialDialog.InputCallback() {
                                     @Override
                                     public void onInput(MaterialDialog dialog, CharSequence input) {
-                                        System.out.println(String.valueOf(input));
-
                                         int temp = -1;
                                         for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
                                             if (myApp.getUser().getId() == dataBean.getUserNo())
