@@ -415,7 +415,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 unpass = budgetBean.getReviewList().get(j).getReviewReason();
                             }
                             nowPoint = 1;
-                            nowPoint += j;
+                            nowPoint += (j+1);
                         }
                         temp.add(budgetBean.getReviewList().get(j).getReviewUserName() + "  " + budgetBean.getReviewList().get(j).getReviewState());
                     }
@@ -429,6 +429,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
+                    System.out.println("当前点位："+nowPoint);
                     if (budgetBean.getReviewList().size() > 0)
                         if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
                             setStepView(progressViewHolder, temp, nowPoint + 2);
@@ -555,7 +556,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .setStepViewUnComplectedTextColor(context.getResources().getColor(R.color.grey))//设置StepsView text未完成线的颜色
                 .setStepsViewIndicatorCompleteIcon(ContextCompat.getDrawable(context, R.drawable.correct))//设置StepsViewIndicator CompleteIcon
                 .setStepsViewIndicatorDefaultIcon(ContextCompat.getDrawable(context, R.drawable.point))//设置StepsViewIndicator DefaultIcon
-                .setStepsViewIndicatorAttentionIcon(ContextCompat.getDrawable(context, R.drawable.attention));//设置StepsViewIndicator AttentionIcon
+                .setStepsViewIndicatorAttentionIcon(ContextCompat.getDrawable(context, R.drawable.nowpoint));//设置StepsViewIndicator AttentionIcon
 
     }
 

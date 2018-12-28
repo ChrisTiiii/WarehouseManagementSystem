@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -60,7 +61,8 @@ public class ReportFragment extends Fragment {
 
     private List<PieEntry> things;//饼状图个体
     private ArrayList<Integer> colors;//饼状图色体
-    private List<String> listCK;
+    private List<Map<String, Object>> listCK;
+    private List<String> namelist;
     NetServerImp netServerImp;
     MyApp myApp;
     MyDialog myDialog;
@@ -93,6 +95,7 @@ public class ReportFragment extends Fragment {
     private void initList() {
         things = new ArrayList<>();
         listCK = new ArrayList<>();
+        namelist = new ArrayList<>();
     }
 
 
@@ -143,19 +146,23 @@ public class ReportFragment extends Fragment {
                 if (messageEvent.getStorehouseList() != null) {
                     listCK.clear();
                     for (StorehouseList.DataBean bean : messageEvent.getStorehouseList()) {
-                        listCK.add(bean.getStorehouseName());
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("code", bean.getId());
+                        map.put("name", bean.getStorehouseName());
+                        listCK.add(map);
+                        namelist.add(String.valueOf(map.get("name")));
                     }
                     new MaterialDialog.Builder(getContext())
                             .title("标题")
                             .positiveText("确认")
-                            .items(listCK)
+                            .items(namelist)
                             .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                                 @Override
                                 public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                     if (which != -1) {
                                         System.out.println("which：" + listCK.get(which));
                                         Intent intent = new Intent(getContext(), ReportActivity.class);
-                                        intent.putExtra("which", listCK.get(which));
+                                        intent.putExtra("which", String.valueOf(listCK.get(which).get("code")));
                                         startActivity(intent);
                                         return true;
                                     }

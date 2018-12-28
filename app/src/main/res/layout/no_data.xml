@@ -5,22 +5,14 @@
     android:layout_gravity="center"
     android:gravity="center">
 
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gif"
-        android:layout_width="@dimen/dp_65"
-        android:layout_height="@dimen/dp_65"
-        android:layout_centerInParent="true"
-        android:src="@drawable/nomore" />
 
     <TextView
         android:id="@+id/tvtv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_gravity="center|left"
-        android:layout_toRightOf="@+id/gif"
-        android:gravity="center|left"
-        android:text="暂无更多数据" />
+        android:gravity="center"
+        android:text="暂无更多数据,请尝试下拉刷新" />
 
 
 </RelativeLayout>

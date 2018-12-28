@@ -182,6 +182,8 @@ public class BudgetBean {
             private String goodsName;
             private int goodsNo;
             private int goodsNum;
+            private String goodsType;
+            private Integer goodsTypeNo;
             private int id;
 
             public String getAnnotation() {
@@ -222,6 +224,22 @@ public class BudgetBean {
 
             public void setGoodsNo(int goodsNo) {
                 this.goodsNo = goodsNo;
+            }
+
+            public String getGoodsType() {
+                return goodsType;
+            }
+
+            public void setGoodsType(String goodsType) {
+                this.goodsType = goodsType;
+            }
+
+            public Integer getGoodsTypeNo() {
+                return goodsTypeNo;
+            }
+
+            public void setGoodsTypeNo(Integer goodsTypeNo) {
+                this.goodsTypeNo = goodsTypeNo;
             }
 
             public int getGoodsNum() {

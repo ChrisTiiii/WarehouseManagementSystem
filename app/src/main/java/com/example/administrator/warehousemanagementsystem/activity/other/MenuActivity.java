@@ -227,7 +227,7 @@ public class MenuActivity extends AppCompatActivity {
             if (detailList.get(position).isSelect()) {
                 checkList.remove(detailList.get(position).getMap().get("name"));
             } else {
-//                Map<String, Object> map = new HashMap<>();
+                map.put("goodsType", detailList.get(position).getMap().get("goodsType"));
                 map.put("name", detailList.get(position).getMap().get("name"));
                 map.put("code", detailList.get(position).getMap().get("code"));
                 checkList.add(map);
@@ -243,6 +243,7 @@ public class MenuActivity extends AppCompatActivity {
                     Toast.makeText(MenuActivity.this, "最多只能选择一个", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                map.put("goodsType", detailList.get(position).getMap().get("goodsType"));
                 map.put("name", detailList.get(position).getMap().get("name"));
                 map.put("code", detailList.get(position).getMap().get("code"));
                 checkList.add(map);

@@ -8,6 +8,7 @@ import java.io.Serializable;
  * Description:
  **/
 public class MyGoods implements Serializable {
+    private String goodsTypeNo;
     private String code;
     private String name;
     private String num;
@@ -22,6 +23,13 @@ public class MyGoods implements Serializable {
     }
 
     public MyGoods(String code, String name, String num) {
+        this.code = code;
+        this.name = name;
+        this.num = num;
+    }
+
+    public MyGoods(String goodsTypeNo, String code, String name, String num) {
+        this.goodsTypeNo = goodsTypeNo;
         this.code = code;
         this.name = name;
         this.num = num;
@@ -49,5 +57,13 @@ public class MyGoods implements Serializable {
 
     public void setNum(String num) {
         this.num = num;
+    }
+
+    public String getGoodsTypeNo() {
+        return goodsTypeNo;
+    }
+
+    public void setGoodsTypeNo(String goodsTypeNo) {
+        this.goodsTypeNo = goodsTypeNo;
     }
 }

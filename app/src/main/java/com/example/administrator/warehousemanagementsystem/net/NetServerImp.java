@@ -13,9 +13,11 @@ import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
+import com.example.administrator.warehousemanagementsystem.bean.Report;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
+import com.example.administrator.warehousemanagementsystem.bean.StorehouseBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
@@ -125,9 +127,9 @@ public class NetServerImp {
                         List<Map<String, Object>> tempList = new ArrayList<>();
                         for (GoodsDetailBean.DataBean dataBean : goodsDetailBean.getData()) {
                             Map<String, Object> map = new HashMap<>();
+                            map.put("goodsType",dataBean.getGoodsTypeNo());
                             map.put("name", dataBean.getGoodsName());
                             map.put("code", dataBean.getId());
-//                            map.put("code", dataBean.getGoodsId());
                             map.put("count", goodsDetailBean.getCount());
                             tempList.add(map);
                         }
@@ -164,7 +166,6 @@ public class NetServerImp {
 
                     @Override
                     public void onNext(UserBean userBean) {
-                        System.out.println("backData:" + userBean.getResult());
                         if (userBean.getResult().equals("ok")) {
                             if (userBean.getData() != null) {
                                 System.out.println(userBean.getData().toString());
@@ -705,6 +706,40 @@ public class NetServerImp {
                         if (storehouseList.getResult().equals("ok")) {
                             MessageEvent messageEvent = new MessageEvent(myApp.STOREHOUSE_LIST);
                             messageEvent.setStorehouseList(storehouseList.getData());
+                            EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+    }
+
+
+    public void getStockRecord(String storehouseNoStr, MyDialog myDialog) {
+        netAPI.getStockRecord(storehouseNoStr, 1, 1000).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<StorehouseBean>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getStockRecord已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(StorehouseBean storehouseBean) {
+                        if (storehouseBean.getResult().equals("ok")) {
+                            MessageEvent messageEvent = new MessageEvent(myApp.CKKC);
+                            List<Report> list = new ArrayList<>();
+                            for (StorehouseBean.DataBean bean : storehouseBean.getData()) {
+                                Report report = new Report(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum());
+                                list.add(report);
+                                System.out.println("仓库数据:" + list.get(0));
+                            }
+                            messageEvent.setStorehouseBean(list);
                             EventBus.getDefault().post(messageEvent);
                         }
                     }

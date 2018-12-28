@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
@@ -156,11 +157,23 @@ public class SLFragment extends Fragment {
         switch (messageEvent.getTag()) {
             case MyApp.SL_CHOOSE_PRODUCT:
                 if (messageEvent.getMapList() != null) {
+                    String goodsType = String.valueOf(messageEvent.getMapList().get(0).get("goodsType"));
                     String code = String.valueOf(messageEvent.getMapList().get(0).get("code"));
                     String name = String.valueOf(messageEvent.getMapList().get(0).get("name"));
                     String num = String.valueOf(messageEvent.getMapList().get(0).get("num"));
-                    MyGoods myGoods = new MyGoods(code, name, num);
+                    MyGoods myGoods = new MyGoods(goodsType, code, name, num);
                     spAdapter.addData(uiList.size() - 2, myGoods);
+                    if (spAdapter.isReGoods()) {
+                        new MaterialDialog.Builder(getContext())
+                                .content("您添加了重复商品，请删除")
+                                .positiveText("马上删")
+                                .show().setCanceledOnTouchOutside(false);
+                    }
+                    if (spAdapter.isReGoodsType())
+                        new MaterialDialog.Builder(getContext())
+                                .content("由于您选择了不同种类的物资，需要添加该物资对应的审批人")
+                                .positiveText("我已了解")
+                                .show().setCanceledOnTouchOutside(false);
                 }
                 break;
             case MyApp.SL_SPPERSON:
@@ -224,7 +237,6 @@ public class SLFragment extends Fragment {
                 public void onClick(DialogInterface dialog, int which) {
                 }
             }).show();
-
         }
     }
 

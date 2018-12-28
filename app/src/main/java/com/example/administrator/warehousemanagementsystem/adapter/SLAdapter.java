@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.MyLeader;
@@ -57,6 +58,9 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String explain = "";
     private String type = "";
 
+    volatile boolean flag_goods = false;//判断是否重复物资
+    volatile boolean flag_type = false;//判断是否选择不同类型物资
+
     public SLAdapter(Context context, List<ViewType> list) {
         this.context = context;
         this.uiList = list;
@@ -71,6 +75,14 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     //添加物品信息
     public void addData(int position, MyGoods myGoods) {
+        flag_goods = false;
+        flag_type = false;
+        for (MyGoods bean : goodsList) {
+            if (myGoods.getCode().equals(bean.getCode()))
+                flag_goods = true;
+            if (!myGoods.getGoodsTypeNo().equals(bean.getGoodsTypeNo()))
+                flag_type = true;
+        }
         int uiPosition = position - 1;//界面位置
         int listPosition = uiPosition - 1;//goodsList数据list
         if (uiPosition == 1) {
@@ -135,6 +147,15 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    //判断是否为重复添加项
+    public boolean isReGoods() {
+        return flag_goods;
+    }
+
+    //判断是否为不同种类的物资
+    public boolean isReGoodsType() {
+        return flag_type;
+    }
 
     public String getType() {
         return type;
@@ -301,6 +322,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public String getCaigou() {
         return !caigou.equals("") ? caigou : "暂无采购商";
     }
+
 
     public List<MyGoods> getGoodsList() {
         return goodsList.size() != 0 ? goodsList : null;

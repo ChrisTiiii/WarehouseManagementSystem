@@ -201,6 +201,8 @@ public class ApplyBean {
             private String goodsName;
             private int goodsNo;
             private int goodsNum;
+            private String goodsType;
+            private Integer goodsTypeNo;
             private int id;
 
             @Override
@@ -262,6 +264,22 @@ public class ApplyBean {
 
             public void setGoodsNum(int goodsNum) {
                 this.goodsNum = goodsNum;
+            }
+
+            public String getGoodsType() {
+                return goodsType;
+            }
+
+            public void setGoodsType(String goodsType) {
+                this.goodsType = goodsType;
+            }
+
+            public Integer getGoodsTypeNo() {
+                return goodsTypeNo;
+            }
+
+            public void setGoodsTypeNo(Integer goodsTypeNo) {
+                this.goodsTypeNo = goodsTypeNo;
             }
 
             public int getId() {

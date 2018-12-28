@@ -13,6 +13,7 @@ import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
+import com.example.administrator.warehousemanagementsystem.bean.StorehouseBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 
@@ -92,6 +93,9 @@ public interface NetAPI {
 
     @GET("getStorehouseList.do")
     Observable<StorehouseList> getStorehouseList();//获取仓库名
+
+    @GET("getStockRecord.do")
+    Observable<StorehouseBean> getStockRecord(@Query("storehouseNoStr") String storehouseNoStr, @Query("page") int page, @Query("size") int size);//获取仓库名
 
 
 }

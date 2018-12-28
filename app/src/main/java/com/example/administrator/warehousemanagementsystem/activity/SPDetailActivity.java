@@ -108,6 +108,7 @@ public class SPDetailActivity extends AppCompatActivity {
         switch (messageEvent.getTag()) {
             case MyApp.APPLY_DETAIL:
                 applyBean = messageEvent.getApplyList();
+                applyBean = removeRoot(applyBean);
                 initApplyList(applyBean);
                 break;
             case MyApp.COMMIT_APPLY:
@@ -122,6 +123,21 @@ public class SPDetailActivity extends AppCompatActivity {
                 initBudgetList(budgetBean);
                 break;
         }
+    }
+
+    /**
+     * 筛选主任权限不必要的数据
+     */
+    private ApplyBean.DataBean removeRoot(ApplyBean.DataBean applyBean) {
+        if (myApp.getRoot() == 130) {
+            for (ApplyBean.DataBean.ApplyContentListBean bean : applyBean.getApplyContentList()) {
+                System.out.println("getUserTypeNo():" + myApp.getUser().getUserTypeNo() + "bean.getGoodsTypeNo():" + bean.getGoodsTypeNo());
+                if (!bean.getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                    applyBean.getApplyContentList().remove(bean);
+                }
+            }
+        }
+        return applyBean;
     }
 
     void initView() {
