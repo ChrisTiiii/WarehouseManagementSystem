@@ -56,6 +56,7 @@
 
             <ImageView
                 android:id="@+id/iv_code"
+                android:visibility="gone"
                 android:layout_width="@dimen/dp_65"
                 android:layout_height="@dimen/dp_65"
                 android:layout_alignParentRight="true"

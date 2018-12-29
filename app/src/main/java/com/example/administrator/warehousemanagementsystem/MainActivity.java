@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         listFragment = new ArrayList<>();
         if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 100 || myApp.getRoot() == 110 || myApp.getRoot() == 120) {
+            if (myApp.getRoot() == 100 || myApp.getRoot() == 110 ) {
                 listFragment.add(MySPFragment.newInstance(myApp));
                 listFragment.add(new SLFragment(myApp));
                 listFragment.add(new PersonFragment(myApp));
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         lastfragment = 0;
         switchFragment(lastfragment, 0);
         if (myApp.getRoot() != -1)
-            if (myApp.getRoot() == 100 || myApp.getRoot() == 110 || myApp.getRoot() == 120) {
+            if (myApp.getRoot() == 100 || myApp.getRoot() == 110 ) {
                 bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

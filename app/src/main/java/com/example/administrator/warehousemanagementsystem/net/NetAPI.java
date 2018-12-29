@@ -39,7 +39,6 @@ public interface NetAPI {
     @GET("getGoodsListBy.do")
     Observable<GoodsDetailBean> getGoodsDetail(@Query("goodsTypeNo") int goodsTypeNo);//获得物品详情
 
-
     @GET("getUserList.do")
     Observable<SPPersonBean> getSPPersonType();//获取审批人分类
 
@@ -92,7 +91,12 @@ public interface NetAPI {
 
 
     @GET("getStorehouseList.do")
-    Observable<StorehouseList> getStorehouseList();//获取仓库名
+    Observable<StorehouseList> getStorehouseList();//获取全部仓库名
+
+
+    @GET("getStorehouseList.do")
+    Observable<StorehouseList> getStorehouseBy(@Query("storehouseAdmUserNo") Integer storehouseAdmUserNo);//获取根据仓库管理员id获取仓库
+
 
     @GET("getStockRecord.do")
     Observable<StorehouseBean> getStockRecord(@Query("storehouseNoStr") String storehouseNoStr, @Query("page") int page, @Query("size") int size);//获取仓库名

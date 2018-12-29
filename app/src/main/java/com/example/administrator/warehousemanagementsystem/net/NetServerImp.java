@@ -28,8 +28,11 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -127,7 +130,7 @@ public class NetServerImp {
                         List<Map<String, Object>> tempList = new ArrayList<>();
                         for (GoodsDetailBean.DataBean dataBean : goodsDetailBean.getData()) {
                             Map<String, Object> map = new HashMap<>();
-                            map.put("goodsType",dataBean.getGoodsTypeNo());
+                            map.put("goodsType", dataBean.getGoodsTypeNo());
                             map.put("name", dataBean.getGoodsName());
                             map.put("code", dataBean.getId());
                             map.put("count", goodsDetailBean.getCount());
@@ -203,11 +206,19 @@ public class NetServerImp {
                                 List<Map<String, Object>> tempList = new ArrayList<>();
                                 for (SPPersonBean.DataBean spp : spPersonBean.getData()) {
                                     Map<String, Object> map = new HashMap<>();
-//                                    map.put("type", spp.getId());
                                     map.put("type", spp.getUserRoleNo());
                                     map.put("name", spp.getUserRole());
                                     tempList.add(map);
                                 }
+                                Set set = new HashSet();//去重操作
+                                List newList = new ArrayList();
+                                for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+                                    Object element = iter.next();
+                                    if (set.add(element))
+                                        newList.add(element);
+                                }
+                                tempList.clear();
+                                tempList.addAll(newList);
                                 EventBus.getDefault().post(new MessageEvent(myApp.MENU_TYPE, tempList));
                             }
                         }
@@ -713,6 +724,42 @@ public class NetServerImp {
     }
 
 
+    /**
+     * 根据仓库管理员id获取对应仓库
+     */
+    public void getStorehouseBy(int id, MyDialog myDialog) {
+        netAPI.getStorehouseBy(id).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<StorehouseList>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getStorehouseBy已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(StorehouseList storehouseList) {
+                        if (storehouseList.getResult().equals("ok")) {
+                            MessageEvent messageEvent = new MessageEvent(myApp.STOREHOUSE_LIST);
+                            messageEvent.setStorehouseList(storehouseList.getData());
+                            EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 获取仓库库存
+     *
+     * @param storehouseNoStr
+     * @param myDialog
+     */
     public void getStockRecord(String storehouseNoStr, MyDialog myDialog) {
         netAPI.getStockRecord(storehouseNoStr, 1, 1000).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据

@@ -145,6 +145,7 @@ public class ReportFragment extends Fragment {
             case MyApp.STOREHOUSE_LIST:
                 if (messageEvent.getStorehouseList() != null) {
                     listCK.clear();
+                    namelist.clear();
                     for (StorehouseList.DataBean bean : messageEvent.getStorehouseList()) {
                         Map<String, Object> map = new HashMap<>();
                         map.put("code", bean.getId());
@@ -160,7 +161,6 @@ public class ReportFragment extends Fragment {
                                 @Override
                                 public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                     if (which != -1) {
-                                        System.out.println("which：" + listCK.get(which));
                                         Intent intent = new Intent(getContext(), ReportActivity.class);
                                         intent.putExtra("which", String.valueOf(listCK.get(which).get("code")));
                                         startActivity(intent);
@@ -201,7 +201,10 @@ public class ReportFragment extends Fragment {
                 break;
             case R.id.btn_bb:
                 myDialog.showDialog();
-                netServerImp.getStorehouseList(myDialog);
+                if (myApp.getRoot() != 120)
+                    netServerImp.getStorehouseList(myDialog);
+                else
+                    netServerImp.getStorehouseBy(myApp.user.getId(), myDialog);
                 break;
         }
     }

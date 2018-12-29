@@ -199,7 +199,7 @@ public class SLFragment extends Fragment {
             builder = new AlertDialog.Builder(getContext());
             builder.setTitle("用户须知");
             builder.setMessage("若您有重复申领物品则按照最新物品明细进行提交申领\n");
-            if (!dialogString().equals("权限不够")) {
+            if (!dialogString().equals("未给您开通此项")) {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -232,7 +232,7 @@ public class SLFragment extends Fragment {
                     }
                 });
                 builder.show();
-            } else builder.setNegativeButton("权限不够", new DialogInterface.OnClickListener() {
+            } else builder.setNegativeButton("未给您开通此项", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 }
@@ -260,18 +260,18 @@ public class SLFragment extends Fragment {
     //给用户提供提示
     public String dialogString() {
         switch (spAdapter.getType()) {
-            case "申领单"://只有100收费站管理员,仓库管理员可以申请
-                if (myApp.getRoot() == 100 || myApp.getRoot() == 120)
-                    return "确定要提交如下申领的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
-                else return "权限不够";
+            case "申领单"://全部可以
+//                if (myApp.getRoot() == 100 || myApp.getRoot() == 120 || myApp.getRoot() == 130 || myApp.getRoot() == 140)
+                return "确定要提交如下申领的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
+//                else return "未给您开通此项";
             case "采购单"://只有120仓库管理员可以
-                if (myApp.getRoot() == 120)
+                if (myApp.getRoot() == 120 || myApp.getRoot() == 130 || myApp.getRoot() == 140)
                     return "确定要提交如下采购的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain() + "\n供应商：" + spAdapter.getCaigou();
-                else return "权限不够";
+                else return "未给您开通此项";
             case "预算单"://只有100收费站管理员可以申请
-                if (myApp.getRoot() == 100)
+                if (myApp.getRoot() == 100 || myApp.getRoot() == 130 || myApp.getRoot() == 140)
                     return "确定要提交如下预算的物品吗?\n" + "申请类型：" + spAdapter.getType() + "\n商品：" + getGoodsList(1) + "\n审批人：" + getLeader(1) + "\n备注：" + spAdapter.getExplain();
-                else return "权限不够";
+                else return "未给您开通此项";
         }
         return "出错";
     }
@@ -290,17 +290,7 @@ public class SLFragment extends Fragment {
             for (MyGoods temp : goodsList) {
                 if (temp.getNum() != null) {
                     try {
-                        if (type != 0) {
-                            if (temp.getNum().equals("")) {
-                                jsonObject.put(temp.getName(), 0);
-                            } else
-                                jsonObject.put(temp.getName(), Integer.parseInt(temp.getNum()));
-                        } else {
-                            if (temp.getNum().equals("")) {
-                                jsonObject.put(temp.getCode(), 0);
-                            } else
-                                jsonObject.put(temp.getCode(), Integer.parseInt(temp.getNum()));
-                        }
+                        jsonObject.put(type != 0 ? temp.getName() : temp.getCode(), temp.getNum().equals("") ? 0 : Integer.parseInt(temp.getNum()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

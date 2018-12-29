@@ -67,7 +67,7 @@ public class ReportActivity extends AppCompatActivity {
         switch (messageEvent.getTag()) {
             case MyApp.CKKC:
                 if (messageEvent.getStorehouseBean() != null) {
-                    list=messageEvent.getStorehouseBean();
+                    list = messageEvent.getStorehouseBean();
                     table.setData(list);
                     table.setZoom(true);//可以设置放大最大和最小值
                 }

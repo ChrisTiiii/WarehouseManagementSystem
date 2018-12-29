@@ -66,7 +66,7 @@ public class SPFragment extends Fragment {
     private List<BudgetList.DataBean> preBudgetList;
 
     private SPAdapter spAdapter;
-    private int type;//type==0待审批 type==1 已审批 2我的申领 3 我的采购 4我的预算 5年度预算参考
+    private int type;//type==0待审批 type==1 已审批 2我的申领 3 我的采购 4我的预算
     private NetServerImp netServerImp;
     private MyApp myApp;
     private int page_wait = 1;//待审批请求页

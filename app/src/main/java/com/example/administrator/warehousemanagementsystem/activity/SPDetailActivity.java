@@ -107,39 +107,25 @@ public class SPDetailActivity extends AppCompatActivity {
     public void loadApply(MessageEvent messageEvent) {
         switch (messageEvent.getTag()) {
             case MyApp.APPLY_DETAIL:
-                applyBean = messageEvent.getApplyList();
-                applyBean = removeRoot(applyBean);
+                applyBean = spDetailAdapter.removeRoot(messageEvent.getApplyList());//筛选分管主任对应数据
                 initApplyList(applyBean);
                 break;
             case MyApp.COMMIT_APPLY:
                 finish();
                 break;
             case MyApp.PURCHASE_DETAIL:
-                purchaseBean = messageEvent.getPurchaseBean();
+                purchaseBean = spDetailAdapter.removeRoot(messageEvent.getPurchaseBean());
                 initPurchaseList(purchaseBean);
                 break;
             case MyApp.BUDGET_DETAIL:
-                budgetBean = messageEvent.getBudgetBean();
+                budgetBean = spDetailAdapter.removeRoot(messageEvent.getBudgetBean());
                 initBudgetList(budgetBean);
                 break;
         }
     }
 
-    /**
-     * 筛选主任权限不必要的数据
-     */
-    private ApplyBean.DataBean removeRoot(ApplyBean.DataBean applyBean) {
-        if (myApp.getRoot() == 130) {
-            for (ApplyBean.DataBean.ApplyContentListBean bean : applyBean.getApplyContentList()) {
-                System.out.println("getUserTypeNo():" + myApp.getUser().getUserTypeNo() + "bean.getGoodsTypeNo():" + bean.getGoodsTypeNo());
-                if (!bean.getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
-                    applyBean.getApplyContentList().remove(bean);
-                }
-            }
-        }
-        return applyBean;
-    }
 
+    //初始化参数
     void initView() {
         myApp = (MyApp) getApplication();
         netServerImp = new NetServerImp(myApp);

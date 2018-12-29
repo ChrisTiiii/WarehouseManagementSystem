@@ -9,18 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:text="查看报表"
+        android:text="+查看库存明细"
         android:textColor="@color/steelblue" />
 
     <Button
         android:id="@+id/btn_intent"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:background="@null"
         android:text="选择近期商品"
         android:textColor="@color/steelblue" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,6 +33,7 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pic_chart"
+        android:visibility="gone"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_gravity="center"></com.github.mikephil.charting.charts.PieChart>

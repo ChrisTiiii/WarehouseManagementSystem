@@ -60,6 +60,18 @@ public class StorehouseList {
         private String storehouseType;
         private int storehouseTypeNo;
 
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "id=" + id +
+                    ", storehouseAddress='" + storehouseAddress + '\'' +
+                    ", storehouseAdmUserNo=" + storehouseAdmUserNo +
+                    ", storehouseName='" + storehouseName + '\'' +
+                    ", storehouseType='" + storehouseType + '\'' +
+                    ", storehouseTypeNo=" + storehouseTypeNo +
+                    '}';
+        }
+
         public int getId() {
             return id;
         }

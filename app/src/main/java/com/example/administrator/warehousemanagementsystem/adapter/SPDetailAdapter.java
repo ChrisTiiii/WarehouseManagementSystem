@@ -88,6 +88,54 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return uiList.get(position).getType();
     }
 
+
+    /**
+     * 筛选主任权限不必要的申领数据
+     */
+    public ApplyBean.DataBean removeRoot(ApplyBean.DataBean applyBean) {
+        ApplyBean.DataBean temp = applyBean;
+        if (myApp.getRoot() == 130) {
+            for (int i = 0; i < temp.getApplyContentList().size(); i++) {
+                if (!temp.getApplyContentList().get(i).getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                    temp.getApplyContentList().remove(i);
+                }
+            }
+        }
+        return temp;
+    }
+
+
+    /**
+     * 筛选主任权限不必要的采购单数据
+     */
+    public PurchaseBean.DataBean removeRoot(PurchaseBean.DataBean purchaseBean) {
+        PurchaseBean.DataBean temp = purchaseBean;
+        if (myApp.getRoot() == 130) {
+            for (int i = 0; i < temp.getPurchaseContentList().size(); i++) {
+                if (!temp.getPurchaseContentList().get(i).getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                    temp.getPurchaseContentList().remove(i);
+                }
+            }
+        }
+        return temp;
+    }
+
+
+    /**
+     * 筛选主任权限不必要的预算单申请
+     */
+    public BudgetBean.DataBean removeRoot(BudgetBean.DataBean budgetBean) {
+        BudgetBean.DataBean temp = budgetBean;
+        if (myApp.getRoot() == 130) {
+            for (int i = 0; i < temp.getBudgetContentList().size(); i++) {
+                if (!temp.getBudgetContentList().get(i).getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                    temp.getBudgetContentList().remove(i);
+                }
+            }
+        }
+        return temp;
+    }
+
     //初次加载apply
     public void updateList(ApplyBean.DataBean applyBean) {
         this.applyBean = applyBean;
@@ -134,9 +182,6 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (detailType == 300 || detailType == 2) {//申领单
             if (viewHolder instanceof HeadViewHolder) {
                 HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
-                //添加二维码,默认数据加载
-                Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(applyBean.getApplyId(), 480, 480);
-                headViewHolder.ivCode.setImageBitmap(mBitmap);
                 headViewHolder.spPerson.setText(String.valueOf(applyBean.getFromUserName()));
                 headViewHolder.spBh.setText(applyBean.getApplyId());
                 headViewHolder.tvChange.setText("所在部门：");
@@ -177,6 +222,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                     if (applyBean.getReviewList().size() > 0)
                         if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                            //添加二维码,默认数据加载
+                            headViewHolder.ivCode.setVisibility(View.VISIBLE);
+                            Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(applyBean.getApplyId(), 480, 480);
+                            headViewHolder.ivCode.setImageBitmap(mBitmap);
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请通过");
                         }
@@ -213,7 +262,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 unpass = applyBean.getReviewList().get(j).getReviewReason();
                             }
                             nowPoint = 1;
-                            nowPoint += j;
+                            nowPoint += (j + 1);
                         }
                         temp.add(applyBean.getReviewList().get(j).getReviewUserName() + "  " + applyBean.getReviewList().get(j).getReviewState());
                     }
@@ -238,9 +287,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (detailType == 310 || detailType == 3) {//采购单
             if (viewHolder instanceof HeadViewHolder) {
                 HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
-                //添加二维码,默认数据加载
-                Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(purchaseBean.getPurcId(), 480, 480);
-                headViewHolder.ivCode.setImageBitmap(mBitmap);
+
                 headViewHolder.spPerson.setText(String.valueOf(purchaseBean.getFromUserName()));
                 headViewHolder.spBh.setText(purchaseBean.getPurcId());
                 headViewHolder.tvChange.setText("采购供应：");
@@ -279,6 +326,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                     if (purchaseBean.getReviewList().size() > 0)
                         if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                            //添加二维码,默认数据加载
+                            headViewHolder.ivCode.setVisibility(View.VISIBLE);
+                            Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(purchaseBean.getPurcId(), 480, 480);
+                            headViewHolder.ivCode.setImageBitmap(mBitmap);
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请通过");
                         }
@@ -314,7 +365,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 unpass = purchaseBean.getReviewList().get(j).getReviewReason();
                             }
                             nowPoint = 1;
-                            nowPoint += j;
+                            nowPoint += (j + 1);
                         }
                         temp.add(purchaseBean.getReviewList().get(j).getReviewUserName() + "  " + purchaseBean.getReviewList().get(j).getReviewState());
                     }
@@ -339,9 +390,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (detailType == 320 || detailType == 4) {//预算单
             if (viewHolder instanceof HeadViewHolder) {
                 HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
-                //添加二维码,默认数据加载
-                Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(budgetBean.getBudgId(), 480, 480);
-                headViewHolder.ivCode.setImageBitmap(mBitmap);
+
                 headViewHolder.spPerson.setText(String.valueOf(budgetBean.getFromUserName()));
                 headViewHolder.spBh.setText(budgetBean.getBudgId());
                 headViewHolder.tvChange.setText("所在部门：");
@@ -379,6 +428,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                     if (budgetBean.getReviewList().size() > 0)
                         if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                            //添加二维码,默认数据加载
+                            headViewHolder.ivCode.setVisibility(View.VISIBLE);
+                            Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(budgetBean.getBudgId(), 480, 480);
+                            headViewHolder.ivCode.setImageBitmap(mBitmap);
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请通过");
                         }
@@ -415,7 +468,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 unpass = budgetBean.getReviewList().get(j).getReviewReason();
                             }
                             nowPoint = 1;
-                            nowPoint += (j+1);
+                            nowPoint += (j + 1);
                         }
                         temp.add(budgetBean.getReviewList().get(j).getReviewUserName() + "  " + budgetBean.getReviewList().get(j).getReviewState());
                     }
@@ -429,7 +482,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     progressViewHolder.tvDisagree.setText(unpass);
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
-                    System.out.println("当前点位："+nowPoint);
+                    System.out.println("当前点位：" + nowPoint);
                     if (budgetBean.getReviewList().size() > 0)
                         if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
                             setStepView(progressViewHolder, temp, nowPoint + 2);

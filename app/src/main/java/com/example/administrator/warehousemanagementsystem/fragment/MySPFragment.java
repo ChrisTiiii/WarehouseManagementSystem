@@ -96,8 +96,10 @@ public class MySPFragment extends Fragment {
             case 110://收费站站长
                 titleList.add("待审批");
                 titleList.add("已审批");
+                titleList.add("我的申领");
                 uiList.add(SPFragment.newInstance(0, myApp));
                 uiList.add(SPFragment.newInstance(1, myApp));
+                uiList.add(SPFragment.newInstance(2, myApp));
                 break;
             case 120://仓库管理员
                 titleList.add("我的采购");
@@ -108,8 +110,14 @@ public class MySPFragment extends Fragment {
             case 130://主任
                 titleList.add("待审批");
                 titleList.add("已审批");
+                titleList.add("申领");
+                titleList.add("采购");
+                titleList.add("预算");
                 uiList.add(SPFragment.newInstance(0, myApp));
                 uiList.add(SPFragment.newInstance(1, myApp));
+                uiList.add(SPFragment.newInstance(2, myApp));
+                uiList.add(SPFragment.newInstance(3, myApp));
+                uiList.add(SPFragment.newInstance(4, myApp));
                 break;
             case 140://处长
                 titleList.add("待审批");
