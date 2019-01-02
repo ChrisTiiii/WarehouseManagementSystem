@@ -50,7 +50,7 @@ import rx.schedulers.Schedulers;
 public class NetServerImp {
     private Retrofit retrofit;
     private NetAPI netAPI;
-    private static final String BASE_URL = "http://10.101.80.120:8080/";  //10.101.80.119  10.101.208.119 120
+    private static final String BASE_URL = "http://192.168.0.88:8080/";  //10.101.80.119  10.101.208.119 120
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
