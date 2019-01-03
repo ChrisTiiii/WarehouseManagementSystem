@@ -34,72 +34,72 @@ public interface NetAPI {
     Observable<UserBean> getUser(@Query("userid") String userid, @Query("pass") String pass, @Query("from") String app);//用户登录，获取用户角色
 
     @GET("getAllGoodsType.do")
-    Observable<GoodsType> getGoodsType();//获得商品分类
+    Observable<GoodsType> getGoodsType(@Query("from") String app,@Query("token") String token);//获得商品分类
 
     @GET("getGoodsListBy.do")
-    Observable<GoodsDetailBean> getGoodsDetail(@Query("goodsTypeNo") int goodsTypeNo);//获得物品详情
+    Observable<GoodsDetailBean> getGoodsDetail(@Query("goodsTypeNo") int goodsTypeNo,@Query("from") String app,@Query("token") String token);//获得物品详情
 
     @GET("getUserList.do")
-    Observable<SPPersonBean> getSPPersonType();//获取审批人分类
+    Observable<SPPersonBean> getSPPersonType(@Query("from") String app,@Query("token") String token);//获取审批人分类
 
     @GET("getUserListBy.do")
-    Observable<SPPersonBean> getSPPerson(@Query("userRoleNo") int userRoleNo);//获取审批人
+    Observable<SPPersonBean> getSPPerson(@Query("userRoleNo") int userRoleNo,@Query("from") String app,@Query("token") String token);//获取审批人
 
     @FormUrlEncoded
     @POST("addApply.do")
-    Observable<AddApplyBean> postApply(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList);//提交申领订单
+    Observable<AddApplyBean> postApply(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList,@Query("from") String app,@Query("token") String token);//提交申领订单
 
     @FormUrlEncoded
     @POST("addPurchase.do")
-    Observable<PurchaseBean> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier);//提交采购单
+    Observable<PurchaseBean> postPurchase(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList, @Field("supplier") String supplier,@Query("from") String app,@Query("token") String token);//提交采购单
 
     @FormUrlEncoded
     @POST("addBudget.do")
-    Observable<BudgetBean> postBudget(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList);//提交预算单
+    Observable<BudgetBean> postBudget(@Field("userNo") Integer userNo, @Field("note") String note, @Field("goodsMap") String goodsMap, @Field("userNoList") String userNoList,@Query("from") String app,@Query("token") String token);//提交预算单
 
     //同意/拒绝
     @GET("agreeReview.do")
-    Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo);//提交同意审批
+    Observable<BackData> agreeReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo,@Query("from") String app,@Query("token") String token);//提交同意审批
 
     @GET("refuseReview.do")
-    Observable<BackData> refuseReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo, @Query("reason") String reason);//提交拒绝审批
+    Observable<BackData> refuseReview(@Query("userNo") Integer userNo, @Query("reviewNo") Integer reviewNo, @Query("reason") String reason,@Query("from") String app,@Query("token") String token);//提交拒绝审批
 
     @GET("getReviewListWaitForMe.do")
-    Observable<ReviewList> getReviewList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取待审批订单
+    Observable<ReviewList> getReviewList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size,@Query("from") String app,@Query("token") String token);//获取待审批订单
 
     @GET("getReviewListHaveDoneByMe.do")
-    Observable<ReviewListHaveDone> getReviewListHaveDoneByMe(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取已完成订单
+    Observable<ReviewListHaveDone> getReviewListHaveDoneByMe(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size,@Query("from") String app,@Query("token") String token);//获取已完成订单
 
     @GET("getApplyById.do")
-    Observable<ApplyBean> getApplyById(@Query("id") String id);//审批详情
+    Observable<ApplyBean> getApplyById(@Query("id") String id,@Query("from") String app,@Query("token") String token);//审批详情
 
     @GET("getPurchaseById.do")
-    Observable<PurchaseBean> getPurchaseById(@Query("id") String id);//采购单详情
+    Observable<PurchaseBean> getPurchaseById(@Query("id") String id,@Query("from") String app,@Query("token") String token);//采购单详情
 
 
     @GET("getBudgetById.do")
-    Observable<BudgetBean> getBudgetById(@Query("id") String id);//预算详情
+    Observable<BudgetBean> getBudgetById(@Query("id") String id,@Query("from") String app,@Query("token") String token);//预算详情
 
     @GET("getApplyListBy.do")
-    Observable<ApplyList> getApplyList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的申领单
+    Observable<ApplyList> getApplyList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size,@Query("from") String app,@Query("token") String token);//获取我提交的申领单
 
     @GET("getPurchaseListBy.do")
-    Observable<PurchaseList> getPurchaseList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的采购单
+    Observable<PurchaseList> getPurchaseList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size,@Query("from") String app,@Query("token") String token);//获取我提交的采购单
 
     @GET("getBudgetListBy.do")
-    Observable<BudgetList> getBudgetList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size);//获取我提交的预算单
+    Observable<BudgetList> getBudgetList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size,@Query("from") String app,@Query("token") String token);//获取我提交的预算单
 
 
     @GET("getStorehouseList.do")
-    Observable<StorehouseList> getStorehouseList();//获取全部仓库名
+    Observable<StorehouseList> getStorehouseList(@Query("from") String app,@Query("token") String token);//获取全部仓库名
 
 
     @GET("getStorehouseList.do")
-    Observable<StorehouseList> getStorehouseBy(@Query("storehouseAdmUserNo") Integer storehouseAdmUserNo);//获取根据仓库管理员id获取仓库
+    Observable<StorehouseList> getStorehouseBy(@Query("storehouseAdmUserNo") Integer storehouseAdmUserNo,@Query("from") String app,@Query("token") String token);//获取根据仓库管理员id获取仓库
 
 
     @GET("getStockRecord.do")
-    Observable<StorehouseBean> getStockRecord(@Query("storehouseNoStr") String storehouseNoStr, @Query("page") int page, @Query("size") int size);//获取仓库名
+    Observable<StorehouseBean> getStockRecord(@Query("storehouseNoStr") String storehouseNoStr, @Query("page") int page, @Query("size") int size,@Query("from") String app,@Query("token") String token);//获取仓库名
 
 
 }

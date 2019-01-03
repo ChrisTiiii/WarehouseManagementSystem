@@ -28,6 +28,7 @@ import com.githang.stepview.StepView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -327,6 +328,7 @@ public class SLAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public List<MyGoods> getGoodsList() {
         return goodsList.size() != 0 ? goodsList : null;
     }
+
 
     public List<MyLeader> getLeaderList() {
         return leaderList.size() != 0 ? leaderList : null;

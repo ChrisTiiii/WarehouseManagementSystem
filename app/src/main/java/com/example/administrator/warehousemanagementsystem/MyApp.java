@@ -33,6 +33,7 @@ public class MyApp extends Application {
     public static final int MY_BUDGET_LIST = 0x6543;//我的预算单list
     public static final int CKKC = 0x8573;//查询仓库库存
     public UserBean.DataBean user;
+    public String token;
 
     public UserBean.DataBean getUser() {
         return user != null ? user : null;
@@ -40,6 +41,14 @@ public class MyApp extends Application {
 
     public void setUser(UserBean.DataBean user) {
         this.user = user;
+    }
+
+    public String getToken() {
+        return token != null ? token : null;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
