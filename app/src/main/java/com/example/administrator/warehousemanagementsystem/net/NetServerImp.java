@@ -33,7 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -54,6 +56,7 @@ public class NetServerImp {
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
+    OkHttpClient client;
 
     /**
      * 初始化retrofit netApi
@@ -62,10 +65,15 @@ public class NetServerImp {
      */
     public NetServerImp(MyApp myApp) {
         this.myApp = myApp;
+        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
+        client = httpBuilder.readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS) //设置超时
+                .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)//基础URL 建议以 / 结尾
                 .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//RxJava 适配器
+                .client(client)
                 .build();
         netAPI = retrofit.create(NetAPI.class);
 
@@ -272,7 +280,7 @@ public class NetServerImp {
     }
 
     public void postPurchase(Integer userNo, String note, String goodsMap, String userNoList, String supplier, MyDialog myDialog) {
-        netAPI.postPurchase(userNo, note, goodsMap, userNoList, supplier,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.postPurchase(userNo, note, goodsMap, userNoList, supplier, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<PurchaseBean>() {
                     @Override
@@ -306,7 +314,7 @@ public class NetServerImp {
      */
     public void postApply(Integer userNo, String note, String goodsMap, String userNoList, MyDialog myDialog) {
         System.out.println(userNo + note + goodsMap + userNoList);
-        netAPI.postApply(userNo, note, goodsMap, userNoList,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.postApply(userNo, note, goodsMap, userNoList, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<AddApplyBean>() {
                     @Override
@@ -340,7 +348,7 @@ public class NetServerImp {
 
     public void postBudget(Integer userNo, String note, String goodsMap, String userNoList, MyDialog myDialog) {
         System.out.println(userNo + note + goodsMap + userNoList);
-        netAPI.postBudget(userNo, note, goodsMap, userNoList,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.postBudget(userNo, note, goodsMap, userNoList, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<BudgetBean>() {
                     @Override
@@ -374,7 +382,7 @@ public class NetServerImp {
      * @param size
      */
     public void getReviewList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
-        netAPI.getReviewList(myApp.user.getId(), page, size,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getReviewList(myApp.user.getId(), page, size, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ReviewList>() {
                     @Override
@@ -407,7 +415,7 @@ public class NetServerImp {
      */
     public void getApplyById(String applyNo, MyDialog myDialog) {
         System.out.println("applyNo:++++++++++" + applyNo);
-        netAPI.getApplyById(applyNo,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getApplyById(applyNo, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ApplyBean>() {
                     @Override
@@ -443,7 +451,7 @@ public class NetServerImp {
      */
     public void getPurchaseById(String applyNo, MyDialog myDialog) {
         System.out.println("applyNo" + applyNo);
-        netAPI.getPurchaseById(applyNo,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getPurchaseById(applyNo, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<PurchaseBean>() {
                     @Override
@@ -476,7 +484,7 @@ public class NetServerImp {
      */
     public void getBudgetById(String applyNo, MyDialog myDialog) {
         System.out.println("applyNo:++++++++++" + applyNo);
-        netAPI.getBudgetById(applyNo,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getBudgetById(applyNo, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<BudgetBean>() {
                     @Override
@@ -507,7 +515,7 @@ public class NetServerImp {
      * 同意审批
      */
     public void agreeReview(Integer reviewNo) {
-        netAPI.agreeReview(myApp.user.getId(), reviewNo,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.agreeReview(myApp.user.getId(), reviewNo, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<BackData>() {
                     @Override
@@ -537,7 +545,7 @@ public class NetServerImp {
      * 拒绝请求
      */
     public void refuseReview(Integer reviewNo, String reason) {
-        netAPI.refuseReview(myApp.user.getId(), reviewNo, reason,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.refuseReview(myApp.user.getId(), reviewNo, reason, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<BackData>() {
                     @Override
@@ -564,7 +572,7 @@ public class NetServerImp {
      * 获取已完成订单
      */
     public void getReviewListHaveDoneByMe(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
-        netAPI.getReviewListHaveDoneByMe(myApp.user.getId(), page, size,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getReviewListHaveDoneByMe(myApp.user.getId(), page, size, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ReviewListHaveDone>() {
                     @Override
@@ -596,7 +604,7 @@ public class NetServerImp {
      * 获取我提交的申请单
      */
     public void getApplyList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
-        netAPI.getApplyList(myApp.user.getId(), page, size,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getApplyList(myApp.user.getId(), page, size, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<ApplyList>() {
                     @Override
@@ -630,7 +638,7 @@ public class NetServerImp {
      * 获取我的采购单列表
      */
     public void getPurchaseList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
-        netAPI.getPurchaseList(myApp.user.getId(), page, size,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getPurchaseList(myApp.user.getId(), page, size, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<PurchaseList>() {
                     @Override
@@ -664,7 +672,7 @@ public class NetServerImp {
      * 获取我提交的申请单
      */
     public void getBudgetList(int page, int size, SmartRefreshLayout refreshLayout, MyDialog myDialog) {
-        netAPI.getBudgetList(myApp.user.getId(), page, size,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getBudgetList(myApp.user.getId(), page, size, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<BudgetList>() {
                     @Override
@@ -698,7 +706,7 @@ public class NetServerImp {
      */
 
     public void getStorehouseList(MyDialog myDialog) {
-        netAPI.getStorehouseList(APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getStorehouseList(APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<StorehouseList>() {
                     @Override
@@ -729,7 +737,7 @@ public class NetServerImp {
      * 根据仓库管理员id获取对应仓库
      */
     public void getStorehouseBy(int id, MyDialog myDialog) {
-        netAPI.getStorehouseBy(id,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getStorehouseBy(id, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<StorehouseList>() {
                     @Override
@@ -762,7 +770,7 @@ public class NetServerImp {
      * @param myDialog
      */
     public void getStockRecord(String storehouseNoStr, MyDialog myDialog) {
-        netAPI.getStockRecord(storehouseNoStr, 1, 1000,APP,myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getStockRecord(storehouseNoStr, 1, 1000, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<StorehouseBean>() {
                     @Override
