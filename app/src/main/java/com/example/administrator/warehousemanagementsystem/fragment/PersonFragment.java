@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.LoginActivity;
@@ -25,7 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
@@ -50,6 +48,8 @@ public class PersonFragment extends Fragment {
     @BindView(R.id.exit)
     Button exit;
     MyApp myApp;
+    @BindView(R.id.change_password)
+    Button changePassword;
 
 
     @SuppressLint("ValidFragment")
@@ -115,4 +115,7 @@ public class PersonFragment extends Fragment {
         }
     }
 
+    @OnClick(R.id.change_password)
+    public void onViewClicked() {
+    }
 }

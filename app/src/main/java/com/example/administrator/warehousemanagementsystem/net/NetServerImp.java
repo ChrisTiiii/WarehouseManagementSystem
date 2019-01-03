@@ -242,7 +242,7 @@ public class NetServerImp {
      * @param userRoleNo 当前menuType
      */
     public void getSPPerson(int userRoleNo, MyDialog myDialog) {
-        netAPI.getSPPerson(userRoleNo, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getSPPerson(myApp.getUser().getId(), userRoleNo, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<SPPersonBean>() {
                     @Override

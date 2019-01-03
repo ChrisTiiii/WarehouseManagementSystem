@@ -73,11 +73,27 @@
             android:layout_below="@+id/banben"
             android:background="#cdcdcd" />
 
+
+        <Button
+            android:id="@+id/change_password"
+            android:layout_below="@+id/banben"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="更改密码" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@+id/change_password"
+            android:background="#cdcdcd" />
+
+
         <Button
             android:id="@+id/exit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/banben"
+            android:layout_below="@+id/change_password"
             android:background="@null"
             android:text="退出登录" />
 
