@@ -8,15 +8,18 @@ import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetBean;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
+import com.example.administrator.warehousemanagementsystem.bean.CountStockOutRecordBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
+import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
-import com.example.administrator.warehousemanagementsystem.bean.Report;
+import com.example.administrator.warehousemanagementsystem.bean.StoreHouseReport;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
+import com.example.administrator.warehousemanagementsystem.bean.StockOutRecordBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
@@ -179,7 +182,7 @@ public class NetServerImp {
                     public void onNext(UserBean userBean) {
                         if (userBean.getResult().equals("ok")) {
                             if (userBean.getData() != null) {
-                                System.out.println(userBean.getData().toString());
+                                System.out.println(userBean.getData().toString() + "token:" + userBean.getToken());
                                 myApp.setUser(userBean.getData());
                                 myApp.setToken(userBean.getToken());
                             }
@@ -789,14 +792,122 @@ public class NetServerImp {
                     public void onNext(StorehouseBean storehouseBean) {
                         if (storehouseBean.getResult().equals("ok")) {
                             MessageEvent messageEvent = new MessageEvent(myApp.CKKC);
-                            List<Report> list = new ArrayList<>();
+                            List<StoreHouseReport> list = new ArrayList<>();
                             for (StorehouseBean.DataBean bean : storehouseBean.getData()) {
-                                Report report = new Report(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum());
+                                StoreHouseReport report = new StoreHouseReport(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum());
                                 list.add(report);
                                 System.out.println("仓库数据:" + list.get(0));
                             }
                             messageEvent.setStorehouseBean(list);
                             EventBus.getDefault().post(messageEvent);
+                        }
+                    }
+                });
+    }
+
+    public void changePass(String oldPass, String newPass, String newPass2, MyDialog myDialog) {
+        System.out.println("Id:" + myApp.getUser().getId() + "\toldPWD:" + oldPass + "\tnewPwd:" + newPass + "\tnewpwd2:" + newPass2 + "\ttoken:" + myApp.getToken());
+        netAPI.changePass(myApp.getUser().getId(), oldPass, newPass, newPass2, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BackData>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("changePass已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(BackData backData) {
+                        System.out.println("更改密码：" + backData.getResult());
+                        if (backData.getResult().equals("ok")) {
+                            EventBus.getDefault().post(new MessageEvent(MyApp.CHANGE_SUCCESS, "success"));
+                        } else Toast.makeText(myApp, "原始密码错误", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    /**
+     * 收费站查看自己的领用情况生成饼状图
+     */
+    public void getStockOutRecord(String beginDate, String endDate, MyDialog myDialog) {
+        netAPI.getStockOutRecord(beginDate, endDate, myApp.getUser().getDeptNo()).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<StockOutRecordBean>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getStockOutRecord已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(StockOutRecordBean stockOutRecordBean) {
+                        System.out.println("请求报表：" + stockOutRecordBean.getResult());
+                        if (stockOutRecordBean.getResult().equals("ok")) {
+                            if (stockOutRecordBean.getData() != null) {
+                                List<MyGoods> list = new ArrayList<>();
+                                for (StockOutRecordBean.DataBean dataBean : stockOutRecordBean.getData()) {
+                                    System.out.println("商品：" + dataBean.getStockOutGoodsName());
+                                    list.add(new MyGoods(dataBean.getStockOutGoodsName(), String.valueOf(dataBean.getStockOutGoodsNum())));
+                                }
+                                MessageEvent messageEvent = new MessageEvent(MyApp.REPORT_BT);
+                                messageEvent.setGoodsList(list);
+                                EventBus.getDefault().post(messageEvent);
+                            }
+
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 收费站查看领用记录生成柱状图
+     */
+    public void getCountStockOutRecord(String beginDate, String endDate, MyDialog myDialog) {
+        System.out.println("beginDate:" + beginDate);
+        netAPI.getCountStockOutRecord(beginDate, endDate, myApp.getUser().getDeptNo()).subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<CountStockOutRecordBean>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getStockOutRecord已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(CountStockOutRecordBean countStockOutRecordBean) {
+                        System.out.println("请求报表：" + countStockOutRecordBean.getResult());
+                        if (countStockOutRecordBean.getResult().equals("ok")) {
+                            if (countStockOutRecordBean.getData() != null) {
+                                List<MyGoods> list = new ArrayList<>();
+                                for (CountStockOutRecordBean.DataBean dataBean : countStockOutRecordBean.getData()) {
+                                    System.out.println("商品：" + dataBean.getKey());
+                                    list.add(new MyGoods(dataBean.getKey(), String.valueOf(dataBean.getValue())));
+                                }
+                                MessageEvent messageEvent = new MessageEvent(MyApp.COUNT_STOCK);
+                                messageEvent.setGoodsList(list);
+                                EventBus.getDefault().post(messageEvent);
+                            }
+
                         }
                     }
                 });

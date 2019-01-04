@@ -9,7 +9,7 @@ import com.bin.david.form.annotation.SmartTable;
  * Description:
  **/
 @SmartTable(name = "宁通仓库管理系统")
-public class Report {
+public class StoreHouseReport {
     @SmartColumn(id = 1, name = "仓库名")
     private String ckName;
     @SmartColumn(id = 2, name = "商品名")
@@ -17,7 +17,7 @@ public class Report {
     @SmartColumn(id = 3, name = "数量")
     private int num;
 
-    public Report(String ckName, String productName, int num) {
+    public StoreHouseReport(String ckName, String productName, int num) {
         this.ckName = ckName;
         this.productName = productName;
         this.num = num;

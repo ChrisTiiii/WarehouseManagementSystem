@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
+import com.example.administrator.warehousemanagementsystem.activity.ChangePWDActivity;
 import com.example.administrator.warehousemanagementsystem.activity.LoginActivity;
 import com.example.administrator.warehousemanagementsystem.util.SharedPreferencesUtils;
 
@@ -97,25 +98,29 @@ public class PersonFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.banben, R.id.exit})
+    @OnClick({R.id.banben, R.id.exit, R.id.change_password})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.banben:
                 Toast.makeText(getContext(), "您已下载最新版本", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.exit:
-                SharedPreferencesUtils helper = new SharedPreferencesUtils(getContext(), "setting");
-                helper.putValues(new SharedPreferencesUtils.ContentValue("password", ""));
-                helper.putValues(new SharedPreferencesUtils.ContentValue("autoLogin", false));
-                Intent intent = new Intent();
-                intent.putExtra("type", 1);
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
+                exitAccount();
+                break;
+            case R.id.change_password:
+                startActivity(new Intent(getContext(), ChangePWDActivity.class));
                 break;
         }
     }
 
-    @OnClick(R.id.change_password)
-    public void onViewClicked() {
+    public void exitAccount() {
+        SharedPreferencesUtils helper = new SharedPreferencesUtils(getContext(), "setting");
+        helper.putValues(new SharedPreferencesUtils.ContentValue("password", ""));
+        helper.putValues(new SharedPreferencesUtils.ContentValue("autoLogin", false));
+        Intent intent = new Intent();
+        intent.putExtra("type", 1);
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        getActivity().finish();
     }
+
 }

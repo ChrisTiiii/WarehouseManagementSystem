@@ -40,6 +40,9 @@
         <activity
             android:name=".activity.ChangePWDActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ApplyReport"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

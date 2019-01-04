@@ -10,16 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bigkoo.pickerview.TimePickerView;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
+import com.example.administrator.warehousemanagementsystem.activity.ApplyReport;
 import com.example.administrator.warehousemanagementsystem.activity.ReportActivity;
 import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
+import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.example.administrator.warehousemanagementsystem.util.MyDialog;
+import com.example.administrator.warehousemanagementsystem.util.TimeUtil;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -30,7 +36,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +60,26 @@ import butterknife.Unbinder;
 public class ReportFragment extends Fragment {
 
     Unbinder unbinder;
-    @BindView(R.id.btn_intent)
-    Button btnIntent;
+
     @BindView(R.id.pic_chart)
     PieChart picChart;
     @BindView(R.id.clear)
     Button clear;
     @BindView(R.id.btn_bb)
     Button btnBb;
+    @BindView(R.id.btn_begin_time)
+    Button btnBeginTime;
+    @BindView(R.id.tv_begin)
+    TextView tvBegin;
+    @BindView(R.id.btn_end_time)
+    Button btnEndTime;
+    @BindView(R.id.tv_end)
+    TextView tvEnd;
+    @BindView(R.id.btn_ly)
+    Button btnLy;
+    @BindView(R.id.btn_apply)
+    Button btnApply;
+
 
     private List<PieEntry> things;//饼状图个体
     private ArrayList<Integer> colors;//饼状图色体
@@ -66,6 +88,8 @@ public class ReportFragment extends Fragment {
     NetServerImp netServerImp;
     MyApp myApp;
     MyDialog myDialog;
+    private String begin;
+    private String end;
 
     @SuppressLint("ValidFragment")
     public ReportFragment(MyApp myApp) {
@@ -88,8 +112,21 @@ public class ReportFragment extends Fragment {
             EventBus.getDefault().register(this);
         myDialog = new MyDialog(getContext(), 1);
         netServerImp = new NetServerImp(myApp);
+        root();
         initList();
         return view;
+    }
+
+    private void root() {
+        if (myApp.getRoot() == 100 || myApp.getRoot() == 110) {
+            btnApply.setVisibility(View.VISIBLE);
+            btnLy.setVisibility(View.VISIBLE);
+            btnBb.setVisibility(View.GONE);
+        } else {
+            btnLy.setVisibility(View.VISIBLE);
+            btnBb.setVisibility(View.VISIBLE);
+            btnApply.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initList() {
@@ -125,13 +162,14 @@ public class ReportFragment extends Fragment {
     public void updateData(MessageEvent messageEvent) {
         switch (messageEvent.getTag()) {
             case MyApp.REPORT_BT:
-                if (messageEvent.getMapList() != null) {
+                if (messageEvent.getGoodsList() != null) {
                     Description description = new Description();
-                    description.setText("宁通仓库管理(随机数据)");
+                    description.setText("近期领用的情况");
                     picChart.setDescription(description);
-                    for (Map<String, Object> map : messageEvent.getMapList()) {
-                        String name = (String) map.get("name");
-                        things.add(new PieEntry(randomNum(), name));
+                    things.clear();
+                    for (MyGoods myGoods : messageEvent.getGoodsList()) {
+                        System.out.println("商品：" + myGoods.getName() + "数量：" + myGoods.getNum());
+                        things.add(new PieEntry(Integer.parseInt(myGoods.getNum()), myGoods.getName()));
                     }
                     PieDataSet dataSet = new PieDataSet(things, "Label");
                     initColor();
@@ -176,18 +214,52 @@ public class ReportFragment extends Fragment {
     }
 
 
-    public int randomNum() {
-        return new Random().nextInt(100);
+    public void setTime(int type) {
+        //时间选择器
+        TimePickerView pvTime = new TimePickerView.Builder(getContext(), new TimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (type == 1) {
+                    begin = sdf.format(date);
+                    tvBegin.setText(begin);
+                } else if (type == 2) {
+                    end = sdf.format(date);
+                    tvEnd.setText(end);
+                }
+            }
+        }).setType(new boolean[]{true, true, true, false, false, false}) //年月日时分秒 的显示与否，不设置则默认全部显示
+                .setLabel("年", "月", "日", "", "", "")//默认设置为年月日时分秒
+                .build();
+        pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
+        pvTime.show();
     }
 
-
-    @OnClick({R.id.btn_intent, R.id.clear, R.id.btn_bb})
+    @OnClick({R.id.btn_begin_time, R.id.btn_end_time, R.id.btn_ly, R.id.btn_bb, R.id.clear, R.id.btn_apply})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_intent:
-                Intent intent = new Intent(getContext(), MenuActivity.class);
-                intent.putExtra("type", 3);
-                startActivity(intent);
+            case R.id.btn_begin_time:
+                setTime(1);
+                break;
+            case R.id.btn_end_time:
+                setTime(2);
+                break;
+            case R.id.btn_ly:
+                try {
+                    if (begin != null && end != null) {
+                        myDialog.showDialog();
+                        netServerImp.getStockOutRecord(TimeUtil.dateToStamp(begin), TimeUtil.dateToStamp(end), myDialog);
+                    } else Toast.makeText(myApp, "请选择日期", Toast.LENGTH_SHORT).show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_bb:
+                myDialog.showDialog();
+                if (myApp.getRoot() != 120)
+                    netServerImp.getStorehouseList(myDialog);
+                else
+                    netServerImp.getStorehouseBy(myApp.user.getId(), myDialog);
                 break;
             case R.id.clear:
                 things.clear();
@@ -199,13 +271,20 @@ public class ReportFragment extends Fragment {
                     }
                 });
                 break;
-            case R.id.btn_bb:
-                myDialog.showDialog();
-                if (myApp.getRoot() != 120)
-                    netServerImp.getStorehouseList(myDialog);
-                else
-                    netServerImp.getStorehouseBy(myApp.user.getId(), myDialog);
+            case R.id.btn_apply:
+                if (begin != null && end != null) {
+                    Intent intent = new Intent(getContext(), ApplyReport.class);
+                    intent.putExtra("begin", begin);
+                    intent.putExtra("end", end);
+                    startActivity(intent);
+                } else Toast.makeText(myApp, "请选择日期", Toast.LENGTH_SHORT).show();
                 break;
+//            case R.id.btn_intent:
+//                Intent intent = new Intent(getContext(), MenuActivity.class);
+//                intent.putExtra("type", 3);
+//                startActivity(intent);
+//                break;
+
         }
     }
 }

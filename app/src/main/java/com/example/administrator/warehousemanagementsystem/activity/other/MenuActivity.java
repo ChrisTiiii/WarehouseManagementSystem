@@ -291,7 +291,6 @@ public class MenuActivity extends AppCompatActivity {
                                     .show();
                             break;
                         case 3:
-                            EventBus.getDefault().post(new MessageEvent(MyApp.REPORT_BT, checkList));
                             finish();
                             break;
                         default:

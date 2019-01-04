@@ -1,42 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:padding="@dimen/dp_8">
 
-    <Button
-        android:id="@+id/btn_bb"
+    <LinearLayout
+        android:id="@+id/ll_begin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:text="+查看库存明细"
-        android:textColor="@color/steelblue" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btn_intent"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:text="选择近期商品"
-        android:textColor="@color/steelblue" />
+        <Button
+            android:id="@+id/btn_begin_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="+选择起始时间"
+            android:textColor="@color/steelblue" />
 
-    <Button
-        android:visibility="gone"
-        android:id="@+id/clear"
+        <TextView
+            android:id="@+id/tv_begin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/btn_begin_time"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_18"
+            android:textSize="@dimen/sp_18" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:text="清空"
-        android:textColor="@color/steelblue" />
+        android:layout_below="@+id/ll_begin"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="+选择终止时间"
+            android:textColor="@color/steelblue" />
+
+        <TextView
+            android:id="@+id/tv_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/btn_end_time"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_18"
+            android:textSize="@dimen/sp_18" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_ly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_end"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="查看领用情况"
+            android:textColor="@color/steelblue" />
+
+        <Button
+            android:id="@+id/btn_bb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_ly"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="查看库存明细"
+            android:textColor="@color/steelblue" />
+
+        <Button
+            android:id="@+id/btn_apply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="领用情况"
+            android:textColor="@color/steelblue" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="清空"
+            android:textColor="@color/steelblue" />
+
+        <!--<Button-->
+        <!--android:id="@+id/btn_intent"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@null"-->
+        <!--android:text="+选择近期商品"-->
+        <!--android:textColor="@color/steelblue" />-->
+    </LinearLayout>
 
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pic_chart"
-        android:visibility="gone"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_gravity="center"></com.github.mikephil.charting.charts.PieChart>
+        android:layout_below="@+id/ll_btn"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center" />
 
 
-</LinearLayout>
+</RelativeLayout>

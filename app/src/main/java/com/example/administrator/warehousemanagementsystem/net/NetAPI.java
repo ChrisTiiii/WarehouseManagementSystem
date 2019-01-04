@@ -1,10 +1,13 @@
 package com.example.administrator.warehousemanagementsystem.net;
 
+import android.content.Intent;
+
 import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetBean;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
+import com.example.administrator.warehousemanagementsystem.bean.CountStockOutRecordBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
@@ -13,6 +16,7 @@ import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
 import com.example.administrator.warehousemanagementsystem.bean.SPPersonBean;
+import com.example.administrator.warehousemanagementsystem.bean.StockOutRecordBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.bean.UserBean;
@@ -76,7 +80,6 @@ public interface NetAPI {
     @GET("getPurchaseById.do")
     Observable<PurchaseBean> getPurchaseById(@Query("id") String id, @Query("from") String app, @Query("token") String token);//采购单详情
 
-
     @GET("getBudgetById.do")
     Observable<BudgetBean> getBudgetById(@Query("id") String id, @Query("from") String app, @Query("token") String token);//预算详情
 
@@ -89,17 +92,22 @@ public interface NetAPI {
     @GET("getBudgetListBy.do")
     Observable<BudgetList> getBudgetList(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size, @Query("from") String app, @Query("token") String token);//获取我提交的预算单
 
-
     @GET("getStorehouseList.do")
     Observable<StorehouseList> getStorehouseList(@Query("from") String app, @Query("token") String token);//获取全部仓库名
-
 
     @GET("getStorehouseList.do")
     Observable<StorehouseList> getStorehouseBy(@Query("storehouseAdmUserNo") Integer storehouseAdmUserNo, @Query("from") String app, @Query("token") String token);//获取根据仓库管理员id获取仓库
 
-
     @GET("getStockRecord.do")
     Observable<StorehouseBean> getStockRecord(@Query("storehouseNoStr") String storehouseNoStr, @Query("page") int page, @Query("size") int size, @Query("from") String app, @Query("token") String token);//获取仓库名
 
+    @POST("changePass.do")
+    Observable<BackData> changePass(@Query("id") int id, @Query("oldPass") String oldPass, @Query("newPass") String newPass, @Query("newPass2") String newPass2, @Query("from") String app, @Query("token") String token);//更改密码
+
+    @GET("getStockOutRecord.do")
+    Observable<StockOutRecordBean> getStockOutRecord(@Query("beginDate") String beginDate, @Query("endDate") String endDate, @Query("deptNo") int deptNo);//根据deptNo获取历史申领记录
+
+    @GET("countStockOutRecord.do")
+    Observable<CountStockOutRecordBean> getCountStockOutRecord(@Query("beginDate") String beginDate, @Query("endDate") String endDate, @Query("deptNo") int deptNo);
 
 }

@@ -8,8 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.bin.david.form.core.SmartTable;
 import com.example.administrator.warehousemanagementsystem.MyApp;
 import com.example.administrator.warehousemanagementsystem.R;
-import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
-import com.example.administrator.warehousemanagementsystem.bean.Report;
+import com.example.administrator.warehousemanagementsystem.bean.StoreHouseReport;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.example.administrator.warehousemanagementsystem.util.MyDialog;
@@ -31,8 +30,8 @@ import butterknife.ButterKnife;
  **/
 public class ReportActivity extends AppCompatActivity {
     @BindView(R.id.table)
-    SmartTable<Report> table;
-    private List<Report> list;
+    SmartTable<StoreHouseReport> table;
+    private List<StoreHouseReport> list;
     MyApp myApp;
     private NetServerImp netServerImp;
     private MyDialog myDialog;

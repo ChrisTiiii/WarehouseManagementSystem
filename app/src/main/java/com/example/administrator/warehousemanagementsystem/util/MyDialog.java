@@ -18,18 +18,10 @@ public class MyDialog {
     private Context context;
     private Integer type;
     private MaterialDialog dialog;
-    private List<Map<String, Object>> checkList;
-
 
     public MyDialog(Context context, Integer type) {
         this.context = context;
         this.type = type;
-    }
-
-    public void showDialog(int menuType, List<Map<String, Object>> checkList) {
-
-
-
     }
 
     public void showDialog() {

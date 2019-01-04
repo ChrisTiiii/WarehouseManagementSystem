@@ -7,10 +7,9 @@ import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseBean;
 import com.example.administrator.warehousemanagementsystem.bean.PurchaseList;
-import com.example.administrator.warehousemanagementsystem.bean.Report;
+import com.example.administrator.warehousemanagementsystem.bean.StoreHouseReport;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewList;
 import com.example.administrator.warehousemanagementsystem.bean.ReviewListHaveDone;
-import com.example.administrator.warehousemanagementsystem.bean.StorehouseBean;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 
 import java.util.List;
@@ -35,8 +34,7 @@ public class MessageEvent {
     private ApplyBean.DataBean applyList;//我的申请单
     private PurchaseBean.DataBean purchaseBean;//我的采购单
     private BudgetBean.DataBean budgetBean;//我的预算单
-    private List<Report> storehouseBean;//仓库库存
-
+    private List<StoreHouseReport> storehouseBean;//仓库库存
 
     public MessageEvent(int tag) {
         this.tag = tag;
@@ -157,11 +155,11 @@ public class MessageEvent {
         this.storehouseList = storehouseList;
     }
 
-    public List<Report> getStorehouseBean() {
+    public List<StoreHouseReport> getStorehouseBean() {
         return storehouseBean;
     }
 
-    public void setStorehouseBean(List<Report> storehouseBean) {
+    public void setStorehouseBean(List<StoreHouseReport> storehouseBean) {
         this.storehouseBean = storehouseBean;
     }
 }

@@ -32,6 +32,8 @@ public class MyApp extends Application {
     public static final int MY_PURCHASE_LIST = 0x3244;//我的采购单list
     public static final int MY_BUDGET_LIST = 0x6543;//我的预算单list
     public static final int CKKC = 0x8573;//查询仓库库存
+    public static final int CHANGE_SUCCESS = 0x28743;//更改密码成功
+    public static final int COUNT_STOCK=0x2340;//获取收费站领用情况的柱状图数据
     public UserBean.DataBean user;
     public String token;
 
