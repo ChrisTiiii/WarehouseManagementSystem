@@ -25,8 +25,5 @@ public class MyXFormatter implements IAxisValueFormatter {
             return "";
     }
 
-    public int getDecimalDigits() {
-        return 0;
-    }
 }
 

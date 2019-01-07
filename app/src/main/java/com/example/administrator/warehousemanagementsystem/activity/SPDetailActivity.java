@@ -124,7 +124,6 @@ public class SPDetailActivity extends AppCompatActivity {
         }
     }
 
-
     //初始化参数
     void initView() {
         myApp = (MyApp) getApplication();

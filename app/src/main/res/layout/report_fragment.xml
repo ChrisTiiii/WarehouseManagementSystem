@@ -72,8 +72,9 @@
             android:layout_below="@+id/ll_end"
             android:layout_weight="1"
             android:background="@null"
-            android:text="查看领用情况"
-            android:textColor="@color/steelblue" />
+            android:text="领用情况"
+            android:textColor="@color/steelblue"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_bb"
@@ -82,7 +83,7 @@
             android:layout_below="@+id/btn_ly"
             android:layout_weight="1"
             android:background="@null"
-            android:text="查看库存明细"
+            android:text="仓库库存详情"
             android:textColor="@color/steelblue" />
 
         <Button
@@ -91,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@null"
-            android:text="领用情况"
+            android:text="收费站领用详情"
             android:textColor="@color/steelblue" />
 
         <Button
@@ -101,7 +102,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:text="清空"
-            android:textColor="@color/steelblue" />
+            android:textColor="@color/steelblue"
+            android:visibility="gone" />
 
         <!--<Button-->
         <!--android:id="@+id/btn_intent"-->
@@ -120,7 +122,8 @@
         android:layout_height="300dp"
         android:layout_below="@+id/ll_btn"
         android:layout_centerInParent="true"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

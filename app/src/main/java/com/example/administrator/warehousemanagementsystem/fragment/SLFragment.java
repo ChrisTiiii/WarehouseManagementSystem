@@ -165,13 +165,13 @@ public class SLFragment extends Fragment {
                     spAdapter.addData(uiList.size() - 2, myGoods);
                     if (spAdapter.isReGoods()) {
                         new MaterialDialog.Builder(getContext())
-                                .content("您添加了重复商品，请删除")
-                                .positiveText("马上删")
+                                .content("您添加了重复商品，请马上删除")
+                                .positiveText("我马上删")
                                 .show().setCanceledOnTouchOutside(false);
                     }
                     if (spAdapter.isReGoodsType())
                         new MaterialDialog.Builder(getContext())
-                                .content("由于您选择了不同种类的物资，需要添加该物资对应的审批人")
+                                .content("由于您选择了不同种类的物资，需要添加这些物资对应的不同审批人")
                                 .positiveText("我已了解")
                                 .show().setCanceledOnTouchOutside(false);
                 }
@@ -198,7 +198,7 @@ public class SLFragment extends Fragment {
         if (achieve() != null) {
             builder = new AlertDialog.Builder(getContext());
             builder.setTitle("用户须知");
-            builder.setMessage("若您有重复申领物品则按照最新物品明细进行提交申领\n");
+            builder.setMessage("若您有重复申请物品则按照最新物品明细进行提交\n");
             if (!dialogString().equals("未给您开通此项")) {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override

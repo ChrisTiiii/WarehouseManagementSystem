@@ -102,7 +102,7 @@ public class ChangePWDActivity extends AppCompatActivity {
                 String newPwd = etNew.getText().toString();
                 String newAgain = etNewAgain.getText().toString();
                 if (old != null && newPwd != null && newAgain != null) {
-                    if (old.length() >= 6)
+                    if (newPwd.length() >= 6)
                         if (newPwd.equals(newAgain)) {
                             myDialog.showDialog();
                             netServerImp.changePass(old, newPwd, newAgain, myDialog);

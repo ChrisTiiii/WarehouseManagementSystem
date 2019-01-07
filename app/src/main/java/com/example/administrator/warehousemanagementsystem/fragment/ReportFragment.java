@@ -20,6 +20,7 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.activity.ApplyReport;
 import com.example.administrator.warehousemanagementsystem.activity.ReportActivity;
 import com.example.administrator.warehousemanagementsystem.activity.other.MenuActivity;
+import com.example.administrator.warehousemanagementsystem.bean.DeptListBean;
 import com.example.administrator.warehousemanagementsystem.bean.MyGoods;
 import com.example.administrator.warehousemanagementsystem.bean.StorehouseList;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
@@ -117,13 +118,14 @@ public class ReportFragment extends Fragment {
         return view;
     }
 
+    //根据权限展现库存/领用
     private void root() {
         if (myApp.getRoot() == 100 || myApp.getRoot() == 110) {
             btnApply.setVisibility(View.VISIBLE);
-            btnLy.setVisibility(View.VISIBLE);
+//            btnLy.setVisibility(View.VISIBLE);
             btnBb.setVisibility(View.GONE);
         } else {
-            btnLy.setVisibility(View.VISIBLE);
+//            btnLy.setVisibility(View.VISIBLE);
             btnBb.setVisibility(View.VISIBLE);
             btnApply.setVisibility(View.VISIBLE);
         }
@@ -192,7 +194,7 @@ public class ReportFragment extends Fragment {
                         namelist.add(String.valueOf(map.get("name")));
                     }
                     new MaterialDialog.Builder(getContext())
-                            .title("标题")
+                            .title("宁通仓库列表")
                             .positiveText("确认")
                             .items(namelist)
                             .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
@@ -209,6 +211,38 @@ public class ReportFragment extends Fragment {
                             })
                             .show();
                 }
+                break;
+            case MyApp.DEPT_LIST:
+                if (messageEvent.getDeptListBeanList() != null) {
+                    listCK.clear();
+                    namelist.clear();
+                    for (DeptListBean.DataBean bean : messageEvent.getDeptListBeanList()) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("code", bean.getId());
+                        map.put("name", bean.getDeptName());
+                        listCK.add(map);
+                        namelist.add(String.valueOf(map.get("name")));
+                    }
+                }
+                new MaterialDialog.Builder(getContext())
+                        .title("宁通收费站列表")
+                        .positiveText("确认")
+                        .items(namelist)
+                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                if (which != -1) {
+                                    Intent intent = new Intent(getContext(), ApplyReport.class);
+                                    intent.putExtra("begin", begin);
+                                    intent.putExtra("end", end);
+                                    intent.putExtra("which", String.valueOf(listCK.get(which).get("code")));
+                                    startActivity(intent);
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
+                        .show();
                 break;
         }
     }
@@ -256,10 +290,10 @@ public class ReportFragment extends Fragment {
                 break;
             case R.id.btn_bb:
                 myDialog.showDialog();
-                if (myApp.getRoot() != 120)
-                    netServerImp.getStorehouseList(myDialog);
-                else
+                if (myApp.getRoot() == 100 || myApp.getRoot() == 110) {
                     netServerImp.getStorehouseBy(myApp.user.getId(), myDialog);
+                } else
+                    netServerImp.getStorehouseList(myDialog);
                 break;
             case R.id.clear:
                 things.clear();
@@ -276,7 +310,12 @@ public class ReportFragment extends Fragment {
                     Intent intent = new Intent(getContext(), ApplyReport.class);
                     intent.putExtra("begin", begin);
                     intent.putExtra("end", end);
-                    startActivity(intent);
+                    if (myApp.getRoot() == 100 || myApp.getRoot() == 110) {
+                        startActivity(intent);
+                    } else {
+                        myDialog.showDialog();
+                        netServerImp.getDeptListBy(myDialog);
+                    }
                 } else Toast.makeText(myApp, "请选择日期", Toast.LENGTH_SHORT).show();
                 break;
 //            case R.id.btn_intent:

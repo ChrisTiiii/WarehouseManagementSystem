@@ -41,12 +41,12 @@ import butterknife.ButterKnife;
 public class ApplyReport extends AppCompatActivity {
     @BindView(R.id.mHorizontalBarChart)
     HorizontalBarChart mChart;
-    private int sCount;//X轴坐标数据数量
     private ArrayList<String> name;  //保存X轴坐标数据
     private MyDialog myDialog;
     private MyApp myApp;
     private String begin;
     private String end;
+    private String which;
     private NetServerImp netServerImp;
 
     @Override
@@ -64,8 +64,13 @@ public class ApplyReport extends AppCompatActivity {
             myDialog.showDialog();
             begin = intent.getExtras().getString("begin");
             end = intent.getExtras().getString("end");
+            which = intent.getExtras().getString("which");
             try {
-                netServerImp.getCountStockOutRecord(TimeUtil.dateToStamp(begin), TimeUtil.dateToStamp(end), myDialog);
+                if (myApp.getRoot() == 100 || myApp.getRoot() == 110) {
+                    netServerImp.getCountStockOutRecord(TimeUtil.dateToStamp(begin), TimeUtil.dateToStamp(end), myApp.getUser().getDeptNo(), myDialog);
+                } else if (which != null) {
+                    netServerImp.getCountStockOutRecord(TimeUtil.dateToStamp(begin), TimeUtil.dateToStamp(end), Integer.parseInt(which), myDialog);
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -78,21 +83,20 @@ public class ApplyReport extends AppCompatActivity {
         switch (messageEvent.getTag()) {
             case MyApp.COUNT_STOCK:
                 if (messageEvent.getGoodsList() != null) {
-                    sCount = messageEvent.getGoodsList().size();
                     name = new ArrayList<>();//名称
-                    List<Integer> list = new ArrayList<>();//数量
+                    List<Integer> num = new ArrayList<>();//数量
                     for (MyGoods myGoods : messageEvent.getGoodsList()) {
                         name.add(myGoods.getName());
-                        list.add(Integer.parseInt(myGoods.getNum()));
+                        num.add(Integer.parseInt(myGoods.getNum()));
                     }
-                    initView(list);
+                    initView(num);
                 }
                 break;
         }
     }
 
 
-    private void initView(List<Integer> val) {
+    private void initView(List<Integer> num) {
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
         mChart.setContentDescription("宁通收费站领用情况");
@@ -112,14 +116,14 @@ public class ApplyReport extends AppCompatActivity {
         //xl.setCenterAxisLabels(true);
         xl.setAxisMinimum(-0.5f);// 此轴显示的最小值
         //xl.setAxisMaximum(sCount*sCount);  // 此轴显示的最大值
-        xl.setLabelCount(sCount); //显示的坐标数量
+        xl.setLabelCount(name.size()); //显示的坐标数量
 
         YAxis yl = mChart.getAxisLeft();
         yl.setDrawAxisLine(true);
         yl.setDrawGridLines(true);
         yl.setAxisMinimum(0f); //this replaces setStartAtZero(true)
 
-        setData(sCount, val);
+        setData(name.size(), num);
         mChart.setFitBars(true);
         mChart.animateXY(2000, 2000);
 
@@ -128,14 +132,14 @@ public class ApplyReport extends AppCompatActivity {
     }
 
 
-    private void setData(int count, List<Integer> val) {
+    private void setData(int count, List<Integer> num) {
         //float barWidth = count-1;    //每个彩色数据条的宽度
         //float spaceForBar = count;   //每个数据条实际占的宽度
         float barWidth = 0.8f; //每个彩色数据条的宽度
         float spaceForBar = 1f; //每个数据条实际占的宽度
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         for (int i = 0; i < count; i++) {
-            yVals1.add(new BarEntry(i * spaceForBar, val.get(i), null));
+            yVals1.add(new BarEntry(i * spaceForBar, num.get(i), null));
         }
         BarDataSet set1;
         if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {

@@ -6,9 +6,7 @@
         <item name="colorPrimary">#418AF9</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
-
 
     <style name="StepView">
         <item name="android:layout_width">match_parent</item>

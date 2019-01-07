@@ -9,6 +9,7 @@ import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetBean;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.CountStockOutRecordBean;
+import com.example.administrator.warehousemanagementsystem.bean.DeptListBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
@@ -55,7 +56,7 @@ import rx.schedulers.Schedulers;
 public class NetServerImp {
     private Retrofit retrofit;
     private NetAPI netAPI;
-    private static final String BASE_URL = "http://192.168.0.88:8080/";  //10.101.80.119  10.101.208.119 120
+    private static final String BASE_URL = "http://192.168.0.88:8080/";  //10.101.80.119  10.101.208.119 120  192.168.254.251 192.168.0.88
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
@@ -794,7 +795,7 @@ public class NetServerImp {
                             MessageEvent messageEvent = new MessageEvent(myApp.CKKC);
                             List<StoreHouseReport> list = new ArrayList<>();
                             for (StorehouseBean.DataBean bean : storehouseBean.getData()) {
-                                StoreHouseReport report = new StoreHouseReport(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum());
+                                StoreHouseReport report = new StoreHouseReport(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum(),bean.getGoodsUnit());
                                 list.add(report);
                                 System.out.println("仓库数据:" + list.get(0));
                             }
@@ -876,15 +877,15 @@ public class NetServerImp {
     /**
      * 收费站查看领用记录生成柱状图
      */
-    public void getCountStockOutRecord(String beginDate, String endDate, MyDialog myDialog) {
+    public void getCountStockOutRecord(String beginDate, String endDate, Integer deptNo, MyDialog myDialog) {
         System.out.println("beginDate:" + beginDate);
-        netAPI.getCountStockOutRecord(beginDate, endDate, myApp.getUser().getDeptNo()).subscribeOn(Schedulers.io())//IO线程加载数据
+        netAPI.getCountStockOutRecord(beginDate, endDate, deptNo).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
                 .subscribe(new Subscriber<CountStockOutRecordBean>() {
                     @Override
                     public void onCompleted() {
                         myDialog.dissDilalog();
-                        System.out.println("getStockOutRecord已完成");
+                        System.out.println("getCountStockOutRecord已完成");
                     }
 
                     @Override
@@ -895,12 +896,10 @@ public class NetServerImp {
 
                     @Override
                     public void onNext(CountStockOutRecordBean countStockOutRecordBean) {
-                        System.out.println("请求报表：" + countStockOutRecordBean.getResult());
                         if (countStockOutRecordBean.getResult().equals("ok")) {
                             if (countStockOutRecordBean.getData() != null) {
                                 List<MyGoods> list = new ArrayList<>();
                                 for (CountStockOutRecordBean.DataBean dataBean : countStockOutRecordBean.getData()) {
-                                    System.out.println("商品：" + dataBean.getKey());
                                     list.add(new MyGoods(dataBean.getKey(), String.valueOf(dataBean.getValue())));
                                 }
                                 MessageEvent messageEvent = new MessageEvent(MyApp.COUNT_STOCK);
@@ -911,6 +910,41 @@ public class NetServerImp {
                         }
                     }
                 });
+    }
+
+
+    /**
+     * 收费站列表
+     */
+    public void getDeptListBy(MyDialog myDialog) {
+        netAPI.getDeptListBy("200", "1", "1000").subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<DeptListBean>() {
+                    @Override
+                    public void onCompleted() {
+                        myDialog.dissDilalog();
+                        System.out.println("getDeptListBy已完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        myDialog.dissDilalog();
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(DeptListBean deptListBean) {
+                        if (deptListBean.getResult().equals("ok")) {
+                            if (deptListBean.getData() != null) {
+                                MessageEvent messageEvent = new MessageEvent(MyApp.DEPT_LIST);
+                                messageEvent.setDeptListBeanList(deptListBean.getData());
+                                EventBus.getDefault().post(messageEvent);
+                            }
+
+                        }
+                    }
+                });
+
     }
 
 }

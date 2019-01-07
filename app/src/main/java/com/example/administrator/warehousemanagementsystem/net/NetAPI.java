@@ -8,6 +8,7 @@ import com.example.administrator.warehousemanagementsystem.bean.BackData;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetBean;
 import com.example.administrator.warehousemanagementsystem.bean.BudgetList;
 import com.example.administrator.warehousemanagementsystem.bean.CountStockOutRecordBean;
+import com.example.administrator.warehousemanagementsystem.bean.DeptListBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsDetailBean;
 import com.example.administrator.warehousemanagementsystem.bean.GoodsType;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyList;
@@ -105,9 +106,12 @@ public interface NetAPI {
     Observable<BackData> changePass(@Query("id") int id, @Query("oldPass") String oldPass, @Query("newPass") String newPass, @Query("newPass2") String newPass2, @Query("from") String app, @Query("token") String token);//更改密码
 
     @GET("getStockOutRecord.do")
-    Observable<StockOutRecordBean> getStockOutRecord(@Query("beginDate") String beginDate, @Query("endDate") String endDate, @Query("deptNo") int deptNo);//根据deptNo获取历史申领记录
+    Observable<StockOutRecordBean> getStockOutRecord(@Query("beginDate") String beginDate, @Query("endDate") String endDate, @Query("deptNo") int deptNo);//根据deptNo获取历史申领记录单饼状图
 
     @GET("countStockOutRecord.do")
-    Observable<CountStockOutRecordBean> getCountStockOutRecord(@Query("beginDate") String beginDate, @Query("endDate") String endDate, @Query("deptNo") int deptNo);
+    Observable<CountStockOutRecordBean> getCountStockOutRecord(@Query("beginDate") String beginDate, @Query("endDate") String endDate, @Query("deptNo") int deptNo);//根据deptNo获取柱状图
 
+
+    @GET("getDeptListBy.do")
+    Observable<DeptListBean> getDeptListBy(@Query("deptType") String deptType, @Query("page") String page, @Query("size") String size);//获取全部收费站
 }

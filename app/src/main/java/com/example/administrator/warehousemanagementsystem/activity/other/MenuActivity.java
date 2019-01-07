@@ -50,8 +50,8 @@ public class MenuActivity extends AppCompatActivity {
     RecyclerView recyclerviewDetail;
     @BindView(R.id.main_tv)
     TextView tv;
-    @BindView(R.id.refreshLayout)
-    SmartRefreshLayout refreshLayout;
+//    @BindView(R.id.refreshLayout)
+//    SmartRefreshLayout refreshLayout;
 
     private List<MenuListBean> allList;
     private int perPosition = 0;//AllList 位置
@@ -124,7 +124,7 @@ public class MenuActivity extends AppCompatActivity {
                 checkType(position);
             }
         });
-        loadMore();
+//        loadMore();
         sureResult();
     }
 
@@ -166,8 +166,8 @@ public class MenuActivity extends AppCompatActivity {
                     pageCount = (int) messageEvent.getMapList().get(0).get("count");
                 }
                 adapterDetail.notifyDataSetChanged();
-                refreshLayout.finishRefresh();
-                refreshLayout.finishLoadmore();
+//                refreshLayout.finishRefresh();
+//                refreshLayout.finishLoadmore();
                 break;
         }
     }
@@ -176,25 +176,25 @@ public class MenuActivity extends AppCompatActivity {
      * 加载更多数据
      */
     private void loadMore() {
-        //刷新
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                detailList.clear();
-                if (menu_type != 0)
-                    loadDetailList(perPosition);
-                else loadDetailList(perPosition);
-            }
-        });
-
-        refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
-            @Override
-            public void onLoadmore(RefreshLayout refreshlayout) {
-                if (menu_type != 0)
-                    loadDetailList(perPosition);
-                else loadDetailList(perPosition);
-            }
-        });
+//        //刷新
+//        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                detailList.clear();
+//                if (menu_type != 0)
+//                    loadDetailList(perPosition);
+//                else loadDetailList(perPosition);
+//            }
+//        });
+//
+//        refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+//            @Override
+//            public void onLoadmore(RefreshLayout refreshlayout) {
+//                if (menu_type != 0)
+//                    loadDetailList(perPosition);
+//                else loadDetailList(perPosition);
+//            }
+//        });
     }
 
     /**

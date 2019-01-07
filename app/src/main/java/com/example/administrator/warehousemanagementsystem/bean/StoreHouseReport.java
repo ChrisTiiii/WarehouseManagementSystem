@@ -16,13 +16,23 @@ public class StoreHouseReport {
     private String productName;
     @SmartColumn(id = 3, name = "数量")
     private int num;
+    @SmartColumn(id = 4, name = "单位")
+    private String goodsUnit;
 
-    public StoreHouseReport(String ckName, String productName, int num) {
+    public StoreHouseReport(String ckName, String productName, int num, String goodsUnit) {
         this.ckName = ckName;
         this.productName = productName;
         this.num = num;
+        this.goodsUnit = goodsUnit;
     }
 
+    public String getGoodsUnit() {
+        return goodsUnit;
+    }
+
+    public void setGoodsUnit(String goodsUnit) {
+        this.goodsUnit = goodsUnit;
+    }
 
     public String getCkName() {
         return ckName;

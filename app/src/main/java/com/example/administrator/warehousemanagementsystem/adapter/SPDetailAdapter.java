@@ -260,9 +260,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (applyBean.getReviewList().get(j).getReviewState().equals("未通过")) {
                                 bol = true;
                                 unpass = applyBean.getReviewList().get(j).getReviewReason();
+                                nowPoint = 1;
+                                nowPoint += j;
+                            } else {
+                                nowPoint = 1;
+                                nowPoint += (j + 1);
                             }
-                            nowPoint = 1;
-                            nowPoint += (j + 1);
+
                         }
                         temp.add(applyBean.getReviewList().get(j).getReviewUserName() + "  " + applyBean.getReviewList().get(j).getReviewState());
                     }
@@ -363,9 +367,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过")) {
                                 bol = true;
                                 unpass = purchaseBean.getReviewList().get(j).getReviewReason();
+                                nowPoint = 1;
+                                nowPoint += j;
+                            } else {
+                                nowPoint = 1;
+                                nowPoint += (j + 1);
                             }
-                            nowPoint = 1;
-                            nowPoint += (j + 1);
                         }
                         temp.add(purchaseBean.getReviewList().get(j).getReviewUserName() + "  " + purchaseBean.getReviewList().get(j).getReviewState());
                     }
@@ -466,9 +473,12 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过")) {
                                 bol = true;
                                 unpass = budgetBean.getReviewList().get(j).getReviewReason();
+                                nowPoint = 1;
+                                nowPoint += j;
+                            } else {
+                                nowPoint = 1;
+                                nowPoint += (j + 1);
                             }
-                            nowPoint = 1;
-                            nowPoint += (j + 1);
                         }
                         temp.add(budgetBean.getReviewList().get(j).getReviewUserName() + "  " + budgetBean.getReviewList().get(j).getReviewState());
                     }
@@ -568,8 +578,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     static class ProgressViewHolder extends RecyclerView.ViewHolder {
-        //        @BindView(R.id.step_view)
-//        StepView stepView;
+
         @BindView(R.id.step_view)
         VerticalStepView stepView;
         @BindView(R.id.tv_disagree)
