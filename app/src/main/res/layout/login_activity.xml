@@ -46,6 +46,8 @@
                 android:hint="请输入用户名"
                 android:paddingLeft="@dimen/dp_5"
                 android:textColor="@color/white"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:textSize="18sp" />
         </RelativeLayout>
 
@@ -79,6 +81,8 @@
                 android:background="@null"
                 android:hint="请输入密码"
                 android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:paddingLeft="@dimen/dp_5"
                 android:textColor="@color/white" />
 
