@@ -123,8 +123,8 @@ public class SLFragment extends Fragment {
                 switch (view.getId()) {
                     case R.id.btn_del:
                         System.out.println("delete:" + position);
-                        spAdapter.deleteData(position - 1);
-                        Toast.makeText(getContext(), "删除" + (position - 1) + "成功", Toast.LENGTH_SHORT).show();
+                        spAdapter.deleteData(position);
+                        Toast.makeText(getContext(), "删除第" + (position) + "项成功", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }

@@ -56,7 +56,7 @@ import rx.schedulers.Schedulers;
 public class NetServerImp {
     private Retrofit retrofit;
     private NetAPI netAPI;
-    private static final String BASE_URL = "http://192.168.0.88:8080/";  //10.101.80.119  10.101.208.119 120  192.168.254.251 192.168.0.88
+    private static final String BASE_URL = "http://10.101.80.119:8080/nterp/";  //10.101.80.119  10.101.208.119 120  192.168.254.251 192.168.0.88
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
@@ -177,6 +177,7 @@ public class NetServerImp {
                         myDialog.dissDilalog();
                         EventBus.getDefault().post(new MessageEvent(myApp.LOGIN_FAIL, "error"));
                         System.out.println("getUser加载失败：" + e.getMessage());
+                        Toast.makeText(myApp, "请检查你的网络是否连接正常", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -283,6 +284,16 @@ public class NetServerImp {
 
     }
 
+    /**
+     * 提交采购单
+     *
+     * @param userNo
+     * @param note
+     * @param goodsMap
+     * @param userNoList
+     * @param supplier
+     * @param myDialog
+     */
     public void postPurchase(Integer userNo, String note, String goodsMap, String userNoList, String supplier, MyDialog myDialog) {
         netAPI.postPurchase(userNo, note, goodsMap, userNoList, supplier, APP, myApp.getToken()).subscribeOn(Schedulers.io())//IO线程加载数据
                 .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
@@ -795,7 +806,7 @@ public class NetServerImp {
                             MessageEvent messageEvent = new MessageEvent(myApp.CKKC);
                             List<StoreHouseReport> list = new ArrayList<>();
                             for (StorehouseBean.DataBean bean : storehouseBean.getData()) {
-                                StoreHouseReport report = new StoreHouseReport(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum(),bean.getGoodsUnit());
+                                StoreHouseReport report = new StoreHouseReport(bean.getStorehouseName(), bean.getGoodsName(), bean.getStockNum(), bean.getGoodsUnit());
                                 list.add(report);
                                 System.out.println("仓库数据:" + list.get(0));
                             }
