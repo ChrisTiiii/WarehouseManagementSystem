@@ -6,11 +6,13 @@ import com.example.administrator.warehousemanagementsystem.bean.UserBean;
 
 import java.io.Serializable;
 
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * author: ZhongMing
  * DATE: 2018/11/21 0021
  * Description:
- * * root 1为仓库管理员 2为站长 3为主任 处长
+ * *
  **/
 public class MyApp extends Application {
     public static final int SL_CHOOSE_PRODUCT = 0x239; //选择商品
@@ -57,7 +59,10 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
+
 
     public int getRoot() {
         return user != null ? user.getUserRoleNo() : -1;

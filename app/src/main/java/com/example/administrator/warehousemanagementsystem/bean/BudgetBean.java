@@ -5,13 +5,14 @@ import java.util.List;
 /**
  * author: ZhongMing
  * DATE: 2018/12/24 0024
- * Description:
+ * Description:预算单
  **/
 public class BudgetBean {
 
+
     /**
      * result : ok
-     * data : {"budgDate":1545029544129,"budgId":"215450295441293","budgState":"进行中","budgUsage":"预算单！！！","budgetContentList":[{"annotation":"","budgNo":2,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":300,"id":3},{"annotation":"","budgNo":2,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":500,"id":4}],"deptNo":1,"id":2,"reviewList":[{"id":36,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":320,"userNo":3},{"id":37,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":320,"userNo":5}],"userNo":2}
+     * data : {"budgDate":1547024380000,"budgId":"215470243803239","budgState":"进行中","budgUsage":"暂无备注","budgetContentList":[{"annotation":"","budgNo":1,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":13,"goodsNum":36,"goodsType":"调度中心","goodsTypeNo":131,"id":1}],"deptName":"浦头收费站","deptNo":12,"fromUserName":"浦头收费站仓库","id":1,"reviewList":[{"fromUserName":"","goodsCount":0,"id":11,"objNo":1,"reviewDate":1547024689000,"reviewIndex":0,"reviewReason":"","reviewState":"通过","reviewStateNo":601,"reviewType":"","reviewTypeNo":320,"reviewUserName":"杨军-部门负责人","startDate":null,"userNo":5},{"fromUserName":"","goodsCount":0,"id":12,"objNo":1,"reviewDate":null,"reviewIndex":1,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"","reviewTypeNo":320,"reviewUserName":"王友中-分管领导","startDate":null,"userNo":32}],"userNo":31}
      */
 
     private String result;
@@ -35,47 +36,30 @@ public class BudgetBean {
 
     public static class DataBean {
         /**
-         * budgDate : 1545029544129
-         * budgId : 215450295441293
+         * budgDate : 1547024380000
+         * budgId : 215470243803239
          * budgState : 进行中
-         * budgUsage : 预算单！！！
-         * budgetContentList : [{"annotation":"","budgNo":2,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":300,"id":3},{"annotation":"","budgNo":2,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":500,"id":4}]
-         * deptNo : 1
-         * id : 2
-         * reviewList : [{"id":36,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":320,"userNo":3},{"id":37,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":320,"userNo":5}]
-         * userNo : 2
+         * budgUsage : 暂无备注
+         * budgetContentList : [{"annotation":"","budgNo":1,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":13,"goodsNum":36,"goodsType":"调度中心","goodsTypeNo":131,"id":1}]
+         * deptName : 浦头收费站
+         * deptNo : 12
+         * fromUserName : 浦头收费站仓库
+         * id : 1
+         * reviewList : [{"fromUserName":"","goodsCount":0,"id":11,"objNo":1,"reviewDate":1547024689000,"reviewIndex":0,"reviewReason":"","reviewState":"通过","reviewStateNo":601,"reviewType":"","reviewTypeNo":320,"reviewUserName":"杨军-部门负责人","startDate":null,"userNo":5},{"fromUserName":"","goodsCount":0,"id":12,"objNo":1,"reviewDate":null,"reviewIndex":1,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"","reviewTypeNo":320,"reviewUserName":"王友中-分管领导","startDate":null,"userNo":32}]
+         * userNo : 31
          */
 
         private long budgDate;
         private String budgId;
         private String budgState;
         private String budgUsage;
-        private int deptNo;
-        private int id;
-        private String fromUserName;
         private String deptName;
+        private int deptNo;
+        private String fromUserName;
+        private int id;
         private int userNo;
-
         private List<BudgetContentListBean> budgetContentList;
         private List<ReviewListBean> reviewList;
-
-
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "budgDate=" + budgDate +
-                    ", budgId='" + budgId + '\'' +
-                    ", budgState='" + budgState + '\'' +
-                    ", budgUsage='" + budgUsage + '\'' +
-                    ", deptNo=" + deptNo +
-                    ", id=" + id +
-                    ", fromUserName='" + fromUserName + '\'' +
-                    ", deptName='" + deptName + '\'' +
-                    ", userNo=" + userNo +
-                    ", budgetContentList=" + budgetContentList +
-                    ", reviewList=" + reviewList +
-                    '}';
-        }
 
         public long getBudgDate() {
             return budgDate;
@@ -109,22 +93,6 @@ public class BudgetBean {
             this.budgUsage = budgUsage;
         }
 
-        public int getDeptNo() {
-            return deptNo;
-        }
-
-        public void setDeptNo(int deptNo) {
-            this.deptNo = deptNo;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
         public String getDeptName() {
             return deptName;
         }
@@ -133,12 +101,28 @@ public class BudgetBean {
             this.deptName = deptName;
         }
 
+        public int getDeptNo() {
+            return deptNo;
+        }
+
+        public void setDeptNo(int deptNo) {
+            this.deptNo = deptNo;
+        }
+
         public String getFromUserName() {
             return fromUserName;
         }
 
         public void setFromUserName(String fromUserName) {
             this.fromUserName = fromUserName;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public int getUserNo() {
@@ -168,12 +152,14 @@ public class BudgetBean {
         public static class BudgetContentListBean {
             /**
              * annotation :
-             * budgNo : 2
-             * goodsIdNo : 6901668005731
-             * goodsName : 奥利奥夹心饼干
-             * goodsNo : 1
-             * goodsNum : 300
-             * id : 3
+             * budgNo : 1
+             * goodsIdNo : 6906791521028
+             * goodsName : 阿华田
+             * goodsNo : 13
+             * goodsNum : 36
+             * goodsType : 调度中心
+             * goodsTypeNo : 131
+             * id : 1
              */
 
             private String annotation;
@@ -183,7 +169,7 @@ public class BudgetBean {
             private int goodsNo;
             private int goodsNum;
             private String goodsType;
-            private Integer goodsTypeNo;
+            private int goodsTypeNo;
             private int id;
 
             public String getAnnotation() {
@@ -226,6 +212,14 @@ public class BudgetBean {
                 this.goodsNo = goodsNo;
             }
 
+            public int getGoodsNum() {
+                return goodsNum;
+            }
+
+            public void setGoodsNum(int goodsNum) {
+                this.goodsNum = goodsNum;
+            }
+
             public String getGoodsType() {
                 return goodsType;
             }
@@ -234,20 +228,12 @@ public class BudgetBean {
                 this.goodsType = goodsType;
             }
 
-            public Integer getGoodsTypeNo() {
+            public int getGoodsTypeNo() {
                 return goodsTypeNo;
             }
 
-            public void setGoodsTypeNo(Integer goodsTypeNo) {
+            public void setGoodsTypeNo(int goodsTypeNo) {
                 this.goodsTypeNo = goodsTypeNo;
-            }
-
-            public int getGoodsNum() {
-                return goodsNum;
-            }
-
-            public void setGoodsNum(int goodsNum) {
-                this.goodsNum = goodsNum;
             }
 
             public int getId() {
@@ -261,24 +247,52 @@ public class BudgetBean {
 
         public static class ReviewListBean {
             /**
-             * id : 36
-             * objNo : 2
-             * reviewDate : null
+             * fromUserName :
+             * goodsCount : 0
+             * id : 11
+             * objNo : 1
+             * reviewDate : 1547024689000
              * reviewIndex : 0
-             * reviewState : 等待审批
+             * reviewReason :
+             * reviewState : 通过
+             * reviewStateNo : 601
+             * reviewType :
              * reviewTypeNo : 320
-             * userNo : 3
+             * reviewUserName : 杨军-部门负责人
+             * startDate : null
+             * userNo : 5
              */
 
+            private String fromUserName;
+            private int goodsCount;
             private int id;
             private int objNo;
-            private Object reviewDate;
+            private long reviewDate;
             private int reviewIndex;
+            private String reviewReason;
             private String reviewState;
+            private int reviewStateNo;
+            private String reviewType;
             private int reviewTypeNo;
             private String reviewUserName;
-            private String reviewReason;
+            private Object startDate;
             private int userNo;
+
+            public String getFromUserName() {
+                return fromUserName;
+            }
+
+            public void setFromUserName(String fromUserName) {
+                this.fromUserName = fromUserName;
+            }
+
+            public int getGoodsCount() {
+                return goodsCount;
+            }
+
+            public void setGoodsCount(int goodsCount) {
+                this.goodsCount = goodsCount;
+            }
 
             public int getId() {
                 return id;
@@ -296,11 +310,11 @@ public class BudgetBean {
                 this.objNo = objNo;
             }
 
-            public Object getReviewDate() {
+            public long getReviewDate() {
                 return reviewDate;
             }
 
-            public void setReviewDate(Object reviewDate) {
+            public void setReviewDate(long reviewDate) {
                 this.reviewDate = reviewDate;
             }
 
@@ -312,12 +326,36 @@ public class BudgetBean {
                 this.reviewIndex = reviewIndex;
             }
 
+            public String getReviewReason() {
+                return reviewReason;
+            }
+
+            public void setReviewReason(String reviewReason) {
+                this.reviewReason = reviewReason;
+            }
+
             public String getReviewState() {
                 return reviewState;
             }
 
             public void setReviewState(String reviewState) {
                 this.reviewState = reviewState;
+            }
+
+            public int getReviewStateNo() {
+                return reviewStateNo;
+            }
+
+            public void setReviewStateNo(int reviewStateNo) {
+                this.reviewStateNo = reviewStateNo;
+            }
+
+            public String getReviewType() {
+                return reviewType;
+            }
+
+            public void setReviewType(String reviewType) {
+                this.reviewType = reviewType;
             }
 
             public int getReviewTypeNo() {
@@ -332,16 +370,16 @@ public class BudgetBean {
                 return reviewUserName;
             }
 
-            public String getReviewReason() {
-                return reviewReason;
-            }
-
-            public void setReviewReason(String reviewReason) {
-                this.reviewReason = reviewReason;
-            }
-
             public void setReviewUserName(String reviewUserName) {
                 this.reviewUserName = reviewUserName;
+            }
+
+            public Object getStartDate() {
+                return startDate;
+            }
+
+            public void setStartDate(Object startDate) {
+                this.startDate = startDate;
             }
 
             public int getUserNo() {

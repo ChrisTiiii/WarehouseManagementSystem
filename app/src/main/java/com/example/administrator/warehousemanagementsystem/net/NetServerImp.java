@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -56,7 +57,7 @@ import rx.schedulers.Schedulers;
 public class NetServerImp {
     private Retrofit retrofit;
     private NetAPI netAPI;
-    private static final String BASE_URL = "http://10.101.80.119:8080/nterp/";  //10.101.80.119  10.101.208.119 120  192.168.254.251 192.168.0.88
+    private static final String BASE_URL = "http://10.101.80.119:8080/";  //10.101.80.119  10.101.208.119 120  192.168.254.251 192.168.0.88
     MyApp myApp;
     private static String APP = "app";
     String msg = "";
@@ -187,6 +188,8 @@ public class NetServerImp {
                                 System.out.println(userBean.getData().toString() + "token:" + userBean.getToken());
                                 myApp.setUser(userBean.getData());
                                 myApp.setToken(userBean.getToken());
+                                //绑定唯一标识
+                                JPushInterface.setAlias(myApp, 1, String.valueOf(userBean.getData().getId()));
                             }
                         } else if (userBean.getResult().equals("notReg") || userBean.getResult().equals("useridError") || userBean.getResult().equals("passError")) {
                             msg = "请检查用户名或密码是否正确";
@@ -417,6 +420,7 @@ public class NetServerImp {
                     @Override
                     public void onNext(ReviewList reviewList) {
                         if (reviewList.getResult().equals("ok")) {
+                            System.out.println("待审批：" + reviewList.getData().toString());
                             MessageEvent messageEvent = new MessageEvent(myApp.SP_LIST);
                             messageEvent.setReviewLists(reviewList.getData());
                             EventBus.getDefault().post(messageEvent);
@@ -607,6 +611,7 @@ public class NetServerImp {
                     @Override
                     public void onNext(ReviewListHaveDone reviewListHaveDone) {
                         if (reviewListHaveDone.getResult().equals("ok")) {
+                            System.out.println("已完成：" + reviewListHaveDone.getData().toString());
                             MessageEvent messageEvent = new MessageEvent(myApp.HAVE_DONE);
                             messageEvent.setHaveDoneList(reviewListHaveDone.getData());
                             EventBus.getDefault().post(messageEvent);
@@ -639,6 +644,7 @@ public class NetServerImp {
                     @Override
                     public void onNext(ApplyList myApplyList) {
                         if (myApplyList.getResult().equals("ok")) {
+                            System.out.println("我提交的" + myApplyList.getData().toString());
                             MessageEvent messageEvent = new MessageEvent(myApp.MY_APPLY_LIST);
                             messageEvent.setMyApplyList(myApplyList.getData());
                             EventBus.getDefault().post(messageEvent);
@@ -673,6 +679,7 @@ public class NetServerImp {
                     @Override
                     public void onNext(PurchaseList purchaseList) {
                         if (purchaseList.getResult().equals("ok")) {
+                            System.out.println("采购单" + purchaseList.getData().toString());
                             MessageEvent messageEvent = new MessageEvent(myApp.MY_PURCHASE_LIST);
                             messageEvent.setPurchaseList(purchaseList.getData());
                             EventBus.getDefault().post(messageEvent);
@@ -707,6 +714,7 @@ public class NetServerImp {
                     @Override
                     public void onNext(BudgetList budgetList) {
                         if (budgetList.getResult().equals("ok")) {
+                            System.out.println("预算单：" + budgetList.getData().toString());
                             MessageEvent messageEvent = new MessageEvent(myApp.MY_BUDGET_LIST);
                             messageEvent.setBudgetList(budgetList.getData());
                             EventBus.getDefault().post(messageEvent);

@@ -70,6 +70,23 @@ public class BudgetList {
         private Object reviewList;
         private int userNo;
 
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "budgDate=" + budgDate +
+                    ", budgId='" + budgId + '\'' +
+                    ", budgState='" + budgState + '\'' +
+                    ", budgUsage='" + budgUsage + '\'' +
+                    ", budgetContentList=" + budgetContentList +
+                    ", deptName='" + deptName + '\'' +
+                    ", deptNo=" + deptNo +
+                    ", fromUserName='" + fromUserName + '\'' +
+                    ", id=" + id +
+                    ", reviewList=" + reviewList +
+                    ", userNo=" + userNo +
+                    '}';
+        }
+
         public long getBudgDate() {
             return budgDate;
         }

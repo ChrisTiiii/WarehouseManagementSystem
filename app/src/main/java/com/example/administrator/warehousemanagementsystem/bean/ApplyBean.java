@@ -11,7 +11,7 @@ public class ApplyBean {
 
     /**
      * result : ok
-     * data : {"applyContentList":[{"annotation":"","applyNo":2,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":12,"id":1},{"annotation":"","applyNo":2,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":5,"id":2}],"applyFinishdate":null,"applyId":"015446816982659","applyStartdate":1544681698000,"applyState":"进行中","applyUsage":"测试用途","applyWarning":"","deptNo":1,"id":2,"reviewList":[{"id":1,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":300,"userNo":3},{"id":2,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":300,"userNo":4},{"id":13,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":300,"userNo":5},{"id":14,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":300,"userNo":6}],"userNo":2}
+     * data : {"applyContentList":[{"annotation":"暂无","applyNo":5,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":13,"goodsNum":35,"goodsType":"调度中心","goodsTypeNo":131,"id":7}],"applyFinishdate":null,"applyId":"015470236164038","applyStartdate":1547023616000,"applyState":"进行中","applyUsage":"yhhb","applyWarning":"本单位暂不存在领用超限情况","deptName":"浦头收费站","deptNo":12,"fromUserName":"浦头收费站仓库","id":5,"reviewList":[{"fromUserName":"","goodsCount":0,"id":7,"objNo":5,"reviewDate":null,"reviewIndex":0,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"","reviewTypeNo":300,"reviewUserName":"浦头收费站","startDate":null,"userNo":19},{"fromUserName":"","goodsCount":0,"id":8,"objNo":5,"reviewDate":null,"reviewIndex":1,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"","reviewTypeNo":300,"reviewUserName":"杨军-部门负责人","startDate":null,"userNo":5}],"userNo":31}
      */
 
     private String result;
@@ -34,37 +34,21 @@ public class ApplyBean {
     }
 
     public static class DataBean {
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "applyFinishdate=" + applyFinishdate +
-                    ", applyId='" + applyId + '\'' +
-                    ", applyStartdate=" + applyStartdate +
-                    ", applyState='" + applyState + '\'' +
-                    ", applyUsage='" + applyUsage + '\'' +
-                    ", applyWarning='" + applyWarning + '\'' +
-                    ", deptNo=" + deptNo +
-                    ", id=" + id +
-                    ", userNo=" + userNo +
-                    ", applyContentList=" + applyContentList +
-                    ", reviewList=" + reviewList +
-                    '}';
-        }
-
         /**
-         * applyContentList : [{"annotation":"","applyNo":2,"goodsIdNo":"6901668005731","goodsName":"奥利奥夹心饼干","goodsNo":1,"goodsNum":12,"id":1},{"annotation":"","applyNo":2,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":2,"goodsNum":5,"id":2}]
+         * applyContentList : [{"annotation":"暂无","applyNo":5,"goodsIdNo":"6906791521028","goodsName":"阿华田","goodsNo":13,"goodsNum":35,"goodsType":"调度中心","goodsTypeNo":131,"id":7}]
          * applyFinishdate : null
-         * applyId : 015446816982659
-         * applyStartdate : 1544681698000
+         * applyId : 015470236164038
+         * applyStartdate : 1547023616000
          * applyState : 进行中
-         * applyUsage : 测试用途
-         * applyWarning :
-         * deptNo : 1
-         * id : 2
-         * reviewList : [{"id":1,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":300,"userNo":3},{"id":2,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":300,"userNo":4},{"id":13,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewTypeNo":300,"userNo":5},{"id":14,"objNo":2,"reviewDate":null,"reviewIndex":1,"reviewState":"等待审批","reviewTypeNo":300,"userNo":6}]
-         * userNo : 2
+         * applyUsage : yhhb
+         * applyWarning : 本单位暂不存在领用超限情况
+         * deptName : 浦头收费站
+         * deptNo : 12
+         * fromUserName : 浦头收费站仓库
+         * id : 5
+         * reviewList : [{"fromUserName":"","goodsCount":0,"id":7,"objNo":5,"reviewDate":null,"reviewIndex":0,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"","reviewTypeNo":300,"reviewUserName":"浦头收费站","startDate":null,"userNo":19},{"fromUserName":"","goodsCount":0,"id":8,"objNo":5,"reviewDate":null,"reviewIndex":1,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"","reviewTypeNo":300,"reviewUserName":"杨军-部门负责人","startDate":null,"userNo":5}]
+         * userNo : 31
          */
-
 
         private Object applyFinishdate;
         private String applyId;
@@ -72,11 +56,11 @@ public class ApplyBean {
         private String applyState;
         private String applyUsage;
         private String applyWarning;
+        private String deptName;
         private int deptNo;
+        private String fromUserName;
         private int id;
         private int userNo;
-        private String fromUserName;
-        private String deptName;
         private List<ApplyContentListBean> applyContentList;
         private List<ReviewListBean> reviewList;
 
@@ -128,12 +112,28 @@ public class ApplyBean {
             this.applyWarning = applyWarning;
         }
 
+        public String getDeptName() {
+            return deptName;
+        }
+
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
+        }
+
         public int getDeptNo() {
             return deptNo;
         }
 
         public void setDeptNo(int deptNo) {
             this.deptNo = deptNo;
+        }
+
+        public String getFromUserName() {
+            return fromUserName;
+        }
+
+        public void setFromUserName(String fromUserName) {
+            this.fromUserName = fromUserName;
         }
 
         public int getId() {
@@ -150,22 +150,6 @@ public class ApplyBean {
 
         public void setUserNo(int userNo) {
             this.userNo = userNo;
-        }
-
-        public String getFromUserName() {
-            return fromUserName;
-        }
-
-        public void setFromUserName(String fromUserName) {
-            this.fromUserName = fromUserName;
-        }
-
-        public String getDeptName() {
-            return deptName;
-        }
-
-        public void setDeptName(String deptName) {
-            this.deptName = deptName;
         }
 
         public List<ApplyContentListBean> getApplyContentList() {
@@ -186,13 +170,15 @@ public class ApplyBean {
 
         public static class ApplyContentListBean {
             /**
-             * annotation :
-             * applyNo : 2
-             * goodsIdNo : 6901668005731
-             * goodsName : 奥利奥夹心饼干
-             * goodsNo : 1
-             * goodsNum : 12
-             * id : 1
+             * annotation : 暂无
+             * applyNo : 5
+             * goodsIdNo : 6906791521028
+             * goodsName : 阿华田
+             * goodsNo : 13
+             * goodsNum : 35
+             * goodsType : 调度中心
+             * goodsTypeNo : 131
+             * id : 7
              */
 
             private String annotation;
@@ -202,7 +188,7 @@ public class ApplyBean {
             private int goodsNo;
             private int goodsNum;
             private String goodsType;
-            private Integer goodsTypeNo;
+            private int goodsTypeNo;
             private int id;
 
             @Override
@@ -214,6 +200,8 @@ public class ApplyBean {
                         ", goodsName='" + goodsName + '\'' +
                         ", goodsNo=" + goodsNo +
                         ", goodsNum=" + goodsNum +
+                        ", goodsType='" + goodsType + '\'' +
+                        ", goodsTypeNo=" + goodsTypeNo +
                         ", id=" + id +
                         '}';
             }
@@ -274,11 +262,11 @@ public class ApplyBean {
                 this.goodsType = goodsType;
             }
 
-            public Integer getGoodsTypeNo() {
+            public int getGoodsTypeNo() {
                 return goodsTypeNo;
             }
 
-            public void setGoodsTypeNo(Integer goodsTypeNo) {
+            public void setGoodsTypeNo(int goodsTypeNo) {
                 this.goodsTypeNo = goodsTypeNo;
             }
 
@@ -293,37 +281,51 @@ public class ApplyBean {
 
         public static class ReviewListBean {
             /**
-             * id : 1
-             * objNo : 2
+             * fromUserName :
+             * goodsCount : 0
+             * id : 7
+             * objNo : 5
              * reviewDate : null
              * reviewIndex : 0
+             * reviewReason :
              * reviewState : 等待审批
+             * reviewStateNo : 600
+             * reviewType :
              * reviewTypeNo : 300
-             * userNo : 3
+             * reviewUserName : 浦头收费站
+             * startDate : null
+             * userNo : 19
              */
 
+            private String fromUserName;
+            private int goodsCount;
             private int id;
             private int objNo;
             private Object reviewDate;
             private int reviewIndex;
-            private String reviewState;
-            private int reviewTypeNo;
-            private int userNo;
             private String reviewReason;
+            private String reviewState;
+            private int reviewStateNo;
+            private String reviewType;
+            private int reviewTypeNo;
             private String reviewUserName;
+            private Object startDate;
+            private int userNo;
 
-            @Override
-            public String toString() {
-                return "ReviewListBean{" +
-                        "id=" + id +
-                        ", objNo=" + objNo +
-                        ", reviewDate=" + reviewDate +
-                        ", reviewIndex=" + reviewIndex +
-                        ", reviewState='" + reviewState + '\'' +
-                        ", reviewTypeNo=" + reviewTypeNo +
-                        ", userNo=" + userNo +
-                        ", reviewUserName='" + reviewUserName + '\'' +
-                        '}';
+            public String getFromUserName() {
+                return fromUserName;
+            }
+
+            public void setFromUserName(String fromUserName) {
+                this.fromUserName = fromUserName;
+            }
+
+            public int getGoodsCount() {
+                return goodsCount;
+            }
+
+            public void setGoodsCount(int goodsCount) {
+                this.goodsCount = goodsCount;
             }
 
             public int getId() {
@@ -358,12 +360,36 @@ public class ApplyBean {
                 this.reviewIndex = reviewIndex;
             }
 
+            public String getReviewReason() {
+                return reviewReason;
+            }
+
+            public void setReviewReason(String reviewReason) {
+                this.reviewReason = reviewReason;
+            }
+
             public String getReviewState() {
                 return reviewState;
             }
 
             public void setReviewState(String reviewState) {
                 this.reviewState = reviewState;
+            }
+
+            public int getReviewStateNo() {
+                return reviewStateNo;
+            }
+
+            public void setReviewStateNo(int reviewStateNo) {
+                this.reviewStateNo = reviewStateNo;
+            }
+
+            public String getReviewType() {
+                return reviewType;
+            }
+
+            public void setReviewType(String reviewType) {
+                this.reviewType = reviewType;
             }
 
             public int getReviewTypeNo() {
@@ -374,24 +400,24 @@ public class ApplyBean {
                 this.reviewTypeNo = reviewTypeNo;
             }
 
-            public int getUserNo() {
-                return userNo;
-            }
-
-            public String getReviewReason() {
-                return reviewReason;
-            }
-
-            public void setReviewReason(String reviewReason) {
-                this.reviewReason = reviewReason;
-            }
-
             public String getReviewUserName() {
                 return reviewUserName;
             }
 
             public void setReviewUserName(String reviewUserName) {
                 this.reviewUserName = reviewUserName;
+            }
+
+            public Object getStartDate() {
+                return startDate;
+            }
+
+            public void setStartDate(Object startDate) {
+                this.startDate = startDate;
+            }
+
+            public int getUserNo() {
+                return userNo;
             }
 
             public void setUserNo(int userNo) {

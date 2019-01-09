@@ -1,5 +1,6 @@
 package com.example.administrator.warehousemanagementsystem.activity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,11 +20,13 @@ import com.example.administrator.warehousemanagementsystem.R;
 import com.example.administrator.warehousemanagementsystem.net.NetServerImp;
 import com.example.administrator.warehousemanagementsystem.util.MessageEvent;
 import com.example.administrator.warehousemanagementsystem.util.MyDialog;
+import com.example.administrator.warehousemanagementsystem.util.NotificationUtil;
 import com.example.administrator.warehousemanagementsystem.util.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private NetServerImp netServerImp;
     MyApp myApp;
 
+
     private static boolean canSee = false;
 
     @Override
@@ -64,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         myApp = (MyApp) getApplication();
         initData();
+        NotificationUtil.getAppDetailSettingIntent(LoginActivity.this);
     }
 
 

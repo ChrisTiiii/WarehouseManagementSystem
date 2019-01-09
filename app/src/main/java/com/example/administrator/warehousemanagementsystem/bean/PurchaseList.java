@@ -69,6 +69,22 @@ public class PurchaseList {
         private Object reviewList;
         private int userNo;
 
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "id=" + id +
+                    ", purcFinishdate=" + purcFinishdate +
+                    ", purcId='" + purcId + '\'' +
+                    ", purcStartdate=" + purcStartdate +
+                    ", purcState='" + purcState + '\'' +
+                    ", purcSupplier='" + purcSupplier + '\'' +
+                    ", purcUsage='" + purcUsage + '\'' +
+                    ", purchaseContentList=" + purchaseContentList +
+                    ", reviewList=" + reviewList +
+                    ", userNo=" + userNo +
+                    '}';
+        }
+
         public int getId() {
             return id;
         }

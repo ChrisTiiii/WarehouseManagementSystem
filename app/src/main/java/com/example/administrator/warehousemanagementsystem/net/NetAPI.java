@@ -1,6 +1,5 @@
 package com.example.administrator.warehousemanagementsystem.net;
 
-import android.content.Intent;
 
 import com.example.administrator.warehousemanagementsystem.bean.AddApplyBean;
 import com.example.administrator.warehousemanagementsystem.bean.ApplyBean;
@@ -76,7 +75,7 @@ public interface NetAPI {
     Observable<ReviewListHaveDone> getReviewListHaveDoneByMe(@Query("userNo") Integer userNo, @Query("page") int page, @Query("size") int size, @Query("from") String app, @Query("token") String token);//获取已完成订单
 
     @GET("getApplyById.do")
-    Observable<ApplyBean> getApplyById(@Query("id") String id, @Query("from") String app, @Query("token") String token);//审批详情
+    Observable<ApplyBean> getApplyById(@Query("id") String id, @Query("from") String app, @Query("token") String token);//申领详情
 
     @GET("getPurchaseById.do")
     Observable<PurchaseBean> getPurchaseById(@Query("id") String id, @Query("from") String app, @Query("token") String token);//采购单详情

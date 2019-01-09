@@ -40,7 +40,7 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<PurchaseList.DataBean> purchaseList;
     private List<BudgetList.DataBean> budgetList;
     private OnItemClickListener onItemClickListener;
-    private int type;//0 为未审批 1 为已审批  2为我的申申领 3为我的采购 4位我的预算
+    private int type;//0 为未审批 1 为已审批  2为我的申领 3为我的采购 4为我的预算
 
 
     public SPAdapter(Context context, MyApp myApp, List<ReviewList.DataBean> waitList, List<ReviewListHaveDone.DataBean> doneList, List<ApplyList.DataBean> myApplyList, List<PurchaseList.DataBean> purchaseList, List<BudgetList.DataBean> budgetList, int type) {
@@ -81,9 +81,9 @@ public class SPAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     spViewHolder.slType.setText(waitList.get(i).getReviewType() + "单");
                     break;
                 case 1:
-                    if (doneList.get(i).getReviewState().equals("通过"))
+                    if (doneList.get(i).getReviewStateNo() == 601)
                         Glide.with(context).load(R.drawable.agree).into(spViewHolder.ivHead);
-                    else if (doneList.get(i).getReviewState().equals("未通过"))
+                    else if (doneList.get(i).getReviewStateNo() == 602)
                         Glide.with(context).load(R.drawable.disagree).into(spViewHolder.ivHead);
                     spViewHolder.slProduct.setText("物品种类：" + doneList.get(i).getGoodsCount() + "个物资种类");
                     spViewHolder.slTime.setText(TimeUtil.stampToDate(String.valueOf(doneList.get(i).getReviewDate())));

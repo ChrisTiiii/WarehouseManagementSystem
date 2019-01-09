@@ -96,7 +96,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ApplyBean.DataBean temp = applyBean;
         if (myApp.getRoot() == 130) {
             for (int i = 0; i < temp.getApplyContentList().size(); i++) {
-                if (!temp.getApplyContentList().get(i).getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                if (!(temp.getApplyContentList().get(i).getGoodsTypeNo() == myApp.getUser().getUserTypeNo())) {
                     temp.getApplyContentList().remove(i);
                 }
             }
@@ -112,7 +112,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         PurchaseBean.DataBean temp = purchaseBean;
         if (myApp.getRoot() == 130) {
             for (int i = 0; i < temp.getPurchaseContentList().size(); i++) {
-                if (!temp.getPurchaseContentList().get(i).getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                if (!(temp.getPurchaseContentList().get(i).getGoodsTypeNo() == myApp.getUser().getUserTypeNo())) {
                     temp.getPurchaseContentList().remove(i);
                 }
             }
@@ -128,7 +128,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         BudgetBean.DataBean temp = budgetBean;
         if (myApp.getRoot() == 130) {
             for (int i = 0; i < temp.getBudgetContentList().size(); i++) {
-                if (!temp.getBudgetContentList().get(i).getGoodsTypeNo().equals(myApp.getUser().getUserTypeNo())) {
+                if (!(temp.getBudgetContentList().get(i).getGoodsTypeNo() == (myApp.getUser().getUserTypeNo()))) {
                     temp.getBudgetContentList().remove(i);
                 }
             }
@@ -200,10 +200,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (applyBean.getReviewList() != null)
                         for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList())
                             if (myApp.getUser().getId() == dataBean.getUserNo())
-                                if (dataBean.getReviewState().equals("通过")) {
+                                if (dataBean.getReviewStateNo() == 601) {
                                     Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批通过");
-                                } else if (dataBean.getReviewState().equals("未通过")) {
+                                } else if (dataBean.getReviewStateNo() == 602) {
                                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批未通过");
                                 }
@@ -213,15 +213,15 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (viewType == 2) {
                     headViewHolder.state.setTextColor(context.getResources().getColor(R.color.steelblue));
                     Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
-                    headViewHolder.state.setText("我的申请单");
+                    headViewHolder.state.setText("我的申领单");
                     for (ApplyBean.DataBean.ReviewListBean dataBean : applyBean.getReviewList()) {
-                        if (dataBean.getReviewState().equals("未通过")) {
+                        if (dataBean.getReviewStateNo() == 602) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
-                            headViewHolder.state.setText("申请未通过");
+                            headViewHolder.state.setText("申领未通过");
                         }
                     }
                     if (applyBean.getReviewList().size() > 0)
-                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewStateNo() == 601) {
                             //添加二维码,默认数据加载
                             headViewHolder.ivCode.setVisibility(View.VISIBLE);
                             Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(applyBean.getApplyId(), 480, 480);
@@ -256,8 +256,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 temp.add(applyBean.getFromUserName() + "  发起");
                 if (applyBean.getReviewList() != null) {
                     for (int j = 0; j < applyBean.getReviewList().size(); j++) {
-                        if (!applyBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (applyBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                        if (!(applyBean.getReviewList().get(j).getReviewStateNo() == 600)) {
+                            if (applyBean.getReviewList().get(j).getReviewStateNo() == 602) {
                                 bol = true;
                                 unpass = applyBean.getReviewList().get(j).getReviewReason();
                                 nowPoint = 1;
@@ -271,8 +271,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         temp.add(applyBean.getReviewList().get(j).getReviewUserName() + "  " + applyBean.getReviewList().get(j).getReviewState());
                     }
                     if (applyBean.getReviewList().size() > 0)
-                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过"))
-                            temp.add("您的申请已完成了审批流程:)");
+                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewStateNo() == 601)
+                            temp.add("您的申领申请已完成了审批流程:)");
                 }
                 System.out.println("当前步数：" + nowPoint);
                 if (bol) {//如果被拒绝了显示拒绝理由
@@ -282,7 +282,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
                     if (applyBean.getReviewList().size() > 0)
-                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                        if (applyBean.getReviewList().get(applyBean.getReviewList().size() - 1).getReviewStateNo() == 601) {//如果通过就通过ui显示完成步数
                             setStepView(progressViewHolder, temp, nowPoint + 2);
                         } else
                             setStepView(progressViewHolder, temp, nowPoint);
@@ -308,10 +308,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (purchaseBean.getReviewList() != null)
                         for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList())
                             if (myApp.getUser().getId() == dataBean.getUserNo())
-                                if (dataBean.getReviewState().equals("通过")) {
+                                if (dataBean.getReviewStateNo() == 601) {
                                     Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批通过");
-                                } else if (dataBean.getReviewState().equals("未通过")) {
+                                } else if (dataBean.getReviewStateNo() == 602) {
                                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批未通过");
                                 }
@@ -323,13 +323,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
                     headViewHolder.state.setText("我的采购单");
                     for (PurchaseBean.DataBean.ReviewListBean dataBean : purchaseBean.getReviewList()) {
-                        if (dataBean.getReviewState().equals("未通过")) {
+                        if (dataBean.getReviewStateNo() == 602) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
                     if (purchaseBean.getReviewList().size() > 0)
-                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewStateNo() == 601) {
                             //添加二维码,默认数据加载
                             headViewHolder.ivCode.setVisibility(View.VISIBLE);
                             Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(purchaseBean.getPurcId(), 480, 480);
@@ -363,8 +363,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 temp.add(purchaseBean.getFromUserName() + "  发起");
                 if (purchaseBean.getReviewList() != null) {
                     for (int j = 0; j < purchaseBean.getReviewList().size(); j++) {
-                        if (!purchaseBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (purchaseBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                        if (!(purchaseBean.getReviewList().get(j).getReviewStateNo() == 600)) {
+                            if (purchaseBean.getReviewList().get(j).getReviewStateNo() == 602) {
                                 bol = true;
                                 unpass = purchaseBean.getReviewList().get(j).getReviewReason();
                                 nowPoint = 1;
@@ -377,8 +377,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         temp.add(purchaseBean.getReviewList().get(j).getReviewUserName() + "  " + purchaseBean.getReviewList().get(j).getReviewState());
                     }
                     if (purchaseBean.getReviewList().size() > 0)
-                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过"))
-                            temp.add("您的申请已完成了审批流程:)");
+                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewStateNo() == 601)
+                            temp.add("您的采购申请已完成了审批流程:)");
                 }
                 System.out.println("当前步数：" + nowPoint);
                 if (bol) {//如果被拒绝了显示拒绝理由
@@ -388,7 +388,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     setStepView(progressViewHolder, temp, nowPoint);
                 } else {
                     if (purchaseBean.getReviewList().size() > 0)
-                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                        if (purchaseBean.getReviewList().get(purchaseBean.getReviewList().size() - 1).getReviewStateNo() == 601) {//如果通过就通过ui显示完成步数
                             setStepView(progressViewHolder, temp, nowPoint + 2);
                         } else
                             setStepView(progressViewHolder, temp, nowPoint);
@@ -413,10 +413,10 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (budgetBean.getReviewList() != null)
                         for (BudgetBean.DataBean.ReviewListBean dataBean : budgetBean.getReviewList())
                             if (myApp.getUser().getId() == dataBean.getUserNo())
-                                if (dataBean.getReviewState().equals("通过")) {
+                                if (dataBean.getReviewStateNo() == 601) {
                                     Glide.with(context).load(R.drawable.sppass).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批通过");
-                                } else if (dataBean.getReviewState().equals("未通过")) {
+                                } else if (dataBean.getReviewStateNo() == 602) {
                                     Glide.with(context).load(R.drawable.disagree).into(headViewHolder.ivHead);
                                     headViewHolder.state.setText("审批未通过");
                                 }
@@ -428,13 +428,13 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Glide.with(context).load(R.drawable.wode).into(headViewHolder.ivHead);
                     headViewHolder.state.setText("我的预算单");
                     for (BudgetBean.DataBean.ReviewListBean dataBean : budgetBean.getReviewList()) {
-                        if (dataBean.getReviewState().equals("未通过")) {
+                        if (dataBean.getReviewStateNo() == 602) {
                             headViewHolder.state.setTextColor(context.getResources().getColor(R.color.red));
                             headViewHolder.state.setText("申请未通过");
                         }
                     }
                     if (budgetBean.getReviewList().size() > 0)
-                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {
+                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewStateNo() == 601) {
                             //添加二维码,默认数据加载
                             headViewHolder.ivCode.setVisibility(View.VISIBLE);
                             Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(budgetBean.getBudgId(), 480, 480);
@@ -469,8 +469,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 temp.add(budgetBean.getFromUserName() + "  发起");
                 if (budgetBean.getReviewList() != null) {
                     for (int j = 0; j < budgetBean.getReviewList().size(); j++) {
-                        if (!budgetBean.getReviewList().get(j).getReviewState().equals("等待审批")) {
-                            if (budgetBean.getReviewList().get(j).getReviewState().equals("未通过")) {
+                        if (!(budgetBean.getReviewList().get(j).getReviewStateNo() == 600)) {
+                            if (budgetBean.getReviewList().get(j).getReviewStateNo() == 602) {
                                 bol = true;
                                 unpass = budgetBean.getReviewList().get(j).getReviewReason();
                                 nowPoint = 1;
@@ -483,8 +483,8 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         temp.add(budgetBean.getReviewList().get(j).getReviewUserName() + "  " + budgetBean.getReviewList().get(j).getReviewState());
                     }
                     if (budgetBean.getReviewList().size() > 0)
-                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过"))
-                            temp.add("您的申请已完成了审批流程:)");
+                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewStateNo() == 601)
+                            temp.add("您的预算申请已完成了审批流程:)");
                 }
                 if (bol) {//如果被拒绝了显示拒绝理由
                     progressViewHolder.disagreeLayout.setVisibility(View.VISIBLE);
@@ -494,7 +494,7 @@ public class SPDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else {
                     System.out.println("当前点位：" + nowPoint);
                     if (budgetBean.getReviewList().size() > 0)
-                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewState().equals("通过")) {//如果通过就通过ui显示完成步数
+                        if (budgetBean.getReviewList().get(budgetBean.getReviewList().size() - 1).getReviewStateNo() == 601) {//如果通过就通过ui显示完成步数
                             setStepView(progressViewHolder, temp, nowPoint + 2);
                         } else
                             setStepView(progressViewHolder, temp, nowPoint);

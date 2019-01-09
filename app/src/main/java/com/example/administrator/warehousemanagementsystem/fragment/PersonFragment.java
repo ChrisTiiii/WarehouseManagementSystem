@@ -25,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.jpush.android.api.JPushInterface;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
@@ -114,6 +115,8 @@ public class PersonFragment extends Fragment {
     }
 
     public void exitAccount() {
+        // 退出登录删除别名
+        JPushInterface.deleteAlias(getContext(), 1);
         SharedPreferencesUtils helper = new SharedPreferencesUtils(getContext(), "setting");
         helper.putValues(new SharedPreferencesUtils.ContentValue("password", ""));
         helper.putValues(new SharedPreferencesUtils.ContentValue("autoLogin", false));

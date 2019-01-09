@@ -9,10 +9,11 @@ import java.util.List;
  **/
 public class ReviewList {
 
+
     /**
      * result : ok
-     * data : [{"fromUserName":"收费站管理员1","goodsCount":2,"id":1,"objNo":2,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewType":"申领","reviewTypeNo":300,"startDate":1544681698000,"userNo":3},{"fromUserName":"收费站管理员1","goodsCount":2,"id":3,"objNo":3,"reviewDate":null,"reviewIndex":0,"reviewState":"等待审批","reviewType":"申领","reviewTypeNo":300,"startDate":1544682419000,"userNo":3}]
-     * count : 3
+     * data : [{"fromUserName":"虞勇-仓管","goodsCount":2,"id":13,"objNo":3,"reviewDate":null,"reviewIndex":0,"reviewReason":"","reviewState":"等待审批","reviewStateNo":600,"reviewType":"采购","reviewTypeNo":310,"reviewUserName":"","startDate":1547024870000,"userNo":5}]
+     * count : 2
      */
 
     private String result;
@@ -45,19 +46,21 @@ public class ReviewList {
 
     public static class DataBean {
         /**
-         * fromUserName : 收费站管理员1
+         * fromUserName : 虞勇-仓管
          * goodsCount : 2
-         * id : 1
-         * objNo : 2
+         * id : 13
+         * objNo : 3
          * reviewDate : null
          * reviewIndex : 0
+         * reviewReason :
          * reviewState : 等待审批
-         * reviewType : 申领
-         * reviewTypeNo : 300
-         * startDate : 1544681698000
-         * userNo : 3
+         * reviewStateNo : 600
+         * reviewType : 采购
+         * reviewTypeNo : 310
+         * reviewUserName :
+         * startDate : 1547024870000
+         * userNo : 5
          */
-
 
         private String fromUserName;
         private int goodsCount;
@@ -65,28 +68,14 @@ public class ReviewList {
         private int objNo;
         private Object reviewDate;
         private int reviewIndex;
+        private String reviewReason;
         private String reviewState;
+        private int reviewStateNo;
         private String reviewType;
         private int reviewTypeNo;
+        private String reviewUserName;
         private long startDate;
         private int userNo;
-
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "fromUserName='" + fromUserName + '\'' +
-                    ", goodsCount=" + goodsCount +
-                    ", id=" + id +
-                    ", objNo=" + objNo +
-                    ", reviewDate=" + reviewDate +
-                    ", reviewIndex=" + reviewIndex +
-                    ", reviewState='" + reviewState + '\'' +
-                    ", reviewType='" + reviewType + '\'' +
-                    ", reviewTypeNo=" + reviewTypeNo +
-                    ", startDate=" + startDate +
-                    ", userNo=" + userNo +
-                    '}';
-        }
 
         public String getFromUserName() {
             return fromUserName;
@@ -136,12 +125,28 @@ public class ReviewList {
             this.reviewIndex = reviewIndex;
         }
 
+        public String getReviewReason() {
+            return reviewReason;
+        }
+
+        public void setReviewReason(String reviewReason) {
+            this.reviewReason = reviewReason;
+        }
+
         public String getReviewState() {
             return reviewState;
         }
 
         public void setReviewState(String reviewState) {
             this.reviewState = reviewState;
+        }
+
+        public int getReviewStateNo() {
+            return reviewStateNo;
+        }
+
+        public void setReviewStateNo(int reviewStateNo) {
+            this.reviewStateNo = reviewStateNo;
         }
 
         public String getReviewType() {
@@ -158,6 +163,14 @@ public class ReviewList {
 
         public void setReviewTypeNo(int reviewTypeNo) {
             this.reviewTypeNo = reviewTypeNo;
+        }
+
+        public String getReviewUserName() {
+            return reviewUserName;
+        }
+
+        public void setReviewUserName(String reviewUserName) {
+            this.reviewUserName = reviewUserName;
         }
 
         public long getStartDate() {
