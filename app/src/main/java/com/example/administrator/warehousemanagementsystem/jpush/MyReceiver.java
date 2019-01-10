@@ -78,6 +78,7 @@ public class MyReceiver extends BroadcastReceiver {
         }
     }
 
+
     private void processCustomMessage(Context context, Bundle bundle) {
         String channelID = "1";
         String channelName = "channel_name";
